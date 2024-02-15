@@ -4,12 +4,18 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    impermanence.url = "github:nix-community/impermanence";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     astronvim = { url = "github:AstroNvim/AstroNvim"; flake = false; };
     astronvim-user = { url = "github:mrhappy200/nvim"; flake = false; };
+
+    hyprland.url = "github:hyprwm/Hyprland";
+
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
@@ -20,11 +26,12 @@
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
       nixosConfigurations = {
-        default = nixpkgs.lib.nixosSystem {
+        HappyPC = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            ./hosts/default/configuration.nix
+            ./hosts/HappyPC/configuration.nix
             inputs.home-manager.nixosModules.default
+            inputs.impermanence.nixosModules.impermanence
           ];
         };
       };
