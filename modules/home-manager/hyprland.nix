@@ -2,10 +2,10 @@
 
 {
   options = {
-     wm.terminal = lib.mkOption {
-       type = lib.types.path;
-       default = pkgs.foot/bin/footclient;
-     };
+    wm.terminal = lib.mkOption {
+      type = lib.types.path;
+      default = pkgs.foot/bin/footclient;
+    };
   };
   config = {
     home.sessionVariables.WLR_RENDERER_ALLOW_SOFTWARE = "1";
@@ -15,10 +15,12 @@
       settings = {
         "$mod" = "SUPER";
 
-        bind = let 
-          terminal = "${pkgs.foot}/bin/footclient";
-          launcher = "${pkgs.tofi}/bin/tofi-drun";
-          in [
+        bind =
+          let
+            terminal = "${pkgs.foot}/bin/footclient";
+            launcher = "${pkgs.tofi}/bin/tofi-drun";
+          in
+          [
             ",F10, killactive,"
             "$mod, Return, exec, ${terminal}"
             ",F12, exec, ${terminal}"

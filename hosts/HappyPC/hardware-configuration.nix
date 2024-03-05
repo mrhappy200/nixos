@@ -6,10 +6,10 @@
 {
   imports =
     [
-      (modulesPath + "/profiles/qemu-guest.nix")
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "sr_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
@@ -18,18 +18,18 @@
     {
       device = "none";
       fsType = "tmpfs";
-      options = [ "defaults" "size=2G" "mode=755" ];
+      options = [ "defaults" "size=8G" "mode=755" ];
     };
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-uuid/bf73fd59-a2b0-4301-bdec-935d2a584a81";
-      fsType = "ext4";
+      device = "/dev/disk/by-uuid/0649-39D6";
+      fsType = "vfat";
     };
 
   fileSystems."/nix" =
     {
-      device = "/dev/disk/by-uuid/d33e7ad7-c4a7-482f-9d35-351dcabaff1d";
+      device = "/dev/disk/by-uuid/abeb01c9-8dcf-4adf-86ab-19b696be77b8";
       fsType = "ext4";
     };
 
@@ -47,6 +47,13 @@
       options = [ "bind" ];
     };
 
+  fileSystems."/nix/persist-hdd" =
+    {
+      device = "/dev/disk/by-uuid/7ef2a759-543e-4dfa-98d7-e9ffacd988e9";
+      fsType = "ext4";
+      neededForBoot = true;
+    };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -54,7 +61,9 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp3s0f1.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp4s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

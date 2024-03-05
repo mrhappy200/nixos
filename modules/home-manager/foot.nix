@@ -7,7 +7,7 @@
     main = {
       term = "foot";
 
-      font = "Fira Code Nerd Font Mono:size=9";
+      # font = "Fira Code Nerd Font Mono:size=9";
     };
   };
 }

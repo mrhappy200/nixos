@@ -6,6 +6,8 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,6 +18,13 @@
     hyprland.url = "github:hyprwm/Hyprland";
 
     nix-colors.url = "github:misterio77/nix-colors";
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      follows = "nixpkgs";
+    };
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
@@ -24,7 +33,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
       nixosConfigurations = {
         HappyPC = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
@@ -32,6 +41,16 @@
             ./hosts/HappyPC/configuration.nix
             inputs.home-manager.nixosModules.default
             inputs.impermanence.nixosModules.impermanence
+            inputs.stylix.nixosModules.stylix
+            inputs.sops-nix.nixosModules.sops
+          ];
+        };
+        HappyChromebook = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/HappyChromebook/configuration.nix
+            inputs.home-manager.nixosModules.default
+            inputs.stylix.nixosModules.stylix
           ];
         };
       };

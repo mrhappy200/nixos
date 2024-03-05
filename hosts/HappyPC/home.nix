@@ -4,18 +4,55 @@
 {
   imports = [
     ../../modules/home-manager/astroNvim.nix
-    ../../modules/home-manager/hyprland.nix
-    ../../modules/home-manager/zsh.nix
+    # ../../modules/home-manager/nixVim.nix
+    ../../modules/home-manager/hyprland
+    # ../../modules/home-manager/zsh.nix
+    ../../modules/home-manager/fish.nix
     ../../modules/home-manager/foot.nix
+    ../../modules/home-manager/monitors.nix
+    ../../modules/home-manager/tofi.nix
+    ../../modules/home-manager/mpd.nix
+    ../../modules/home-manager/activitywatch.nix
     inputs.impermanence.nixosModules.home-manager.impermanence
+    # inputs.nixvim.homeManagerModules.nixvim
   ];
 
   home.persistence."/nix/persist/home/mrhappy200" = {
     directories = [
+    ".gnupg"
+    "werk"
+    "Sync"
     ];
     files = [ ];
   };
 
+  monitors = [
+    {
+      name = "eDP-1";
+      width = 1366;
+      height = 768;
+      x = 1024;
+      y = 1080;
+      workspace = "1";
+      primary = true;
+    }
+    {
+      name = "HDMI-A-1";
+      width = 1024;
+      height = 600;
+      x = 0;
+      y = 0;
+      workspace = "2";
+    }
+    {
+      name = "DP-1";
+      width = 1920;
+      height = 1080;
+      x = 1024;
+      y = 0;
+      workspace = "3";
+    }
+  ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -54,6 +91,11 @@
     pkgs.ripgrep
     pkgs.gcc
     pkgs.mpv
+    pkgs.lf
+    pkgs.fzf
+    pkgs.bfs
+    pkgs.broot
+    pkgs.waypipe
     (pkgs.nerdfonts.override
       { fonts = [ "FantasqueSansMono" "FiraCode" ]; })
   ];
