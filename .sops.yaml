@@ -1,0 +1,22 @@
+keys:
+  # Users
+  - &users:
+    - &mrhappy200 9C77AB4C9FDEF882
+  # Hosts
+  - &hosts:
+    - &HappyPC age1urcpcqamh3xu7akp00dv700yhngxrsts8z9nfntp0yyv84xadqgqy0ut39
+
+creation_rules:
+  - path_regex: hosts/HappyPC/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *HappyPC
+      pgp:
+      - *mrhappy200
+
+  - path_regex: hosts/common/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *HappyPC
+      pgp:
+      - *mrhappy200
