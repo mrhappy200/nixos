@@ -7,7 +7,7 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
-    sshKeys = ["951D15D8CAD6AC62A18BB0FD9C77AB4C9FDEF882"];
+    sshKeys = ["C918E7BD9343D7BA12B520357DC527FF5BB00D0B"];
     enableExtraSocket = true;
     pinentryPackage =
       if config.gtk.enable
