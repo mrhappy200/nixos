@@ -19,6 +19,7 @@
     ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/steam.nix
+    ../common/optional/guacamole
     ../common/optional/systemd-boot.nix
   ];
 

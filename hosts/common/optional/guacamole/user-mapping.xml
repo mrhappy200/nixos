@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user-mapping>
+     <!-- User using SHA-256 to hash the password -->
+     <authorize
+        username="mrhappy200"
+        password="f492334c612af54b33c661f868b6a53a69f3ec7d4bb88efebed5bed119328115"
+        encoding="sha256">
+
+        <connection name="NixOS Server SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">127.0.0.1</param>
+            <param name="port">8022</param>
+        </connection>
+
+      <connection name="NixOS Server RDP">
+          <protocol>rdp</protocol>
+          <param name="hostname">127.0.0.1</param>
+          <param name="port">3389</param>
+          <param name="ignore-cert">true</param>
+      </connection>
+    </authorize>
+</user-mapping>
