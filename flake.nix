@@ -99,7 +99,7 @@
       "mrhappy200@HappyChromebook" = lib.homeManagerConfiguration {
         modules = [./home/mrhappy200/HappyChromebook.nix];
         pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs};
+        extraSpecialArgs = {inherit inputs outputs;};
       };
     };
   };

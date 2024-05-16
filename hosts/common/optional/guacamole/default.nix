@@ -14,7 +14,7 @@ services.guacamole-client = {
   };
 };
 
-nginx.virtualHosts."guac.berntsen.nl.eu.org" = {
+services.nginx.virtualHosts."guac.berntsen.nl.eu.org" = {
   forceSSL = true;
   enableACME = true;
   locations."/".proxyPass = "http://localhost:8080";
