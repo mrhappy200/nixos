@@ -12,7 +12,8 @@ in {
     extraGroups = ["wheel" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd"];
 
     openssh.authorizedKeys.keys = [(builtins.readFile ../../../../home/mrhappy200/ssh.pub)];
-    hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
+    #hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
+    initialPassword = "passwordtest";
     packages = [pkgs.home-manager];
   };
 
@@ -23,5 +24,7 @@ in {
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
 
-  security.pam.services = {};
+  security.pam.services = {
+    swaylock = {};
+  };
 }

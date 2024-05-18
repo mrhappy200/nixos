@@ -8,6 +8,7 @@
 in {
   imports = [
     ./global
+    ./features/nvim
     ./features/desktop/hyprland
     #./features/productivity
     ./features/pass

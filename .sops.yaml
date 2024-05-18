@@ -5,6 +5,7 @@ keys:
   # Hosts
   - &hosts:
     - &HappyPC age1urcpcqamh3xu7akp00dv700yhngxrsts8z9nfntp0yyv84xadqgqy0ut39
+    - &HappyChromebook age1apxfzcrq37rp9rx2sem9w5985gyk57rm6tsfx7lpz69xyduzufhsx25pjn
 
 creation_rules:
   - path_regex: hosts/HappyPC/secrets.ya?ml$
@@ -14,9 +15,17 @@ creation_rules:
       pgp:
       - *mrhappy200
 
+  - path_regex: hosts/HappyChromebook/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *HappyChromebook
+      pgp:
+      - *mrhappy200
+
   - path_regex: hosts/common/secrets.ya?ml$
     key_groups:
     - age:
       - *HappyPC
+      - *HappyChromebook
       pgp:
       - *mrhappy200

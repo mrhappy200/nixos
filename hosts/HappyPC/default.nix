@@ -20,6 +20,8 @@
     ../common/optional/wireless.nix
     ../common/optional/steam.nix
     ../common/optional/guacamole
+    ../common/optional/nginx.nix
+    ../common/optional/acme.nix
     ../common/optional/systemd-boot.nix
   ];
 

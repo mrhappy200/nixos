@@ -6,25 +6,41 @@
   ...
 }:
 with inputs; {
-  home.packages = [
-    pkgs.neovim
-    pkgs.tree-sitter
-    pkgs.wl-clipboard
-    pkgs.ripgrep
-    pkgs.lazygit
-    pkgs.bottom
-    pkgs.python3
-    pkgs.nodejs_21
-    pkgs.git
-  ];
+  imports = [ nixvim.homeManagerModules.nixvim ];  
 
-  xdg.configFile = {
-    "nvim" = {
-      recursive = true;
-      source = astronvim;
+  programs.nixvim = {
+    enable = true;
+    defaultEditor = true;
+
+    options = {
+    number = true;
+    relativenumber = true;
+
+    shiftwidth = 2;
     };
-    "nvim/lua/user" = {
-      source = astronvim-user;
+
+    plugins = {
+      lualine.enable = true;
+      bufferline.enable = true;
+      lsp = {
+        enable = true;
+	servers = {
+          rust-analyzer.enable = true;
+	  ltex.enable = true;
+	  nixd.enable = true;
+	};
+      };
+
+      # completion
+      cmp = {
+        enable = true;
+	autoEnableSources = true;
+	#sources = [
+        #  {name = "nvim_lsp";}
+	#  {name = "path";}
+	#  {name = "buffer";}
+	#];
+      };
     };
   };
 
