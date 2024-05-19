@@ -19,6 +19,7 @@
     ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/steam.nix
+    ../common/optional/blueooth.nix
     ../common/optional/guacamole
     ../common/optional/nginx.nix
     ../common/optional/acme.nix

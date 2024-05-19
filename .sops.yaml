@@ -4,7 +4,7 @@ keys:
     - &mrhappy200 9C77AB4C9FDEF882
   # Hosts
   - &hosts:
-    - &HappyPC age1urcpcqamh3xu7akp00dv700yhngxrsts8z9nfntp0yyv84xadqgqy0ut39
+    - &HappyPC age18helpvrf3e6ej2r20cd5kcvehxaqq4a359ctyv36z0pt0svdcg9qhzfps5
     - &HappyChromebook age1apxfzcrq37rp9rx2sem9w5985gyk57rm6tsfx7lpz69xyduzufhsx25pjn
 
 creation_rules:
