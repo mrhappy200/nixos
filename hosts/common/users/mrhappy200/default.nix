@@ -12,8 +12,8 @@ in {
     extraGroups = ["wheel" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd"];
 
     openssh.authorizedKeys.keys = [(builtins.readFile ../../../../home/mrhappy200/ssh.pub)];
-    #hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
-    initialPassword = "passwordtest";
+    hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
+    #initialPassword = "passwordtest";
     packages = [pkgs.home-manager];
   };
 
