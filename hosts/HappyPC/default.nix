@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   inputs,
   ...
 }: {
@@ -26,6 +27,10 @@
     ../common/optional/systemd-boot.nix
   ];
 
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+  security.tpm2.tctiEnvironment.enable = true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+
   stylix.image = pkgs.fetchurl {
     url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
     sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
@@ -38,7 +43,7 @@
     };
   };
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/grayscale-dark.yaml";
 
   hardware = {
     nvidia = {
@@ -74,6 +79,13 @@
     # pkgs.linuxKernel.packages.linux_zen;
     # binfmt.emulatedSystems = [ "aarch64-linux"
     # "i686-linux" ];
+
+    loader.systemd-boot.enable = lib.mkForce false;
+
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/nix/persist/etc/secureboot";
+    };
   };
 
   programs = {

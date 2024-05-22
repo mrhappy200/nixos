@@ -1,32 +1,31 @@
 {
   services.guacamole-server = {
-  enable = true;
-  host = "127.0.0.1";
-  userMappingXml = ./user-mapping.xml;
-};
-
-services.guacamole-client = {
-  enable = true;
-  enableWebserver = true;
-  settings = {
-    guacd-port = 4822;
-    guacd-hostname = "127.0.0.1";
+    enable = true;
+    host = "127.0.0.1";
+    userMappingXml = ./user-mapping.xml;
   };
-};
 
-services.nginx.virtualHosts."guac.berntsen.nl.eu.org" = {
-  forceSSL = true;
-  enableACME = true;
-  locations."/".proxyPass = "http://localhost:8080/guacamole";
-  locations."/guacamole".proxyPass = "http://localhost:8080/guacamole";
-};
+  services.guacamole-client = {
+    enable = true;
+    enableWebserver = true;
+    settings = {
+      guacd-port = 4822;
+      guacd-hostname = "127.0.0.1";
+    };
+  };
 
-services.xserver.enable = true;
-services.xserver.displayManager.sddm.enable = true;
-services.xserver.windowManager.fluxbox.enable = true;
+  services.nginx.virtualHosts."guac.berntsen.nl.eu.org" = {
+    forceSSL = true;
+    enableACME = true;
+    locations."/".proxyPass = "http://localhost:8080/guacamole";
+    locations."/guacamole".proxyPass = "http://localhost:8080/guacamole";
+  };
 
-services.xrdp.enable = true;
-services.xrdp.defaultWindowManager = "fluxbox";
-services.xrdp.openFirewall = true;
+  services.xserver.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.windowManager.fluxbox.enable = true;
 
+  services.xrdp.enable = true;
+  services.xrdp.defaultWindowManager = "fluxbox";
+  services.xrdp.openFirewall = true;
 }

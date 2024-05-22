@@ -16,6 +16,11 @@
 
     stylix.url = "github:danth/stylix";
 
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.3.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,6 +56,11 @@
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -58,6 +68,8 @@
     nixpkgs,
     home-manager,
     stylix,
+    lanzaboote,
+    disko,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -85,11 +97,11 @@
     nixosConfigurations = {
       # Main desktop
       HappyPC = lib.nixosSystem {
-        modules = [stylix.nixosModules.stylix ./hosts/HappyPC];
+        modules = [stylix.nixosModules.stylix lanzaboote.nixosModules.lanzaboote ./hosts/HappyPC];
         specialArgs = {inherit inputs outputs;};
       };
       HappyChromebook = lib.nixosSystem {
-        modules = [stylix.nixosModules.stylix ./hosts/HappyChromebook];
+        modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyChromebook];
         specialArgs = {inherit inputs outputs;};
       };
     };

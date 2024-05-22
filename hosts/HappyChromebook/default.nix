@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  modulesPath,
   ...
 }: {
   imports = [
@@ -13,9 +14,11 @@
     ../common/users/mrhappy200
 
     ../common/optional/pipewire.nix
-    ../common/optional/quietboot.nix
+ #   ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/systemd-boot.nix
+
+    ./disk-config.nix
   ];
 
   stylix.image = pkgs.fetchurl {
@@ -33,7 +36,7 @@
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
 
   hardware = {
- };
+  };
 
   networking = {
     hostName = "HappyChromebook";

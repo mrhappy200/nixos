@@ -54,11 +54,11 @@
         kb_layout = "us";
         touchpad.disable_while_typing = false;
       };
- 
+
       device = {
         name = "lizhi-flash-ic-usb-keyboard";
         kb_options = "altwin:swap_alt_win";
-      };      
+      };
 
       dwindle = {
         split_width_multiplier = 1.35;
