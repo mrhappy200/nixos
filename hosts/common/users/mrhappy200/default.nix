@@ -9,7 +9,7 @@ in {
   users.users.mrhappy200 = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = ["wheel" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd"];
+    extraGroups = ["wheel" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd" "tss"];
 
     openssh.authorizedKeys.keys = [(builtins.readFile ../../../../home/mrhappy200/ssh.pub)];
     hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
@@ -23,7 +23,7 @@ in {
   };
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
-
+services.fwupd.enable = true;
   security.pam.services = {
     swaylock = {};
   };

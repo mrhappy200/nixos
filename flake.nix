@@ -15,6 +15,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     stylix.url = "github:danth/stylix";
+    
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.3.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -58,6 +63,7 @@
     nixpkgs,
     home-manager,
     stylix,
+    lanzaboote,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -85,7 +91,7 @@
     nixosConfigurations = {
       # Main desktop
       HappyPC = lib.nixosSystem {
-        modules = [stylix.nixosModules.stylix ./hosts/HappyPC];
+        modules = [stylix.nixosModules.stylix lanzaboote.nixosModules.lanzaboote ./hosts/HappyPC];
         specialArgs = {inherit inputs outputs;};
       };
       HappyChromebook = lib.nixosSystem {
