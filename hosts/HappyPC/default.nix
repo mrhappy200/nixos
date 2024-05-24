@@ -43,7 +43,7 @@
     };
   };
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/grayscale-dark.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
 
   hardware = {
     nvidia = {

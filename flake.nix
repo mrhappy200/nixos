@@ -104,6 +104,12 @@
         modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyChromebook];
         specialArgs = {inherit inputs outputs;};
       };
+      BootstrapIso = lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/BootstrapIso
+        ];
+      };
     };
 
     homeConfigurations = {

@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  lib,
   modulesPath,
   ...
 }: {
@@ -14,7 +15,7 @@
     ../common/users/mrhappy200
 
     ../common/optional/pipewire.nix
- #   ../common/optional/quietboot.nix
+    #   ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/systemd-boot.nix
 
@@ -25,6 +26,11 @@
     url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
     sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
   };
+
+  users.users."mrhappy200".initialPassword = "passwordtest";
+
+  networking.wireless.networks = lib.mkForce {};
+  networking.wireless.environmentFile = lib.mkForce null;
 
   stylix.fonts = {
     monospace = {

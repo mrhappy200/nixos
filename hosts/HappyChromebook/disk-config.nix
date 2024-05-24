@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   disko.devices = {
     disk.main = {
       device = "/dev/disk/by-id/mmc-DF4032_0x3494ee9a";
