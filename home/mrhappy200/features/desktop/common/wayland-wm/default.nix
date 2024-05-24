@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   imports = [
     ./gammastep.nix
-    ./kitty.nix
+    #./kitty.nix
+    ./foot.nix
     ./mako.nix
     ./qutebrowser.nix
     ./swayidle.nix

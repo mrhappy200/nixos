@@ -27,10 +27,10 @@
     sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
   };
 
-  users.users."mrhappy200".initialPassword = "passwordtest";
+  #users.users."mrhappy200".initialPassword = "passwordtest";
 
-  networking.wireless.networks = lib.mkForce {};
-  networking.wireless.environmentFile = lib.mkForce null;
+  #networking.wireless.networks = lib.mkForce {};
+  #networking.wireless.environmentFile = lib.mkForce null;
 
   stylix.fonts = {
     monospace = {
