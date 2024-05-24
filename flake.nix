@@ -56,6 +56,11 @@
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -64,6 +69,7 @@
     home-manager,
     stylix,
     lanzaboote,
+    disko,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -95,8 +101,14 @@
         specialArgs = {inherit inputs outputs;};
       };
       HappyChromebook = lib.nixosSystem {
-        modules = [stylix.nixosModules.stylix ./hosts/HappyChromebook];
+        modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyChromebook];
         specialArgs = {inherit inputs outputs;};
+      };
+      BootstrapIso = lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/BootstrapIso
+        ];
       };
     };
 

@@ -23,7 +23,8 @@ in {
   };
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
-services.fwupd.enable = true;
+
+  services.fwupd.enable = true;
   security.pam.services = {
     swaylock = {};
   };
