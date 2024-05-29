@@ -35,6 +35,6 @@ in {
     // {
     };
   modifications = final: prev: {
-    linux-wifi-hotspot = addPatches prev.linux-wifi-hotspot [./linux-wifi-hotspot-wep.patch];
+    #linux-wifi-hotspot = addPatches prev.linux-wifi-hotspot [./linux-wifi-hotspot-wep.patch];
   };
 }
