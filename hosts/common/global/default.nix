@@ -16,6 +16,7 @@
       ./sops.nix
       # ./ssh-serve-store.nix
       ./steam-hardware.nix
+      ./tailscale.nix
       ./systemd-initrd.nix
       ./gamemode.nix
     ]

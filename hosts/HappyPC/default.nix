@@ -18,14 +18,17 @@
 
     ../common/optional/pipewire.nix
     ../common/optional/quietboot.nix
+    ./services
     ../common/optional/wireless.nix
     ../common/optional/steam.nix
     ../common/optional/bluetooth.nix
-    ../common/optional/guacamole
+    #../common/optional/guacamole
     ../common/optional/nginx.nix
     ../common/optional/acme.nix
     ../common/optional/systemd-boot.nix
   ];
+
+  environment.systemPackages = [ pkgs.linux-wifi-hotspot ];
 
   security.tpm2.enable = true;
   security.tpm2.pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
@@ -43,13 +46,7 @@
     };
   };
 
-<<<<<<< HEAD
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/grayscale-dark.yaml";
-||||||| 5813858
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-=======
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
->>>>>>> fba761a226f6c0ee575ee240361763364c45ec95
 
   hardware = {
     nvidia = {
@@ -87,12 +84,6 @@
     # "i686-linux" ];
 
     loader.systemd-boot.enable = lib.mkForce false;
-<<<<<<< HEAD
-    
-||||||| 5813858
-=======
-
->>>>>>> fba761a226f6c0ee575ee240361763364c45ec95
     lanzaboote = {
       enable = true;
       pkiBundle = "/nix/persist/etc/secureboot";

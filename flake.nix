@@ -15,7 +15,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     stylix.url = "github:danth/stylix";
-    
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.3.0";
       inputs.nixpkgs.follows = "nixpkgs";

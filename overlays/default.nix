@@ -34,4 +34,7 @@ in {
     import ../pkgs {pkgs = final;}
     // {
     };
+  modifications = final: prev: {
+    linux-wifi-hotspot = addPatches prev.linux-wifi-hotspot [./linux-wifi-hotspot-wep.patch];
+  };
 }
