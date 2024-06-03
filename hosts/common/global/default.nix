@@ -2,12 +2,14 @@
 {
   inputs,
   outputs,
+  pkgs,
   ...
 }: {
   imports =
     [
       inputs.home-manager.nixosModules.home-manager
       ./auto-upgrade.nix
+      ./avahi.nix
       ./fish.nix
       ./locale.nix
       ./nix.nix
@@ -23,6 +25,10 @@
     ++ (builtins.attrValues outputs.nixosModules);
 
   home-manager.extraSpecialArgs = {inherit inputs outputs;};
+
+  environment.systemPackages = [
+    pkgs.lxqt.lxqt-policykit
+  ];
 
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;

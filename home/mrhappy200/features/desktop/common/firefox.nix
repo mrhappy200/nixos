@@ -6,12 +6,15 @@
       bookmarks = {};
       extensions = with pkgs.inputs.firefox-addons; [
         ublock-origin
+        sponsorblock
+        dearrow
         browserpass
       ];
       bookmarks = {};
       settings = {
         "browser.disableResetPrompt" = true;
         "browser.download.panel.shown" = true;
+        "extensions.autoDisableScopes" = 0;
         "browser.download.useDownloadDir" = false;
         "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
         "browser.shell.checkDefaultBrowser" = false;

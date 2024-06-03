@@ -1,6 +1,6 @@
 {
   imports = [
-    # ./todoman.nix
+    ./todoman.nix
     # ./vdirsyncer.nix
 
     ./mail.nix

@@ -10,7 +10,7 @@ in {
     ./global
     ./features/nvim
     ./features/desktop/hyprland
-    #./features/productivity
+    ./features/productivity
     ./features/pass
     ./features/games
     ./features/cli

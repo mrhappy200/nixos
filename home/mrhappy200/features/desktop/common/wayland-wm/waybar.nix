@@ -1,9 +1,7 @@
 {
-  outputs,
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   commonDeps = with pkgs; [coreutils gnugrep systemd];
@@ -228,7 +226,7 @@ in {
           exec = mkScriptJson {
             deps = [pkgs.procps pkgs.gnupg];
             pre = let
-              isUnlocked = "pgrep 'gpg-agent' &> /dev/null && gpg-connect-agent 'scd getinfo card_list' /bye | grep SERIALNO -q";
+              isUnlocked = "echo \"test\" | gpg2 --sign --batch --no-tty --pinentry-mode error --local-user ronanberntsen@gmail.com -o /dev/null";
             in ''status=$(${isUnlocked} && echo "unlocked" || echo "locked")'';
             alt = "$status";
             tooltip = "GPG is $status";

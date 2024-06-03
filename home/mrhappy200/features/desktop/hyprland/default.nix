@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  inputs,
   pkgs,
   ...
 }: {
@@ -19,14 +20,18 @@
     configPackages = [hyprland];
   };
 
-  home.packages = with pkgs; [
-    inputs.hyprwm-contrib.grimblast
-    hyprpicker
+  home.packages = [
+    pkgs.inputs.hyprwm-contrib.grimblast
+    pkgs.hyprpicker
   ];
 
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland.override {wrapRuntimeDeps = false;};
+
+    plugins = [
+    ];
+
     systemd = {
       enable = true;
       # Same as default, but stop graphical-session too
@@ -148,6 +153,7 @@
       };
 
       exec = ["${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} --mode fill"];
+      exec-once = ["lxqt.lxqt-policykit"];
 
       bind = let
         grimblast = lib.getExe pkgs.inputs.hyprwm-contrib.grimblast;

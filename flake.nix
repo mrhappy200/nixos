@@ -39,6 +39,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland = {
       url = "github:hyprwm/hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -90,7 +95,30 @@
     overlays = import ./overlays {inherit inputs outputs;};
     # hydraJobs = import ./hydra.nix { inherit inputs outputs; };
 
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    packages =
+      forEachSystem
+      (
+        pkgs:
+          (import ./pkgs {inherit pkgs;})
+          // {
+            HappyRaspi = inputs.nixos-generators.nixosGenerate {
+              system = "aarch64-linux";
+              format = "sd-aarch64";
+              modules = [
+                ./hosts/HappyRaspi
+              ];
+            };
+          } //
+	  {
+	    BootstrapIso = inputs.nixos-generators.nixosGenerate {
+	      system = "x86_64-linux";
+	      format = "iso";
+	      modules = [
+		./hosts/BootstrapIso
+	      ];
+	    };
+	  }
+      );
     devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
     formatter = forEachSystem (pkgs: pkgs.alejandra);
 
@@ -103,12 +131,6 @@
       HappyChromebook = lib.nixosSystem {
         modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyChromebook];
         specialArgs = {inherit inputs outputs;};
-      };
-      BootstrapIso = lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/BootstrapIso
-        ];
       };
     };
 

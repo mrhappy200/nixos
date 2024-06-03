@@ -2,7 +2,6 @@
   inputs,
   config,
   lib,
-  pkgs,
   ...
 }: {
   # This will add each flake input as a registry
@@ -25,5 +24,6 @@
     experimental-features = "nix-command flakes";
     # Deduplicate and optimize nix store
     auto-optimise-store = true;
+    trusted-users = ["@wheel"];
   };
 }

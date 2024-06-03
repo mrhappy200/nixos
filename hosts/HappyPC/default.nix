@@ -17,6 +17,7 @@
     ../common/users/mrhappy200
 
     ../common/optional/pipewire.nix
+    ../common/optional/virt
     ../common/optional/quietboot.nix
     ./services
     ../common/optional/wireless.nix
@@ -27,8 +28,6 @@
     ../common/optional/acme.nix
     ../common/optional/systemd-boot.nix
   ];
-
-  environment.systemPackages = [ pkgs.linux-wifi-hotspot ];
 
   security.tpm2.enable = true;
   security.tpm2.pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
@@ -80,8 +79,7 @@
   boot = {
     # kernelPackages =
     # pkgs.linuxKernel.packages.linux_zen;
-    # binfmt.emulatedSystems = [ "aarch64-linux"
-    # "i686-linux" ];
+    binfmt.emulatedSystems = ["aarch64-linux"];
 
     loader.systemd-boot.enable = lib.mkForce false;
     lanzaboote = {

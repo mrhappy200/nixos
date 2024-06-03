@@ -3,4 +3,5 @@
 {pkgs ? import <nixpkgs> {}, ...}: rec {
   # example = pkgs.callPackage ./example { };
   pass-wofi = pkgs.callPackage ./pass-wofi {};
+  HappyRaspi = pkgs.callPackage ./HappyRaspi {};
 }

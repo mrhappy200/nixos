@@ -38,6 +38,30 @@ in {
           address = "ronanberntsen@gmail.com";
           passwordCommand = "${pass} ${smtp.host}/${address}";
 
+          imap.host = "imap.gmail.com";
+
+          mbsync = {
+            enable = true;
+            create = "maildir";
+            expunge = "both";
+          };
+
+          folders = {
+            inbox = "\[Gmail\]/Inbox";
+            drafts = "\[Gmail\]/Drafts";
+            sent = "\[Gmail\]/Sent\ Mail";
+            trash = "\[Gmail\]/Bin";
+          };
+          neomutt = {
+            enable = true;
+            extraMailboxes = [
+              "[Gmail]/Drafts"
+              "[Gmail]/Spam"
+              "[Gmail]/Sent\ Mail"
+              "[Gmail]/Bin"
+            ];
+          };
+
           msmtp.enable = true;
           smtp.host = "smtp.gmail.com";
           userName = address;
@@ -69,4 +93,16 @@ in {
     };
     Install = {WantedBy = ["timers.target"];};
   };
+
+  # Run 'createMaildir' after 'linkGeneration'
+  home.activation = let
+    mbsyncAccounts = lib.filter (a: a.mbsync.enable) (lib.attrValues config.accounts.email.accounts);
+  in
+    lib.mkIf (mbsyncAccounts != []) {
+      createMaildir = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] ''
+        run mkdir -m700 -p $VERBOSE_ARG ${
+          lib.concatMapStringsSep " " (a: a.maildir.absPath) mbsyncAccounts
+        }
+      '');
+    };
 }

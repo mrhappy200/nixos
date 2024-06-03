@@ -9,7 +9,7 @@ in {
   users.users.mrhappy200 = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = ["wheel" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd" "tss"];
+    extraGroups = ["wheel" "dialout" "video" "audio"] ++ ifTheyExist ["minecraft" "network" "wireshark" "i2c" "mysql" "docker" "git" "libvirtd" "tss"];
 
     openssh.authorizedKeys.keys = [(builtins.readFile ../../../../home/mrhappy200/ssh.pub)];
     hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
