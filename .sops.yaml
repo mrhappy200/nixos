@@ -4,10 +4,9 @@ keys:
     - &mrhappy200 9C77AB4C9FDEF882
   # Hosts
   - &hosts:
-    - &HappyPC age1urcpcqamh3xu7akp00dv700yhngxrsts8z9nfntp0yyv84xadqgqy0ut39
+    - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa
     - &HappyChromebook age1jx9y46vtamfqwy3yf392y4dkw0r9zae3p0qej6egh7jrljkvzsdqz2cnqn
-    - &Bootstrap age1wx3t2akmezv3w3hf5zkn2ylqzv33x8sn6jd6xh9yyqafajx7nu4qh0ccrx
-
+    - &Bootstrap age18cgpyhkjhmfpx8dkunlfl2snenvurkkv75ukt9s9ykeguge8wyxqxdh58v
 creation_rules:
   - path_regex: hosts/HappyPC/secrets.ya?ml$
     key_groups:

@@ -16,8 +16,12 @@
     ../common/global
     ../common/users/mrhappy200
 
+    ../common/optional/podman.nix
+
     ../common/optional/pipewire.nix
     ../common/optional/virt
+    ../common/optional/waydroid.nix
+#    ../common/optional/sunshine.nix
     ../common/optional/quietboot.nix
     ./services
     ../common/optional/wireless.nix
@@ -45,7 +49,10 @@
     };
   };
 
+  fonts.packages = [ pkgs.dm-sans pkgs.corefonts ];
+
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
+  stylix.enable = true;
 
   hardware = {
     nvidia = {
@@ -65,27 +72,24 @@
     };
     opengl = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
     };
   };
 
-  networking = {
-    hostName = "HappyPC";
-    useDHCP =
-      true;
-  };
+	 networking = {
+ 	   hostName = "HappyPC";
+	   dhcpcd.enable = true;
+ 	 };
 
   boot = {
     # kernelPackages =
     # pkgs.linuxKernel.packages.linux_zen;
-    binfmt.emulatedSystems = ["aarch64-linux"];
+    binfmt.emulatedSystems = ["aarch64-linux" "x86_64-windows"];
 
-    loader.systemd-boot.enable = lib.mkForce false;
-    lanzaboote = {
-      enable = true;
-      pkiBundle = "/nix/persist/etc/secureboot";
-    };
+    #loader.systemd-boot.enable = lib.mkForce false;
+    #lanzaboote = {
+    #  enable = true;
+    #  pkiBundle = "/nix/persist/etc/secureboot";
+    #};
   };
 
   programs = {

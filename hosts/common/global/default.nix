@@ -12,6 +12,7 @@
       ./avahi.nix
       ./fish.nix
       ./locale.nix
+      ./nix-ld.nix
       ./nix.nix
       ./openssh.nix
       ./optin-persistence.nix

@@ -4,7 +4,7 @@
     #./kitty.nix
     ./foot.nix
     ./mako.nix
-    ./qutebrowser.nix
+    #    ./qutebrowser.nix
     ./swayidle.nix
     ./swaylock.nix
     ./waybar.nix

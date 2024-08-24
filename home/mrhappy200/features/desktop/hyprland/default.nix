@@ -44,9 +44,8 @@
     settings = let
     in {
       general = {
-        cursor_inactive_timeout = 4;
-        gaps_in = 15;
-        gaps_out = 20;
+        gaps_in = 5;
+        gaps_out = 10;
         border_size = 2;
       };
       group = {
@@ -62,7 +61,7 @@
 
       device = {
         name = "lizhi-flash-ic-usb-keyboard";
-        kb_options = "altwin:swap_alt_win";
+        kb_options = "altwin:swap_alt_win, compose:ralt";
       };
 
       dwindle = {

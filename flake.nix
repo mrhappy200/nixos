@@ -1,6 +1,5 @@
 {
   description = "My NixOS configuration";
-
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org"
@@ -13,17 +12,25 @@
   };
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-master.url = "github:nixos/nixpkgs";
     stylix.url = "github:danth/stylix";
+
+    firefox.url = "github:nix-community/flake-firefox-nightly";
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.3.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    ShyFox = {
+      url = "github:Naezr/shyFox?ref=4.0-alpha";
+      flake = false;
+    };
+
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      #inputs.nixpkgs.follows = "nixpkgs";
     };
 
     hardware.url = "github:nixos/nixos-hardware";
@@ -95,6 +102,16 @@
     overlays = import ./overlays {inherit inputs outputs;};
     # hydraJobs = import ./hydra.nix { inherit inputs outputs; };
 
+    templates =
+      {
+        full = {
+          path = ./.;
+          description = "My nix config, copy if you wish (you probably shouldn't want to though)";
+        };
+      }
+      // import ./templates;
+    defaultTemplate = self.templates.full;
+
     packages =
       forEachSystem
       (
@@ -108,16 +125,16 @@
                 ./hosts/HappyRaspi
               ];
             };
-          } //
-	  {
-	    BootstrapIso = inputs.nixos-generators.nixosGenerate {
-	      system = "x86_64-linux";
-	      format = "iso";
-	      modules = [
-		./hosts/BootstrapIso
-	      ];
-	    };
-	  }
+          }
+          // {
+            BootstrapIso = inputs.nixos-generators.nixosGenerate {
+              system = "x86_64-linux";
+              format = "iso";
+              modules = [
+                ./hosts/BootstrapIso
+              ];
+            };
+          }
       );
     devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
     formatter = forEachSystem (pkgs: pkgs.alejandra);

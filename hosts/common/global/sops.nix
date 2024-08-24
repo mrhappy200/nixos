@@ -12,7 +12,7 @@ in {
   ];
 
   sops = {
-    defaultSopsFile = ../../../sops.yml;
+    defaultSopsFile = ../../../.sops.yaml;
     age.sshKeyPaths = map getKeyPath keys;
   };
 }

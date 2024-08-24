@@ -46,7 +46,7 @@
         "SUPERSHIFT,q,killactive"
         "SUPERSHIFT,e,exit"
 
-        "SUPER,f,fullscreen,1"
+        "SUPER,f,fullscreen,2"
         "SUPERSHIFT,f,fullscreen,0"
         "SUPERSHIFT,space,togglefloating"
 

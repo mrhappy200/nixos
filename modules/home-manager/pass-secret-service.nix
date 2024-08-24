@@ -1,15 +1,19 @@
 {
-  pkgs,
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
+  #pkgs = import (fetchTarball "channel:nixpkgs-unstable") {};
   cfg = config.services.pass-secret-service;
 in {
   disabledModules = ["services/pass-secret-service.nix"];
 
-  meta.maintainers = with maintainers; [cab404 cyntheticfox];
+  meta.maintainers = with maintainers; [
+    cab404
+    cyntheticfox
+  ];
 
   options.services.pass-secret-service = {
     enable = mkEnableOption "Pass libsecret service";
@@ -32,10 +36,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    assertions = [
-      (hm.assertions.assertPlatform "services.pass-secret-service" pkgs
-        platforms.linux)
-    ];
+    assertions = [(hm.assertions.assertPlatform "services.pass-secret-service" pkgs platforms.linux)];
 
     services.pass-secret-service.extraArgs = optional (cfg.storePath != null) "--path=${cfg.storePath}";
 
@@ -51,7 +52,9 @@ in {
         ExecStart = "${cfg.package}/bin/pass_secret_service ${lib.escapeShellArgs cfg.extraArgs}";
       };
 
-      Install = {WantedBy = ["default.target"];};
+      Install = {
+        WantedBy = ["default.target"];
+      };
     };
   };
 }
