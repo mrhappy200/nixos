@@ -2,7 +2,7 @@
   programs.browserpass.enable = true;
 
 
-  stylix.targets.firefox.enable = false;
+  stylix.targets.firefox.enable = true;
 
   programs.firefox = {
     enable = true;
