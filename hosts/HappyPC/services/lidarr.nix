@@ -1,10 +1,5 @@
-{
-  config,
-  ...
-}: let
-  
+{config, ...}: let
 in {
-
   services.lidarr = {
     enable = true;
   };
@@ -12,7 +7,13 @@ in {
 
   environment.persistence = {
     "/nix/persist-hdd" = {
-      directories = [{ directory = "${toString config.services.lidarr.dataDir}"; user = config.services.lidarr.user; group = config.services.lidarr.group;}];
+      directories = [
+        {
+          directory = "${toString config.services.lidarr.dataDir}";
+          user = config.services.lidarr.user;
+          group = config.services.lidarr.group;
+        }
+      ];
     };
   };
 }

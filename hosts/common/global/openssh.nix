@@ -32,7 +32,7 @@ in {
     ];
   };
 
-programs.mosh.enable = true;
+  programs.mosh.enable = true;
 
   programs.ssh = {
     # Each hosts public key
@@ -47,7 +47,6 @@ programs.mosh.enable = true;
         (lib.optional (hostname == config.networking.hostName) "localhost");
     });
   };
-
 
   # Keep SSH_AUTH_SOCK when sudo'ing
   security.sudo.extraConfig = ''

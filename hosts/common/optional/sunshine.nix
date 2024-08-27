@@ -1,5 +1,4 @@
-{pkgs,...}:
-{
+{pkgs, ...}: {
   services.sunshine = {
     enable = true;
     capSysAdmin = true;
@@ -7,7 +6,6 @@
     openFirewall = true;
     settings = {
       sunshine_name = "HappyPC";
-
     };
   };
 }

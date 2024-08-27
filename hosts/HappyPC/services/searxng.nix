@@ -1,5 +1,4 @@
-{pkgs, ...}:
-{
+{pkgs, ...}: {
   services.searx = {
     package = pkgs.searxng;
     enable = true;
@@ -13,31 +12,30 @@
   };
 
   services.nginx.virtualHosts."searx.hap.py" = {
-   # listen = [
-   #   {
-   #     addr = "0.0.0.0";
-   #     port = 80;
-   #     ssl = true;
-   #   }
-   #   {
-   #     addr = "[::]";
-   #     port = 80;
-   #     ssl = true;
-   #   }
-   # ];
+    # listen = [
+    #   {
+    #     addr = "0.0.0.0";
+    #     port = 80;
+    #     ssl = true;
+    #   }
+    #   {
+    #     addr = "[::]";
+    #     port = 80;
+    #     ssl = true;
+    #   }
+    # ];
 
     forceSSL = false;
     addSSL = true;
     sslCertificate = "/nix/persist/etc/nginx/certs/searx.hap.py.crt";
     sslCertificateKey = "/nix/persist/etc/nginx/certs/searx.hap.py.key";
     extraConfig = ''
-    ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
-    ssl_verify_client off;
-'';
+      ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
+      ssl_verify_client off;
+    '';
 
     locations."/" = {
       proxyPass = "http://127.0.0.1:8888";
     };
   };
-  
 }

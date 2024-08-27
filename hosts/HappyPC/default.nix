@@ -21,7 +21,7 @@
     ../common/optional/pipewire.nix
     ../common/optional/virt
     ../common/optional/waydroid.nix
-#    ../common/optional/sunshine.nix
+    #    ../common/optional/sunshine.nix
     ../common/optional/quietboot.nix
     ./services
     ../common/optional/wireless.nix
@@ -33,26 +33,28 @@
     ../common/optional/systemd-boot.nix
   ];
 
-  security.tpm2.enable = true;
-  security.tpm2.pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
-  security.tpm2.tctiEnvironment.enable = true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
-
-  stylix.image = pkgs.fetchurl {
-    url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
-    sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
+  security.tmp2 = {
+    enable = true;
+    pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+    tctiEnvironment.enable = true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
   };
 
-  stylix.fonts = {
-    monospace = {
-      package = pkgs.nerdfonts.override {fonts = ["DejaVuSansMono"];};
-      name = "DejaVuSansM Nerd Font";
+  stylix = {
+    image = pkgs.fetchurl {
+      url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
+      sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
     };
+    fonts = {
+      monospace = {
+        package = pkgs.nerdfonts.override {fonts = ["DejaVuSansMono"];};
+        name = "DejaVuSansM Nerd Font";
+      };
+    };
+
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
+    enable = true;
   };
-
-  fonts.packages = [ pkgs.dm-sans pkgs.corefonts ];
-
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
-  stylix.enable = true;
+  fonts.packages = [pkgs.dm-sans pkgs.corefonts];
 
   hardware = {
     nvidia = {
@@ -75,10 +77,10 @@
     };
   };
 
-	 networking = {
- 	   hostName = "HappyPC";
-	   dhcpcd.enable = true;
- 	 };
+  networking = {
+    hostName = "HappyPC";
+    dhcpcd.enable = true;
+  };
 
   boot = {
     # kernelPackages =

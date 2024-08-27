@@ -4,7 +4,7 @@
     ./dns
     ./searxng.nix
     ./mysql.nix
-#    ./lidarr.nix
+    #    ./lidarr.nix
     ./miniflux.nix
   ];
 }
