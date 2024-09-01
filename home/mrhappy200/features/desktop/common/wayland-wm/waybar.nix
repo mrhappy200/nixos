@@ -180,7 +180,7 @@ in {
           exec = mkScriptJson {
             deps = lib.optional hyprlandCfg.enable hyprlandCfg.package;
             text = "";
-            tooltip = ''$(grep /etc/os-release PRETTY_NAME | cut -d '"' -f2)'';
+            tooltip = ''$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)'';
             class = let
               isFullScreen =
                 if hyprlandCfg.enable
@@ -226,7 +226,7 @@ in {
           exec = mkScriptJson {
             deps = [pkgs.procps pkgs.gnupg];
             pre = let
-              isUnlocked = "echo \"test\" | gpg2 --sign --batch --no-tty --pinentry-mode error --local-user ronanberntsen@gmail.com -o /dev/null";
+              isUnlocked = "echo \"test\" | gpg2 --sign --batch --no-tty --pinentry-mode error --local-user ronanberntsen@gmail.com -o /dev/null 2>/dev/null";
             in ''status=$(${isUnlocked} && echo "unlocked" || echo "locked")'';
             alt = "$status";
             tooltip = "GPG is $status";

@@ -5,7 +5,7 @@
         enable = true;
         nixGrammars = true;
         indent = true;
-	languageRegister = {html = "njk";};
+        languageRegister = {html = "njk";};
       };
       treesitter-context = {
         enable = true;

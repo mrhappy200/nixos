@@ -2,7 +2,6 @@
   outputs,
   lib,
   config,
-  pkgs,
   ...
 }: let
   hosts = lib.attrNames outputs.nixosConfigurations;
@@ -13,7 +12,7 @@
 in {
   services.openssh = {
     enable = true;
-    ports = [22];
+    ports = [8022];
     settings = {
       # Harden
       PasswordAuthentication = true;
@@ -41,6 +40,7 @@ in {
       extraHostNames =
         [
           "${hostname}.hap.py"
+          "${hostname}.hppy200.dev"
         ]
         ++
         # Alias for localhost if it's the same host

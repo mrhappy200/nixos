@@ -1,11 +1,12 @@
 {...}: {
   imports = [
     ./headscale.nix
+		./auth
+    ./logging
     ./media
     ./dns
     ./searxng.nix
     ./mysql.nix
-    #    ./lidarr.nix
     ./miniflux.nix
   ];
 }

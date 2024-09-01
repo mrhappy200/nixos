@@ -12,19 +12,6 @@
   };
 
   services.nginx.virtualHosts."searx.hap.py" = {
-    # listen = [
-    #   {
-    #     addr = "0.0.0.0";
-    #     port = 80;
-    #     ssl = true;
-    #   }
-    #   {
-    #     addr = "[::]";
-    #     port = 80;
-    #     ssl = true;
-    #   }
-    # ];
-
     forceSSL = false;
     addSSL = true;
     sslCertificate = "/nix/persist/etc/nginx/certs/searx.hap.py.crt";
@@ -35,7 +22,7 @@
     '';
 
     locations."/" = {
-      proxyPass = "http://127.0.0.1:8888";
+	proxyPass = "http://127.0.0.1:8888";
     };
   };
 }

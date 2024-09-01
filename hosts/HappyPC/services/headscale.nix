@@ -15,6 +15,7 @@ in {
           nameservers = ["100.22.0.1" "1.1.1.1"];
         };
         server_url = "https://headscale.hppy200.dev";
+        metrics_listen_addr = "127.0.0.1:8095";
         log = {
           level = "warn";
         };
@@ -38,6 +39,9 @@ in {
           "/" = {
             proxyPass = "http://localhost:${toString config.services.headscale.port}";
             proxyWebsockets = true;
+          };
+          "/metrics" = {
+            proxyPass = "http://${config.services.headscale.settings.metrics_listen_addr}/metrics";
           };
         };
       };
