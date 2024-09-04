@@ -60,4 +60,7 @@ in {
       }
     ];
   };
+  environment.persistence = {
+    "/nix/persist".directories = ["/var/lib/prometheus2"];
+  };
 }

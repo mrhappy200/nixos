@@ -58,5 +58,10 @@
       ];
     };
   };
+
+  systemd.services.jellyseerr.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+  };
+
   networking.firewall.allowedUDPPorts = [1900];
 }

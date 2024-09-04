@@ -20,8 +20,7 @@ in {
     userEmail = "ronanberntsen@gmail.com";
     extraConfig = {
       init.defaultBranch = "main";
-      user.signingKey = "9C77AB4C9FDEF882";
-      #user.signing.key = "22C713FC7F84A09E";
+      user.signingKey = "4A98047683B8E5A7";
       commit.gpgSign = true;
       gpg.program = "${config.programs.gpg.package}/bin/gpg2";
 

@@ -1,6 +1,13 @@
 {config, ...}: let
   derpPort = 3478;
 in {
+  sops.secrets.headscale_oidc-client-secret = {
+    owner = config.services.headscale.user;
+    group = config.services.authelia.instances.plsFriend.group;
+    mode = "770";
+    sopsFile = ../secrets.yaml;
+  };
+
   services = {
     headscale = {
       enable = true;
@@ -27,6 +34,12 @@ in {
           enable = true;
           region_id = 999;
           stun_listen_addr = "0.0.0.0:${toString derpPort}";
+        };
+        oidc = {
+          issuer = "https://auth.hppy200.dev";
+          client_id = "-iBxegJlGlA1THMcL1TfDceL4ymN_Pdxa2Qf5j6.VdpQqBpUesj7utg-tziFMuTz0rkNsFO4n2yxK4l12Qo7JLDxVtqef3zghHx";
+          client_secret_path = config.sops.secrets."headscale_oidc-client-secret".path;
+          scope = ["openid" "profile" "email"];
         };
       };
     };

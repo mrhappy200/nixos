@@ -21,6 +21,14 @@ in {
     sopsFile = ../../secrets.yaml;
     neededForUsers = true;
   };
+  security.pam.services = {
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
+  };
+
+  services.pcscd.enable = true;
+
+  services.udev.packages = [pkgs.yubikey-personalization];
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
 

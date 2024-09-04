@@ -199,7 +199,7 @@ in {
           exec = mkScriptJson {
             deps = [pkgs.findutils pkgs.procps];
             pre = ''
-              count=$(find ~/Mail/*/Inbox/new -type f | wc -l)
+              count=$(find ~/Mail/*/\[Gmail\]/Inbox/new -type f | wc -l)
               if pgrep mbsync &>/dev/null; then
                 status="syncing"
               else
@@ -226,8 +226,8 @@ in {
           exec = mkScriptJson {
             deps = [pkgs.procps pkgs.gnupg];
             pre = let
-              isUnlocked = "echo \"test\" | gpg2 --sign --batch --no-tty --pinentry-mode error --local-user ronanberntsen@gmail.com -o /dev/null 2>/dev/null";
-            in ''status=$(${isUnlocked} && echo "unlocked" || echo "locked")'';
+              gpgCmds = import ../../../cli/gpg-commands.nix {inherit pkgs;};
+            in ''status=$(${gpgCmds.isUnlocked} && echo "unlocked" || echo "locked")'';
             alt = "$status";
             tooltip = "GPG is $status";
           };

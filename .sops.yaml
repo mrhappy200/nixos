@@ -1,7 +1,7 @@
 keys:
   # Users
   - &users:
-    - &mrhappy200 9C77AB4C9FDEF882
+    - &mrhappy200 4A98047683B8E5A7
   # Hosts
   - &hosts:
     - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa

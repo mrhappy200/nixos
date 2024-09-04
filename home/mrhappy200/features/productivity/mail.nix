@@ -10,7 +10,7 @@
   common = rec {
     realName = "Ronan Berntsen";
     gpg = {
-      key = "951D 15D8 CAD6 AC62 A18B B0FD 9C77 AB4C 9FDE F882";
+      key = "C51F 6D1E 112A 492A AEA3  F988 4A98 0476 83B8 E5A7";
       signByDefault = true;
     };
     signature = {
@@ -36,42 +36,6 @@ in {
         rec {
           primary = true;
           address = "ronanberntsen@gmail.com";
-          passwordCommand = "${pass} ${smtp.host}/${address}";
-
-          imap.host = "imap.gmail.com";
-
-          mbsync = {
-            enable = true;
-            create = "maildir";
-            expunge = "both";
-          };
-
-          folders = {
-            inbox = "\[Gmail\]/Inbox";
-            drafts = "\[Gmail\]/Drafts";
-            sent = "\[Gmail\]/Sent\ Mail";
-            trash = "\[Gmail\]/Bin";
-          };
-          neomutt = {
-            enable = true;
-            extraMailboxes = [
-              "[Gmail]/Drafts"
-              "[Gmail]/Spam"
-              "[Gmail]/Sent\ Mail"
-              "[Gmail]/Bin"
-            ];
-          };
-
-          msmtp.enable = true;
-          smtp.host = "smtp.gmail.com";
-          userName = address;
-        }
-        // common;
-
-      school =
-        rec {
-          primary = false;
-          address = "193763@gsf.nl";
           passwordCommand = "${pass} ${smtp.host}/${address}";
 
           imap.host = "imap.gmail.com";

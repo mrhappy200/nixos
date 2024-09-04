@@ -15,9 +15,9 @@
   services.nginx.virtualHosts.${config.services.grafana.domain} = {
     locations."/" = {
       proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
-      proxyWebsockets = true;
     };
     forceSSL = false;
+    enableAuthelia = true;
     addSSL = true;
     sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
     sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
@@ -25,5 +25,8 @@
       ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
       ssl_verify_client off;
     '';
+  };
+  environment.persistence = {
+    "/nix/persist".directories = ["/var/lib/grafana"];
   };
 }

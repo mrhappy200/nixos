@@ -10,7 +10,6 @@
       };
     };
   };
-
   services.nginx.virtualHosts."searx.hap.py" = {
     forceSSL = false;
     addSSL = true;
@@ -22,7 +21,7 @@
     '';
 
     locations."/" = {
-	proxyPass = "http://127.0.0.1:8888";
+      proxyPass = "http://127.0.0.1:8888";
     };
   };
 }

@@ -8,16 +8,12 @@ in {
   services = {
     nginx = {
       enable = true;
+      logError = "stderr info";
       recommendedTlsSettings = true;
       recommendedProxySettings = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       clientMaxBodySize = "300m";
-	
-      tailscaleAuth = {
-				enable = true;
-				virtualHosts = [];
-			};
 
       virtualHosts."${hostName}.hppy200.dev" = {
         default = true;
@@ -31,7 +27,6 @@ in {
           ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
           ssl_verify_client off;
         '';
-
       };
     };
 

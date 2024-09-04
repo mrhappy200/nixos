@@ -1,9 +1,15 @@
 {config, ...}: let
 in {
   services = {
-    lidarr.enable = true;
+    lidarr = {
+      enable = true;
+      user = "lidarr";
+      group = "mediastack";
+      dataDir = "/nix/persist-hdd/media/arr/lidarr/data/";
+    };
     nginx.virtualHosts."lidarr.hppy200.dev" = {
       forceSSL = false;
+			enableAuthelia = true;
       addSSL = true;
       sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
       sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";

@@ -1,0 +1,26 @@
+identity_providers:
+  oidc:
+    clients:
+      - client_name: 'HappyNet'
+        client_id: -iBxegJlGlA1THMcL1TfDceL4ymN_Pdxa2Qf5j6.VdpQqBpUesj7utg-tziFMuTz0rkNsFO4n2yxK4l12Qo7JLDxVtqef3zghHx
+        client_secret: {{ secret "/run/secrets/headscale_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'vpn'
+        redirect_uris:
+          - 'https://headscale.hppy200.dev/oidc/callback'
+        scopes:
+          - 'email'
+          - 'openid'
+          - 'profile'
+      - client_name: 'miniflux'
+        client_id: dKe-NfZimN7kn911_BsFC65MJepKft8WKDGieGwAlQn4a3h7dPwQYMgocB1LeKvLj1VFoFgx5tFfnL35RIXZ.d-iHXvRb~rIZgU
+        client_secret: {{ secret "/run/secrets/miniflux_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'miniflux'
+        redirect_uris:
+          - 'https://rss.hppy200.dev/oauth2/oidc/callback'
+        scopes:
+          - 'openid'
+          - 'groups'
+          - 'email'
+          - 'profile'

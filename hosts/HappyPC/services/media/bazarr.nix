@@ -12,6 +12,7 @@
     nginx.virtualHosts."bazarr.hppy200.dev" = {
       forceSSL = false;
       addSSL = true;
+      enableAuthelia = true;
       sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
       sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
       extraConfig = ''
