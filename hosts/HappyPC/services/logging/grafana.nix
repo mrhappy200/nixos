@@ -9,6 +9,14 @@
     domain = "grafana.hppy200.dev";
     port = 2342;
     addr = "127.0.0.1";
+    settings.server.root_url = "https://grafana.hppy200.dev";
+  };
+
+  sops.secrets.grafana_oidc-client-secret = {
+    owner = config.services.authelia.instances.plsFriend.user;
+    group = config.services.authelia.instances.plsFriend.group;
+    mode = "770";
+    sopsFile = ../../secrets.yaml;
   };
 
   # nginx reverse proxy
@@ -17,7 +25,6 @@
       proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
     };
     forceSSL = false;
-    enableAuthelia = true;
     addSSL = true;
     sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
     sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";

@@ -1,10 +1,14 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
 in {
   sops.secrets.lldap_pass = {
     owner = "lldap";
     sopsFile = ../../secrets.yaml;
   };
-environment.persistence = {
+  environment.persistence = {
     "/nix/persist-hdd" = {
       directories = [
         {

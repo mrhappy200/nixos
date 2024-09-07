@@ -8,7 +8,6 @@
   imports = [
     ../common
     ../common/wayland-wm
-
     ./basic-binds.nix
   ];
 
@@ -44,8 +43,8 @@
     settings = let
     in {
       general = {
-        gaps_in = 5;
-        gaps_out = 10;
+        gaps_in = 2;
+        gaps_out = 3;
         border_size = 2;
       };
       group = {

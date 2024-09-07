@@ -48,7 +48,7 @@ in {
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = config.sops.secrets.authelia_ldap_pass.path;
     };
     settings = {
-      telemetry.metrics.enabled = false;
+      telemetry.metrics.enabled = true;
       default_2fa_method = "totp";
       notifier.smtp = {
         username = "ronanberntsen@gmail.com";
@@ -138,6 +138,15 @@ in {
             rules = [
               {
                 "subject" = "group:vpn";
+                "policy" = "two_factor";
+              }
+            ];
+          };
+          grafana = {
+            default_policy = "deny";
+            rules = [
+              {
+                "subject" = "group:grafana";
                 "policy" = "two_factor";
               }
             ];

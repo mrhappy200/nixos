@@ -58,6 +58,17 @@ in {
           }
         ];
       }
+      {
+        job_name = "authelia";
+        scheme = "http";
+        static_configs = [
+          {
+            targets = [
+              "localhost:9959"
+            ];
+          }
+        ];
+      }
     ];
   };
   environment.persistence = {

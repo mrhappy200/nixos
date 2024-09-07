@@ -18,6 +18,10 @@ in {
     ./features/cli
   ];
 
+	home.packages = [
+		pkgs.gqrx
+	];
+
   monitors = [
     {
       name = "eDP-1";

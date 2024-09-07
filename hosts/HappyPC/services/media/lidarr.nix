@@ -9,7 +9,7 @@ in {
     };
     nginx.virtualHosts."lidarr.hppy200.dev" = {
       forceSSL = false;
-			enableAuthelia = true;
+      enableAuthelia = true;
       addSSL = true;
       sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
       sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";

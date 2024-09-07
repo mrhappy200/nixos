@@ -12,6 +12,7 @@
       ./avahi.nix
       ./fish.nix
       ./locale.nix
+      ./sdr.nix
       ./nix-ld.nix
       ./nix.nix
       ./openssh.nix
