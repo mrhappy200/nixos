@@ -12,7 +12,7 @@
 in {
   services.openssh = {
     enable = true;
-    ports = [8022];
+    ports = [22];
     settings = {
       # Harden
       PasswordAuthentication = true;
