@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    ./lutris.nix
+    #    ./lutris.nix
     ./prism-launcher.nix
   ];
   home = {

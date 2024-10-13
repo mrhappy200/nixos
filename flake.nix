@@ -81,6 +81,7 @@
     home-manager,
     stylix,
     lanzaboote,
+    nixos-generators,
     disko,
     ...
   } @ inputs: let
@@ -95,7 +96,6 @@
       });
   in {
     inherit lib;
-    nixosModules = import ./modules/nixos;
     homeManagerModules = import ./modules/home-manager;
     # templates = import ./templates;
 
@@ -115,30 +115,28 @@
     packages =
       forEachSystem
       (
-        pkgs:
-          (import ./pkgs {inherit pkgs;})
-          // {
-            HappyRaspi = inputs.nixos-generators.nixosGenerate {
-              system = "aarch64-linux";
-              format = "sd-aarch64";
-              modules = [
-                ./hosts/HappyRaspi
-              ];
-            };
-          }
-          // {
-            BootstrapIso = inputs.nixos-generators.nixosGenerate {
-              system = "x86_64-linux";
-              format = "iso";
-              modules = [
-                ./hosts/BootstrapIso
-              ];
-            };
-          }
+        pkgs: (import ./pkgs {inherit pkgs;})
       );
+
     devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
     formatter = forEachSystem (pkgs: pkgs.alejandra);
 
+    nixosModules =
+      import ./modules/nixos
+      // {
+        myFormats = {config, ...}: {
+          imports = [
+            nixos-generators.nixosModules.all-formats
+          ];
+
+          nixpkgs.hostPlatform = "x86_64-linux";
+
+          # customize an existing format
+          formatConfigs.vmware = {config, ...}: {
+            services.openssh.enable = true;
+          };
+        };
+      };
     nixosConfigurations = {
       # Main desktop
       HappyPC = lib.nixosSystem {
@@ -149,13 +147,21 @@
         modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyChromebook];
         specialArgs = {inherit inputs outputs;};
       };
+      HappyRaspi = lib.nixosSystem {
+        modules = [stylix.nixosModules.stylix disko.nixosModules.disko self.nixosModules.myFormats ./hosts/HappyPi];
+        specialArgs = {inherit inputs outputs;};
+      };
     };
-
     homeConfigurations = {
       # Desktops
       "mrhappy200@HappyPC" = lib.homeManagerConfiguration {
         modules = [./home/mrhappy200/HappyPC.nix];
         pkgs = pkgsFor.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+      "mrhappy200@HappyRaspi" = lib.homeManagerConfiguration {
+        modules = [./home/mrhappy200/HappyRaspi.nix];
+        pkgs = pkgsFor.aarch64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
       };
       "mrhappy200@HappyChromebook" = lib.homeManagerConfiguration {

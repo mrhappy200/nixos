@@ -56,7 +56,7 @@
     ./ui/nui.nix
 
     ./utils/better-escape.nix
-#    ./utils/neocord.nix
+    #    ./utils/neocord.nix
     ./utils/hardtime.nix
     ./utils/harpoon.nix
     ./utils/illuminate.nix
@@ -77,7 +77,7 @@
     ./utils/toggleterm.nix
     ./utils/ultimate-autopair.nix
     ./utils/undotree.nix
-#    ./utils/wakatime.nix
+    #    ./utils/wakatime.nix
     ./utils/whichkey.nix
     ./utils/wilder.nix
   ];

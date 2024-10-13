@@ -11,7 +11,7 @@
 
   programs.firefox = {
     enable = true;
-    package = inputs.firefox.packages.${pkgs.system}.firefox-nightly-bin;
+    package = inputs.firefox.packages.x86_64-linux.firefox-nightly-bin;
     profiles.mrhappy200 = {
       bookmarks = {};
       extensions = with pkgs.inputs.firefox-addons; [

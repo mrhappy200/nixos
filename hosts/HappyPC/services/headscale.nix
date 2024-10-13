@@ -63,14 +63,15 @@ in {
         enableACME = true;
         locations."/".return = "302 https://headscale.hppy200.dev$request_uri";
       };
-    };};
-
-    # Derp server
-    networking.firewall.allowedUDPPorts = [derpPort];
-
-    environment.systemPackages = [config.services.headscale.package];
-
-    environment.persistence = {
-      "/nix/persist".directories = ["/var/lib/headscale"];
     };
-  }
+  };
+
+  # Derp server
+  networking.firewall.allowedUDPPorts = [derpPort];
+
+  environment.systemPackages = [config.services.headscale.package];
+
+  environment.persistence = {
+    "/nix/persist".directories = ["/var/lib/headscale"];
+  };
+}

@@ -1,3 +1,3 @@
 {lib, ...}: {
-hardware.rtl-sdr.enable = true;
+  hardware.rtl-sdr.enable = true;
 }

@@ -25,7 +25,6 @@ in {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
     swaylock.u2fAuth = true;
-    
   };
 
   services.pcscd.enable = true;

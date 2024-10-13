@@ -7,6 +7,7 @@ keys:
     - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa
     - &HappyChromebook age1jx9y46vtamfqwy3yf392y4dkw0r9zae3p0qej6egh7jrljkvzsdqz2cnqn
     - &Bootstrap age18cgpyhkjhmfpx8dkunlfl2snenvurkkv75ukt9s9ykeguge8wyxqxdh58v
+    - &HappyRaspi age1aq9qz2vzxj3zp4cgdr7avec4s2k0vcyy9c8qnm74k0w9ezp09vkswxqrxw
 creation_rules:
   - path_regex: hosts/HappyPC/secrets.ya?ml$
     key_groups:
@@ -23,11 +24,20 @@ creation_rules:
       - *Bootstrap
       pgp:
       - *mrhappy200
+  - path_regex: hosts/HappyRaspi/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *HappyRaspi
+      - *Bootstrap
+      pgp:
+      - *mrhappy200
+
 
   - path_regex: hosts/common/secrets.ya?ml$
     key_groups:
     - age:
       - *HappyPC
+      - *HappyRaspi
       - *HappyChromebook
       - *Bootstrap
       pgp:
