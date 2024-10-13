@@ -2,6 +2,7 @@
 {
   inputs,
   outputs,
+lib,
   pkgs,
   ...
 }: {
@@ -33,6 +34,7 @@
   ];
 
   nixpkgs = {
+		#hostPlatform = lib.mkForce "x86_64-linux";
     overlays = builtins.attrValues outputs.overlays;
     config = {
       allowUnfree = true;

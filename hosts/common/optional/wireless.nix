@@ -14,10 +14,10 @@
     enable = true;
     fallbackToWPA2 = false;
     # Declarative
-    environmentFile = config.sops.secrets.wireless.path;
+    secretsFile = config.sops.secrets.wireless.path;
     networks = {
       "Marola_WiFi" = {
-        psk = "@MAROLA@";
+        pskRaw = "ext:MAROLA";
       };
     };
 

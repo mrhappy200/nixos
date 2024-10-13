@@ -5,19 +5,12 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
-
     ../common/global
     ../common/users/mrhappy200
 
-    ../common/optional/podman.nix
-
     ../common/optional/pipewire.nix
-    ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/bluetooth.nix
-    ../common/optional/acme.nix
-    ../common/optional/systemd-boot.nix
   ];
 
   stylix = {

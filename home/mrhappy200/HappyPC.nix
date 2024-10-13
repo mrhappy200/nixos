@@ -8,7 +8,6 @@
 in {
   imports = [
     ./global
-    ./features/nvim
     ./features/desktop/hyprland
     ./features/desktop/slack.nix
     ./features/desktop/mpd.nix
@@ -20,6 +19,7 @@ in {
 
   home.packages = [
     pkgs.gqrx
+    inputs.myNvim.packages.x86_64-linux.default
   ];
 
   monitors = [

@@ -33,6 +33,8 @@
       #inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    myNvim.url = "github:mrhappy200/nvim";
+
     hardware.url = "github:nixos/nixos-hardware";
     impermanence.url = "github:nix-community/impermanence";
 
@@ -129,7 +131,8 @@
             nixos-generators.nixosModules.all-formats
           ];
 
-          nixpkgs.hostPlatform = "x86_64-linux";
+          nixpkgs.hostPlatform = "aarch64-linux";
+          nixpkgs.buildPlatform = { system = "x86_64-linux"; };
 
           # customize an existing format
           formatConfigs.vmware = {config, ...}: {
@@ -148,7 +151,7 @@
         specialArgs = {inherit inputs outputs;};
       };
       HappyRaspi = lib.nixosSystem {
-        modules = [stylix.nixosModules.stylix disko.nixosModules.disko self.nixosModules.myFormats ./hosts/HappyPi];
+        modules = [stylix.nixosModules.stylix disko.nixosModules.disko ./hosts/HappyRaspi self.nixosModules.myFormats];
         specialArgs = {inherit inputs outputs;};
       };
     };

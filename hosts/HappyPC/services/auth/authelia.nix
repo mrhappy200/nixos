@@ -129,7 +129,7 @@ in {
             rules = [
               {
                 "subject" = "group:rss";
-                "policy" = "two_factor";
+                "policy" = "one_factor";
               }
             ];
           };

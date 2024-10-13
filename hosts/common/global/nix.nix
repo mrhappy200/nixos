@@ -28,4 +28,11 @@
     auto-optimise-store = true;
     trusted-users = ["@wheel"];
   };
+	systemd.services.nix-daemon.environment.TMPDIR = "/var/tmp";
+	environment.persistence = {
+    "/nix/persist" = {
+      directories = ["/var/tmp"];
+    };
+  };
+
 }

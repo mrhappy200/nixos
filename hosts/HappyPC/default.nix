@@ -102,5 +102,7 @@
     kdeconnect.enable = true;
   };
 
+	nixpkgs.hostPlatform = lib.mkForce { system = "x86_64-linux"; };
+
   system.stateVersion = "23.11"; # Did you read the comment?
 }
