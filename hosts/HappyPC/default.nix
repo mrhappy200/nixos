@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  inputs,
-  ...
-}: {
+{ pkgs, lib, inputs, ... }: {
   imports = [
     inputs.hardware.nixosModules.common-pc-laptop
     inputs.hardware.nixosModules.common-pc-ssd
@@ -19,6 +14,8 @@
     ../common/optional/podman.nix
 
     ../common/optional/pipewire.nix
+    #Make the bamboo tablet work
+    ../common/optional/wacom.nix
     ../common/optional/virt
     ../common/optional/waydroid.nix
     #    ../common/optional/sunshine.nix
@@ -36,25 +33,27 @@
   security.tpm2 = {
     enable = true;
     pkcs11.enable = true; # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
-    tctiEnvironment.enable = true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+    tctiEnvironment.enable =
+      true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
   };
 
   stylix = {
     image = pkgs.fetchurl {
-      url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
+      url =
+        "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
       sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
     };
     fonts = {
       monospace = {
-        package = pkgs.nerdfonts.override {fonts = ["DejaVuSansMono"];};
+        package = pkgs.nerdfonts.override { fonts = [ "DejaVuSansMono" ]; };
         name = "DejaVuSansM Nerd Font";
       };
     };
 
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     enable = true;
   };
-  fonts.packages = [pkgs.dm-sans pkgs.corefonts];
+  fonts.packages = [ pkgs.dm-sans pkgs.corefonts ];
 
   hardware = {
     nvidia = {
@@ -73,9 +72,7 @@
         intelBusId = "PCI:0:2:0";
       };
     };
-    opengl = {
-      enable = true;
-    };
+    opengl = { enable = true; };
   };
 
   networking = {
@@ -86,7 +83,7 @@
   boot = {
     # kernelPackages =
     # pkgs.linuxKernel.packages.linux_zen;
-    binfmt.emulatedSystems = ["aarch64-linux" "x86_64-windows"];
+    binfmt.emulatedSystems = [ "aarch64-linux" "x86_64-windows" ];
 
     #loader.systemd-boot.enable = lib.mkForce false;
     #lanzaboote = {
@@ -97,12 +94,11 @@
 
   programs = {
     adb.enable = true;
-    dconf.enable =
-      true;
+    dconf.enable = true;
     kdeconnect.enable = true;
   };
 
-	nixpkgs.hostPlatform = lib.mkForce { system = "x86_64-linux"; };
+  nixpkgs.hostPlatform = lib.mkForce { system = "x86_64-linux"; };
 
   system.stateVersion = "23.11"; # Did you read the comment?
 }

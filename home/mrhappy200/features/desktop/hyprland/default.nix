@@ -1,15 +1,10 @@
 {
   lib,
   config,
-  inputs,
   pkgs,
   ...
 }: {
-  imports = [
-    ../common
-    ../common/wayland-wm
-    ./basic-binds.nix
-  ];
+  imports = [../common ../common/wayland-wm ./basic-binds.nix];
 
   xdg.portal = let
     hyprland = config.wayland.windowManager.hyprland.package;
@@ -19,17 +14,13 @@
     configPackages = [hyprland];
   };
 
-  home.packages = [
-    pkgs.inputs.hyprwm-contrib.grimblast
-    pkgs.hyprpicker
-  ];
+  home.packages = [pkgs.inputs.hyprwm-contrib.grimblast pkgs.hyprpicker];
 
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland.override {wrapRuntimeDeps = false;};
 
-    plugins = [
-    ];
+    plugins = [];
 
     systemd = {
       enable = true;
@@ -47,21 +38,28 @@
         gaps_out = 3;
         border_size = 2;
       };
-      group = {
-        groupbar.font_size = 11;
-      };
-      binds = {
-        movefocus_cycles_fullscreen = false;
-      };
+      group = {groupbar.font_size = 11;};
+      binds = {movefocus_cycles_fullscreen = false;};
       input = {
         kb_layout = "us";
         touchpad.disable_while_typing = false;
       };
 
-      device = {
-        name = "lizhi-flash-ic-usb-keyboard";
-        kb_options = "altwin:swap_alt_win, compose:ralt";
-      };
+      device = [
+        {
+          name = "lizhi-flash-ic-usb-keyboard";
+          kb_options = "altwin:swap_alt_win, compose:ralt";
+        }
+
+        {
+          name = "hid-27c0:0818";
+          output = "HDMI-A-1";
+        }
+        {
+          name = "wacom-bamboo-2fg-6x8-pen";
+          output = "eDP-1";
+        }
+      ];
 
       dwindle = {
         split_width_multiplier = 1.35;
@@ -180,75 +178,72 @@
           # To OCR
           "ALT,Print,exec,${grimblast} --freeze save area - | ${tesseract} - - | wl-copy && ${notify-send} -t 3000 'OCR result copied to buffer'"
         ]
-        ++ (
-          let
-            playerctl = lib.getExe' config.services.playerctld.package "playerctl";
-            playerctld = lib.getExe' config.services.playerctld.package "playerctld";
-          in
-            lib.optionals config.services.playerctld.enable [
-              # Media control
-              ",XF86AudioNext,exec,${playerctl} next"
-              ",XF86AudioPrev,exec,${playerctl} previous"
-              ",XF86AudioPlay,exec,${playerctl} play-pause"
-              ",XF86AudioStop,exec,${playerctl} stop"
-              "ALT,XF86AudioNext,exec,${playerctld} shift"
-              "ALT,XF86AudioPrev,exec,${playerctld} unshift"
-              "ALT,XF86AudioPlay,exec,systemctl --user restart playerctld"
-            ]
-        )
+        ++ (let
+          playerctl = lib.getExe' config.services.playerctld.package "playerctl";
+          playerctld =
+            lib.getExe' config.services.playerctld.package "playerctld";
+        in
+          lib.optionals config.services.playerctld.enable [
+            # Media control
+            ",XF86AudioNext,exec,${playerctl} next"
+            ",XF86AudioPrev,exec,${playerctl} previous"
+            ",XF86AudioPlay,exec,${playerctl} play-pause"
+            ",XF86AudioStop,exec,${playerctl} stop"
+            "ALT,XF86AudioNext,exec,${playerctld} shift"
+            "ALT,XF86AudioPrev,exec,${playerctld} unshift"
+            "ALT,XF86AudioPlay,exec,systemctl --user restart playerctld"
+          ])
         ++
         # Screen lock
-        (
-          let
-            swaylock = lib.getExe config.programs.swaylock.package;
-          in
-            lib.optionals config.programs.swaylock.enable [
-              ",XF86Launch5,exec,${swaylock} -S --grace 2"
-              ",XF86Launch4,exec,${swaylock} -S --grace 2"
-              "SUPER,backspace,exec,${swaylock} -S --grace 2"
-            ]
-        )
+        (let
+          swaylock = lib.getExe config.programs.swaylock.package;
+        in
+          lib.optionals config.programs.swaylock.enable [
+            ",XF86Launch5,exec,${swaylock} -S --grace 2"
+            ",XF86Launch4,exec,${swaylock} -S --grace 2"
+            "SUPER,backspace,exec,${swaylock} -S --grace 2"
+          ])
         ++
         # Notification manager
-        (
-          let
-            makoctl = lib.getExe' config.services.mako.package "makoctl";
-          in
-            lib.optionals config.services.mako.enable [
-              "SUPER,w,exec,${makoctl} dismiss"
-              "SUPERSHIFT,w,exec,${makoctl} restore"
-            ]
-        )
+        (let
+          makoctl = lib.getExe' config.services.mako.package "makoctl";
+        in
+          lib.optionals config.services.mako.enable [
+            "SUPER,w,exec,${makoctl} dismiss"
+            "SUPERSHIFT,w,exec,${makoctl} restore"
+          ])
         ++
         # Launcher
-        (
-          let
-            wofi = lib.getExe config.programs.wofi.package;
-          in
-            lib.optionals config.programs.wofi.enable [
-              "SUPER,x,exec,${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
-              "SUPER,s,exec,specialisation $(specialisation | ${wofi} -S dmenu)"
-              "SUPERSHIFT,s,exec,specialisation $(specialisation | shuf -n1)"
+        (let
+          wofi = lib.getExe config.programs.wofi.package;
+        in
+          lib.optionals config.programs.wofi.enable [
+            "SUPER,x,exec,${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
+            "SUPER,s,exec,specialisation $(specialisation | ${wofi} -S dmenu)"
+            "SUPERSHIFT,s,exec,specialisation $(specialisation | shuf -n1)"
 
-              "SUPER,d,exec,${wofi} -S run"
-            ]
-            ++ (
-              let
-                pass-wofi = lib.getExe (pkgs.pass-wofi.override {pass = config.programs.password-store.package;});
-              in
-                lib.optionals config.programs.password-store.enable [
-                  ",Scroll_Lock,exec,${pass-wofi}" # fn+k
-                  ",XF86Calculator,exec,${pass-wofi}" # fn+f12
-                  "SUPER,semicolon,exec,${pass-wofi}"
-                  "SHIFT,Scroll_Lock,exec,${pass-wofi} fill" # fn+k
-                  "SHIFT,XF86Calculator,exec,${pass-wofi} fill" # fn+f12
-                  "SHIFTSUPER,semicolon,exec,${pass-wofi} fill"
-                ]
-            )
-        );
+            "SUPER,d,exec,${wofi} -S run"
+          ]
+          ++ (let
+            pass-wofi = lib.getExe (pkgs.pass-wofi.override {
+              pass = config.programs.password-store.package;
+            });
+          in
+            lib.optionals config.programs.password-store.enable [
+              ",Scroll_Lock,exec,${pass-wofi}" # fn+k
+              ",XF86Calculator,exec,${pass-wofi}" # fn+f12
+              "SUPER,semicolon,exec,${pass-wofi}"
+              "SHIFT,Scroll_Lock,exec,${pass-wofi} fill" # fn+k
+              "SHIFT,XF86Calculator,exec,${pass-wofi} fill" # fn+f12
+              "SHIFTSUPER,semicolon,exec,${pass-wofi} fill"
+            ]));
 
       monitor = let
-        inherit (config.wayland.windowManager.hyprland.settings.general) gaps_in gaps_out;
+        inherit
+          (config.wayland.windowManager.hyprland.settings.general)
+          gaps_in
+          gaps_out
+          ;
         gap = gaps_out - gaps_in;
         inherit (config.programs.waybar.settings.primary) position height width;
         waybarSpace = {
@@ -271,19 +266,21 @@
         };
       in
         [
-          ",addreserved,${toString waybarSpace.top},${toString waybarSpace.bottom},${toString waybarSpace.left},${toString waybarSpace.right}"
+          ",addreserved,${toString waybarSpace.top},${
+            toString waybarSpace.bottom
+          },${toString waybarSpace.left},${toString waybarSpace.right}"
         ]
-        ++ (map (
-          m: "${m.name},${
-            if m.enabled
-            then "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.x}x${toString m.y},1"
-            else "disable"
-          }"
-        ) (config.monitors));
+        ++ (map (m: "${m.name},${
+          if m.enabled
+          then "${toString m.width}x${toString m.height}@${
+            toString m.refreshRate
+          },${toString m.x}x${toString m.y},1"
+          else "disable"
+        }") (config.monitors));
 
-      workspace = map (m: "${m.name},${m.workspace}") (
-        lib.filter (m: m.enabled && m.workspace != null) config.monitors
-      );
+      workspace =
+        map (m: "${m.name},${m.workspace}")
+        (lib.filter (m: m.enabled && m.workspace != null) config.monitors);
     };
     # This is order sensitive, so it has to come here.
     extraConfig = ''

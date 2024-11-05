@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.coredns.enable = true;
   services.coredns.config = ''
            . {
@@ -15,6 +15,11 @@
            searx.hap.py {
              template IN A  {
                  answer "{{ .Name }} 0 IN A 100.22.0.1"
+             }
+           }
+          home.hppy200.dev {
+             template IN A  {
+                 answer "{{ .Name }} 0 IN A 100.22.0.5"
              }
            }
 

@@ -1,8 +1,4 @@
-{
-  lib,
-  config,
-  ...
-}: {
+{ ... }: {
   services = {
     sonarr = {
       enable = true;
@@ -21,9 +17,7 @@
         ssl_verify_client off;
       '';
 
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8989";
-      };
+      locations."/" = { proxyPass = "http://127.0.0.1:8989"; };
     };
   };
 }

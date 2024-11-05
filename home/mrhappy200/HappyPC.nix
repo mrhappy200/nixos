@@ -1,10 +1,5 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
-}: let
-  inherit (inputs.nix-colors) colorSchemes;
+{ inputs, lib, pkgs, ... }:
+let inherit (inputs.nix-colors) colorSchemes;
 in {
   imports = [
     ./global
@@ -17,10 +12,7 @@ in {
     ./features/cli
   ];
 
-  home.packages = [
-    pkgs.gqrx
-    inputs.myNvim.packages.x86_64-linux.default
-  ];
+  home.packages = [ pkgs.gqrx inputs.myNvim.packages.x86_64-linux.default ];
 
   monitors = [
     {

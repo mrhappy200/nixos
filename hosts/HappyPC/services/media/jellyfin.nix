@@ -1,8 +1,4 @@
-{
-  lib,
-  config,
-  ...
-}: {
+{ lib, ... }: {
   services = {
     jellyfin = {
       enable = true;
@@ -26,9 +22,7 @@
         ssl_verify_client off;
       '';
 
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8096";
-      };
+      locations."/" = { proxyPass = "http://127.0.0.1:8096"; };
     };
     nginx.virtualHosts."request.hppy200.dev" = {
       forceSSL = false;
@@ -40,22 +34,18 @@
         ssl_verify_client off;
       '';
 
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:5055";
-      };
+      locations."/" = { proxyPass = "http://127.0.0.1:5055"; };
     };
   };
 
   environment.persistence = {
     "/nix/persist-hdd" = {
-      directories = [
-        {
-          directory = "/var/lib/jellyseerr";
-          user = "jellyfin";
-          group = "mediastack";
-          mode = "u=rwx,g=rwx,o=rwx";
-        }
-      ];
+      directories = [{
+        directory = "/var/lib/jellyseerr";
+        user = "jellyfin";
+        group = "mediastack";
+        mode = "u=rwx,g=rwx,o=rwx";
+      }];
     };
   };
 
@@ -63,5 +53,5 @@
     DynamicUser = lib.mkForce false;
   };
 
-  networking.firewall.allowedUDPPorts = [1900];
+  networking.firewall.allowedUDPPorts = [ 1900 ];
 }
