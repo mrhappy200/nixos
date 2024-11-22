@@ -17,12 +17,12 @@ in {
       port = 8085;
       address = "127.0.0.1";
       settings = {
-        dns_config = {
+        dns = {
           override_local_dns = true;
-          base_domain = "hppy200.dev";
+          base_domain = "ts.hppy200.dev";
           magic_dns = true;
-          domains = [ "ts.hppy200.dev" ];
-          nameservers = [ "100.22.0.1" "1.1.1.1" ];
+          search_domains = [ "ts.hppy200.dev" ];
+          nameservers.global = [ "100.22.0.1" "1.1.1.1" ];
         };
         server_url = "https://headscale.hppy200.dev";
         metrics_listen_addr = "127.0.0.1:8095";

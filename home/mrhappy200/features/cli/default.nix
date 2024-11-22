@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./bat.nix
     ./direnv.nix
@@ -21,6 +21,7 @@
     bottom # System viewer
     ncdu # TUI disk usage
     eza # Better ls
+    libqalculate # great calculator
     ripgrep # Better grep
     fd # Better find
     httpie # Better curl

@@ -92,6 +92,8 @@
     #};
   };
 
+  systemd.extraConfig = "DefaultLimitNOFILE=2048";
+
   programs = {
     adb.enable = true;
     dconf.enable = true;

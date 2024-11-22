@@ -4,6 +4,7 @@ in {
   imports = [
     ./global
     ./features/desktop/hyprland
+    ./features/desktop/calibre.nix
     ./features/desktop/slack.nix
     ./features/desktop/mpd.nix
     ./features/productivity

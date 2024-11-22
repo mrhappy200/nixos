@@ -1,5 +1,6 @@
-{...}: {
+{ ... }: {
   imports = [
+    ./mylar3.nix
     ./jellyfin.nix
     ./lidarr.nix
     ./qbittorrent.nix
@@ -8,5 +9,5 @@
     ./prowlarr.nix
     ./sonarr.nix
   ];
-  users.groups.mediastack = {};
+  users.groups.mediastack = { };
 }
