@@ -41,14 +41,9 @@ in {
     };
   };
   services.nginx.virtualHosts."qbt.hppy200.dev" = {
-    forceSSL = false;
-    addSSL = true;
-    sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
-    sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
-    extraConfig = ''
-      ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
-      ssl_verify_client off;
-    '';
+    forceSSL = true;
+    sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+    sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
     locations."/" = {
       proxyPass = "http://127.0.0.1:8067";

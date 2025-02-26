@@ -1,6 +1,4 @@
-{ ... }:
-let
-
+{...}: let
 in {
   services.input-remapper = {
     enable = true;

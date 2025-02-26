@@ -27,6 +27,11 @@ in {
     swaylock.u2fAuth = true;
   };
 
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
+
   services.pcscd.enable = true;
 
   services.udev.packages = [pkgs.yubikey-personalization];

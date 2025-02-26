@@ -1,37 +1,33 @@
 {
   lib,
   config,
+  inputs,
   pkgs,
   ...
 }: {
   imports = [../common ../common/wayland-wm ./basic-binds.nix];
 
-  xdg.portal = let
-    hyprland = config.wayland.windowManager.hyprland.package;
-    xdph = pkgs.xdg-desktop-portal-hyprland.override {inherit hyprland;};
-  in {
-    extraPortals = [xdph];
-    configPackages = [hyprland];
-  };
-
   home.packages = [pkgs.inputs.hyprwm-contrib.grimblast pkgs.hyprpicker];
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = pkgs.hyprland.override {wrapRuntimeDeps = false;};
+
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
     plugins = [];
 
-    systemd = {
-      enable = true;
-      # Same as default, but stop graphical-session too
-      extraCommands = lib.mkBefore [
-        "systemctl --user stop graphical-session.target"
-        "systemctl --user start hyprland-session.target"
-      ];
-    };
+    # systemd = {
+    #   enable = false;
+    #   # Same as default, but stop graphical-session too
+    #   extraCommands = lib.mkBefore [
+    #     "systemctl --user stop graphical-session.target"
+    #     "systemctl --user start hyprland-session.target"
+    #   ];
+    # };
 
     settings = let
+      uwsm = "${pkgs.uwsm}/bin/uwsm";
     in {
       general = {
         gaps_in = 2;
@@ -115,9 +111,11 @@
           ignore_opacity = true;
           popups = true;
         };
-        drop_shadow = true;
-        shadow_range = 12;
-        shadow_offset = "3 3";
+        shadow = {
+          enabled = true;
+          range = 12;
+          offset = "3 3";
+        };
       };
       animations = {
         enabled = true;
@@ -148,7 +146,7 @@
         ];
       };
 
-      exec = ["${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} --mode fill"];
+      exec = ["${uwsm} app -- ${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} --mode fill"];
       exec-once = ["lxqt.lxqt-policykit"];
 
       bind = let
@@ -156,7 +154,7 @@
         tesseract = lib.getExe pkgs.tesseract;
         pactl = lib.getExe' pkgs.pulseaudio "pactl";
         notify-send = lib.getExe' pkgs.libnotify "notify-send";
-        defaultApp = type: "${lib.getExe pkgs.handlr-regex} launch ${type}";
+        defaultApp = type: "${uwsm} app -- $(${lib.getExe pkgs.handlr-regex} get ${type})";
       in
         [
           # Program bindings
@@ -167,16 +165,16 @@
           ",XF86MonBrightnessUp,exec,light -A 10"
           ",XF86MonBrightnessDown,exec,light -U 10"
           # Volume
-          ",XF86AudioRaiseVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
-          ",XF86AudioLowerVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
-          ",XF86AudioMute,exec,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
-          "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
-          ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+          ",XF86AudioRaiseVolume,exec,${uwsm} app -- ${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
+          ",XF86AudioLowerVolume,exec,${uwsm} app -- ${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
+          ",XF86AudioMute,exec,${uwsm} app -- ${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
+          "SHIFT,XF86AudioMute,exec,${uwsm} app -- ${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+          ",XF86AudioMicMute,exec,${uwsm} app -- ${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
           # Screenshotting
-          ",Print,exec,${grimblast} --notify --freeze copy output"
-          "SUPER,Print,exec,${grimblast} --notify --freeze copy area"
+          ",Print,exec,${uwsm} app -- ${grimblast} --notify --freeze copy output"
+          "SUPER,Print,exec,${uwsm} app -- ${grimblast} --notify --freeze copy area"
           # To OCR
-          "ALT,Print,exec,${grimblast} --freeze save area - | ${tesseract} - - | wl-copy && ${notify-send} -t 3000 'OCR result copied to buffer'"
+          "ALT,Print,exec,${uwsm} app -- ${grimblast} --freeze save area - | ${tesseract} - - | wl-copy && ${notify-send} -t 3000 'OCR result copied to buffer'"
         ]
         ++ (let
           playerctl = lib.getExe' config.services.playerctld.package "playerctl";
@@ -185,13 +183,13 @@
         in
           lib.optionals config.services.playerctld.enable [
             # Media control
-            ",XF86AudioNext,exec,${playerctl} next"
-            ",XF86AudioPrev,exec,${playerctl} previous"
-            ",XF86AudioPlay,exec,${playerctl} play-pause"
-            ",XF86AudioStop,exec,${playerctl} stop"
-            "ALT,XF86AudioNext,exec,${playerctld} shift"
-            "ALT,XF86AudioPrev,exec,${playerctld} unshift"
-            "ALT,XF86AudioPlay,exec,systemctl --user restart playerctld"
+            ",XF86AudioNext,exec,${uwsm} app -- ${playerctl} next"
+            ",XF86AudioPrev,exec,${uwsm} app -- ${playerctl} previous"
+            ",XF86AudioPlay,exec,${uwsm} app -- ${playerctl} play-pause"
+            ",XF86AudioStop,exec,${uwsm} app -- ${playerctl} stop"
+            "ALT,XF86AudioNext,exec,${uwsm} app -- ${playerctld} shift"
+            "ALT,XF86AudioPrev,exec,${uwsm} app -- ${playerctld} unshift"
+            "ALT,XF86AudioPlay,exec,${uwsm} app -- systemctl --user restart playerctld"
           ])
         ++
         # Screen lock
@@ -199,9 +197,9 @@
           swaylock = lib.getExe config.programs.swaylock.package;
         in
           lib.optionals config.programs.swaylock.enable [
-            ",XF86Launch5,exec,${swaylock} -S --grace 2"
-            ",XF86Launch4,exec,${swaylock} -S --grace 2"
-            "SUPER,backspace,exec,${swaylock} -S --grace 2"
+            ",XF86Launch5,exec,${uwsm} app -- ${swaylock} -S --grace 2"
+            ",XF86Launch4,exec,${uwsm} app -- ${swaylock} -S --grace 2"
+            "SUPER,backspace,exec,${uwsm} app -- ${swaylock} -S --grace 2"
           ])
         ++
         # Notification manager
@@ -209,8 +207,8 @@
           makoctl = lib.getExe' config.services.mako.package "makoctl";
         in
           lib.optionals config.services.mako.enable [
-            "SUPER,w,exec,${makoctl} dismiss"
-            "SUPERSHIFT,w,exec,${makoctl} restore"
+            "SUPER,w,exec,${uwsm} app -- ${makoctl} dismiss"
+            "SUPERSHIFT,w,exec,${uwsm} app -- ${makoctl} restore"
           ])
         ++
         # Launcher
@@ -218,11 +216,11 @@
           wofi = lib.getExe config.programs.wofi.package;
         in
           lib.optionals config.programs.wofi.enable [
-            "SUPER,x,exec,${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
-            "SUPER,s,exec,specialisation $(specialisation | ${wofi} -S dmenu)"
-            "SUPERSHIFT,s,exec,specialisation $(specialisation | shuf -n1)"
+            "SUPER,x,exec,${uwsm} app -- ${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
+            "SUPER,s,exec,${uwsm} app -- specialisation $(specialisation | ${wofi} -S dmenu)"
+            "SUPERSHIFT,s,exec,${uwsm} app -- specialisation $(specialisation | shuf -n1)"
 
-            "SUPER,d,exec,${wofi} -S run"
+            "SUPER,d,exec,${uwsm} app -- ${wofi} -S run"
           ]
           ++ (let
             pass-wofi = lib.getExe (pkgs.pass-wofi.override {
@@ -230,12 +228,12 @@
             });
           in
             lib.optionals config.programs.password-store.enable [
-              ",Scroll_Lock,exec,${pass-wofi}" # fn+k
-              ",XF86Calculator,exec,${pass-wofi}" # fn+f12
-              "SUPER,semicolon,exec,${pass-wofi}"
-              "SHIFT,Scroll_Lock,exec,${pass-wofi} fill" # fn+k
-              "SHIFT,XF86Calculator,exec,${pass-wofi} fill" # fn+f12
-              "SHIFTSUPER,semicolon,exec,${pass-wofi} fill"
+              ",Scroll_Lock,exec,${uwsm} app -- ${pass-wofi}" # fn+k
+              ",XF86Calculator,exec,${uwsm} app -- ${pass-wofi}" # fn+f12
+              "SUPER,semicolon,exec,${uwsm} app -- ${pass-wofi}"
+              "SHIFT,Scroll_Lock,exec,${uwsm} app -- ${pass-wofi} fill" # fn+k
+              "SHIFT,XF86Calculator,exec,${uwsm} app -- ${pass-wofi} fill" # fn+f12
+              "SHIFTSUPER,semicolon,exec,${uwsm} app -- ${pass-wofi} fill"
             ]));
 
       monitor = let

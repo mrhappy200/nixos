@@ -7,7 +7,7 @@
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
-    sshKeys = ["C51F6D1E112A492AAEA3F9884A98047683B8E5A7"];
+    sshKeys = ["89F5591EA4E63506116953BF3AF8AF8C2C5EC2EC"];
     enableExtraSocket = true;
     pinentryPackage =
       if config.gtk.enable
@@ -18,16 +18,12 @@
   home.packages = lib.optional config.gtk.enable pkgs.gcr;
 
   home.persistence."/nix/persist/home/mrhappy200" = {
-    directories = [
-      {directory = ".gnupg";}
-    ];
+    directories = [{directory = ".gnupg";}];
   };
 
   programs = let
     fixGpg =
-      /*
-      bash
-      */
+      # bash
       ''
         gpgconf --launch gpg-agent
       '';
@@ -41,9 +37,7 @@
 
     gpg = {
       enable = true;
-      settings = {
-        trust-model = "tofu+pgp";
-      };
+      settings = {trust-model = "tofu+pgp";};
       publicKeys = [
         {
           source = ../../pgp.asc;
@@ -57,9 +51,7 @@
     # Link /run/user/$UID/gnupg to ~/.gnupg-sockets
     # So that SSH config does not have to know the UID
     link-gnupg-sockets = {
-      Unit = {
-        Description = "link gnupg sockets from /run to /home";
-      };
+      Unit = {Description = "link gnupg sockets from /run to /home";};
       Service = {
         Type = "oneshot";
         ExecStart = "${pkgs.coreutils}/bin/ln -Tfs /run/user/%U/gnupg %h/.gnupg-sockets";

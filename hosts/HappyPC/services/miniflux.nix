@@ -44,7 +44,10 @@
 
   services.nginx.virtualHosts."rss.hppy200.dev" = {
     forceSSL = true;
-    enableACME = true;
+    
+    sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+    sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
+
     locations."/" = {
       proxyPass = "http://localhost:8756";
     };

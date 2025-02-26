@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   services = {
     jellyfin = {
       enable = true;
@@ -13,39 +13,31 @@
     jellyseerr.enable = true;
 
     nginx.virtualHosts."jellyfin.hppy200.dev" = {
-      forceSSL = false;
-      addSSL = true;
-      sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
-      sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
-      extraConfig = ''
-        ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
-        ssl_verify_client off;
-      '';
+      forceSSL = true;
+      sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+      sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
-      locations."/" = { proxyPass = "http://127.0.0.1:8096"; };
+      locations."/" = {proxyPass = "http://127.0.0.1:8096";};
     };
     nginx.virtualHosts."request.hppy200.dev" = {
-      forceSSL = false;
-      addSSL = true;
-      sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
-      sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
-      extraConfig = ''
-        ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
-        ssl_verify_client off;
-      '';
+      forceSSL = true;
+      sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+      sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
-      locations."/" = { proxyPass = "http://127.0.0.1:5055"; };
+      locations."/" = {proxyPass = "http://127.0.0.1:5055";};
     };
   };
 
   environment.persistence = {
     "/nix/persist-hdd" = {
-      directories = [{
-        directory = "/var/lib/jellyseerr";
-        user = "jellyfin";
-        group = "mediastack";
-        mode = "u=rwx,g=rwx,o=rwx";
-      }];
+      directories = [
+        {
+          directory = "/var/lib/jellyseerr";
+          user = "jellyfin";
+          group = "mediastack";
+          mode = "u=rwx,g=rwx,o=rwx";
+        }
+      ];
     };
   };
 
@@ -53,5 +45,5 @@
     DynamicUser = lib.mkForce false;
   };
 
-  networking.firewall.allowedUDPPorts = [ 1900 ];
+  networking.firewall.allowedUDPPorts = [1900];
 }

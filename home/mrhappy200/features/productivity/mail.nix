@@ -10,7 +10,7 @@
   common = rec {
     realName = "Ronan Berntsen";
     gpg = {
-      key = "C51F 6D1E 112A 492A AEA3  F988 4A98 0476 83B8 E5A7";
+      key = "89F5 591E A4E6 3506 1169  53BF 3AF8 AF8C 2C5E C2EC";
       signByDefault = true;
     };
     signature = {
@@ -35,10 +35,10 @@ in {
       personal =
         rec {
           primary = true;
-          address = "ronanberntsen@gmail.com";
+          address = "ronan@hppy200.dev";
           passwordCommand = "${pass} ${smtp.host}/${address}";
 
-          imap.host = "imap.gmail.com";
+          imap.host = "blizzard.mxrouting.net";
 
           mbsync = {
             enable = true;
@@ -47,23 +47,18 @@ in {
           };
 
           folders = {
-            inbox = "\[Gmail\]/Inbox";
-            drafts = "\[Gmail\]/Drafts";
-            sent = "\[Gmail\]/Sent\ Mail";
-            trash = "\[Gmail\]/Bin";
+            inbox = "Inbox";
+            drafts = "Drafts";
+            sent = "Sent";
+            trash = "Trash";
           };
           neomutt = {
             enable = true;
-            extraMailboxes = [
-              "[Gmail]/Drafts"
-              "[Gmail]/Spam"
-              "[Gmail]/Sent\ Mail"
-              "[Gmail]/Bin"
-            ];
+            extraMailboxes = ["Drafts" "Junk" "Sent" "Trash"];
           };
 
           msmtp.enable = true;
-          smtp.host = "smtp.gmail.com";
+          smtp.host = "blizzard.mxrouting.net";
           userName = address;
         }
         // common;
@@ -96,7 +91,9 @@ in {
 
   # Run 'createMaildir' after 'linkGeneration'
   home.activation = let
-    mbsyncAccounts = lib.filter (a: a.mbsync.enable) (lib.attrValues config.accounts.email.accounts);
+    mbsyncAccounts =
+      lib.filter (a: a.mbsync.enable)
+      (lib.attrValues config.accounts.email.accounts);
   in
     lib.mkIf (mbsyncAccounts != []) {
       createMaildir = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] ''

@@ -166,12 +166,9 @@ in {
   };
   services.nginx.virtualHosts."auth.hppy200.dev" = {
     forceSSL = true;
-    sslCertificate = "/nix/persist/etc/nginx/certs/fullchain.pem";
-    sslCertificateKey = "/nix/persist/etc/nginx/certs/privkey.pem";
-    extraConfig = ''
-      ssl_client_certificate /nix/persist/etc/nginx/certs/ca.crt;
-      ssl_verify_client off;
-    '';
+    
+    sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+    sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
     locations = {
       "/" = {

@@ -1,4 +1,2 @@
-{ pkgs, ... }:
-let
-
-in { home.packages = [ pkgs.calibre ]; }
+{pkgs, ...}: let
+in {home.packages = [pkgs.calibre];}

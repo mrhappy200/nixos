@@ -2,10 +2,10 @@
 in {
   xdg.mimeApps = {
     associations.added = {
-      "x-scheme-handler/terminal" = "org.codeberg.dnkl.footclient.desktop";
+      "x-scheme-handler/terminal" = "footclient.desktop";
     };
     defaultApplications = {
-      "x-scheme-handler/terminal" = "org.codeberg.dnkl.footclient.desktop";
+      "x-scheme-handler/terminal" = "footclient.desktop";
     };
   };
   programs.foot = {

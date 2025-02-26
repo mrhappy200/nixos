@@ -1,7 +1,6 @@
-{ ... }: {
+{...}: {
   imports = [
     ./headscale.nix
-    #    ./home-assistant.nix
     ./auth
     ./minecraft.nix
     ./logging

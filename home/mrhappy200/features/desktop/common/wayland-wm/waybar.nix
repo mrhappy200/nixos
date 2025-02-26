@@ -109,11 +109,11 @@ in {
         cpu = {
           format = "  {usage}%";
         };
-        "custom/gpu" = {
-          interval = 5;
-          exec = mkScript {script = "cat /sys/class/drm/card0/device/gpu_busy_percent";};
-          format = "󰒋  {}%";
-        };
+        # "custom/gpu" = {
+        #   interval = 5;
+        #   exec = mkScript {script = "cat /sys/class/drm/card0/device/gpu_busy_percent";};
+        #   format = "󰒋  {}%";
+        # };
         memory = {
           format = "  {}%";
           interval = 5;
@@ -199,7 +199,7 @@ in {
           exec = mkScriptJson {
             deps = [pkgs.findutils pkgs.procps];
             pre = ''
-              count=$(find ~/Mail/*/\[Gmail\]/Inbox/new -type f | wc -l)
+              count=$(find ~/Mail/*/Inbox/new -type f | wc -l)
               if pgrep mbsync &>/dev/null; then
                 status="syncing"
               else

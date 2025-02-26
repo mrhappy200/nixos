@@ -1,4 +1,4 @@
-{ ... }: {
+{...}: {
   imports = [
     ./mylar3.nix
     ./jellyfin.nix
@@ -9,5 +9,5 @@
     ./prowlarr.nix
     ./sonarr.nix
   ];
-  users.groups.mediastack = { };
+  users.groups.mediastack = {};
 }

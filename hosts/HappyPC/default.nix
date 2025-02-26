@@ -1,4 +1,9 @@
-{ pkgs, lib, inputs, ... }: {
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   imports = [
     inputs.hardware.nixosModules.common-pc-laptop
     inputs.hardware.nixosModules.common-pc-ssd
@@ -7,6 +12,14 @@
     inputs.hardware.nixosModules.common-cpu-intel
 
     ./hardware-configuration.nix
+
+    ./disko-config.nix
+    "${
+      builtins.fetchTarball {
+        url = "https://github.com/nix-community/disko/archive/master.tar.gz";
+        sha256 = "sha256:1fw5vwz954s4pw1c1kr0j47pkvmzyngcdfrb96zkimxz0mv9f8wm";
+      }
+    }/module.nix"
 
     ../common/global
     ../common/users/mrhappy200
@@ -39,21 +52,20 @@
 
   stylix = {
     image = pkgs.fetchurl {
-      url =
-        "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
+      url = "https://gruvbox-wallpapers.pages.dev/wallpapers/minimalistic/gruv-portal-cake.png";
       sha256 = "sha256-vb5mfQR2tyHwYRjVMAOGycIOhmlp7wgE1+skW/tuMKg=";
     };
     fonts = {
       monospace = {
-        package = pkgs.nerdfonts.override { fonts = [ "DejaVuSansMono" ]; };
-        name = "DejaVuSansM Nerd Font";
+        package = pkgs.nerd-fonts.hack;
+        name = "Hack Nerd Font";
       };
     };
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     enable = true;
   };
-  fonts.packages = [ pkgs.dm-sans pkgs.corefonts ];
+  fonts.packages = [pkgs.dm-sans pkgs.corefonts];
 
   hardware = {
     nvidia = {
@@ -72,7 +84,7 @@
         intelBusId = "PCI:0:2:0";
       };
     };
-    opengl = { enable = true; };
+    opengl = {enable = true;};
   };
 
   networking = {
@@ -83,7 +95,7 @@
   boot = {
     # kernelPackages =
     # pkgs.linuxKernel.packages.linux_zen;
-    binfmt.emulatedSystems = [ "aarch64-linux" "x86_64-windows" ];
+    binfmt.emulatedSystems = ["aarch64-linux" "x86_64-windows"];
 
     #loader.systemd-boot.enable = lib.mkForce false;
     #lanzaboote = {
@@ -100,7 +112,7 @@
     kdeconnect.enable = true;
   };
 
-  nixpkgs.hostPlatform = lib.mkForce { system = "x86_64-linux"; };
+  nixpkgs.hostPlatform = lib.mkForce {system = "x86_64-linux";};
 
   system.stateVersion = "23.11"; # Did you read the comment?
 }
