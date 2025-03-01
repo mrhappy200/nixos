@@ -63,6 +63,7 @@
     };
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+    #base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-dark.yaml";
     enable = true;
   };
   fonts.packages = [pkgs.dm-sans pkgs.corefonts];

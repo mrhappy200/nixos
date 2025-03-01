@@ -10,12 +10,16 @@
   # just persisting the keys won't work, we must point at /persist
   hasOptinPersistence = config.environment.persistence ? "/nix/persist";
 in {
+  services.fail2ban = {
+    enable = true;
+    maxretry = 3;
+  };
   services.openssh = {
     enable = true;
-    ports = [22];
+    ports = [8022];
     settings = {
       # Harden
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
       PermitRootLogin = "no";
       # Automatically remove stale sockets
       StreamLocalBindUnlink = "yes";
@@ -39,7 +43,6 @@ in {
       publicKeyFile = ../../${hostname}/ssh_host_ed25519_key.pub;
       extraHostNames =
         [
-          "${hostname}.hap.py"
           "${hostname}.hppy200.dev"
         ]
         ++
