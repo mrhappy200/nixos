@@ -1,11 +1,10 @@
 {
+  pkgs,
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib; let
-  #pkgs = import (fetchTarball "channel:nixpkgs-unstable") {};
   cfg = config.services.pass-secret-service;
 in {
   disabledModules = ["services/pass-secret-service.nix"];

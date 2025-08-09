@@ -4,8 +4,8 @@
   config,
   ...
 }: let
-  mbsync = "${config.programs.mbsync.package}/bin/mbsync";
   pass = "${config.programs.password-store.package}/bin/pass";
+  oama = "${config.programs.oama.package}/bin/oama";
 
   common = rec {
     realName = "Ronan Berntsen";
@@ -16,17 +16,66 @@
     signature = {
       showSignature = "append";
       text = ''
-        ---
         ${realName}
 
-        Don't worry be happy :)
         PGP: ${gpg.key}
       '';
     };
   };
+
+  gmail_channels = {
+    Inbox = {
+      farPattern = "INBOX";
+      nearPattern = "Inbox";
+      extraConfig = {
+        Create = "Near";
+        Expunge = "Both";
+      };
+    };
+    Archive = {
+      farPattern = "Archived Mail";
+      nearPattern = "Archive";
+      extraConfig = {
+        Create = "Both";
+        Expunge = "Both";
+      };
+    };
+    Junk = {
+      farPattern = "[Gmail]/Spam";
+      nearPattern = "Junk";
+      extraConfig = {
+        Create = "Near";
+        Expunge = "Both";
+      };
+    };
+    Trash = {
+      farPattern = "[Gmail]/Trash";
+      nearPattern = "Trash";
+      extraConfig = {
+        Create = "Near";
+        Expunge = "Both";
+      };
+    };
+    Drafts = {
+      farPattern = "[Gmail]/Drafts";
+      nearPattern = "Drafts";
+      extraConfig = {
+        Create = "Near";
+        Expunge = "Both";
+      };
+    };
+    Sent = {
+      farPattern = "[Gmail]/Sent Mail";
+      nearPattern = "Sent";
+      extraConfig = {
+        Create = "Near";
+        Expunge = "Both";
+      };
+    };
+  };
 in {
   home.persistence = {
-    "/nix/persist/home/mrhappy200".directories = ["Mail"];
+    "/persist/${config.home.homeDirectory}".directories = ["Mail"];
   };
 
   accounts.email = {
@@ -36,70 +85,54 @@ in {
         rec {
           primary = true;
           address = "ronan@hppy200.dev";
+          aliases = [];
+          userName = address;
           passwordCommand = "${pass} ${smtp.host}/${address}";
 
           imap.host = "blizzard.mxrouting.net";
-
           mbsync = {
             enable = true;
             create = "maildir";
             expunge = "both";
           };
-
-          folders = {
-            inbox = "Inbox";
-            drafts = "Drafts";
-            sent = "Sent";
-            trash = "Trash";
-          };
           neomutt = {
             enable = true;
-            extraMailboxes = ["Drafts" "Junk" "Sent" "Trash"];
+            mailboxName = "=== Personal ===";
+            extraMailboxes = ["Archive" "Drafts" "Inbox/spam" "Sent" "Trash"];
           };
 
           msmtp.enable = true;
           smtp.host = "blizzard.mxrouting.net";
-          userName = address;
         }
         // common;
     };
   };
 
-  programs.mbsync.enable = true;
   programs.msmtp.enable = true;
-
-  systemd.user.services.mbsync = {
-    Unit = {Description = "mbsync synchronization";};
-    Service = let
-      gpgCmds = import ../cli/gpg-commands.nix {inherit pkgs;};
-    in {
-      Type = "oneshot";
-      ExecCondition = ''
-        /bin/sh -c "${gpgCmds.isUnlocked}"
-      '';
-      ExecStart = "${mbsync} -a";
-    };
-  };
-  systemd.user.timers.mbsync = {
-    Unit = {Description = "Automatic mbsync synchronization";};
-    Timer = {
-      OnBootSec = "30";
-      OnUnitActiveSec = "5m";
-    };
-    Install = {WantedBy = ["timers.target"];};
+  programs.mbsync = {
+    enable = true;
+    package = pkgs.isync.override {withCyrusSaslXoauth2 = true;};
   };
 
-  # Run 'createMaildir' after 'linkGeneration'
-  home.activation = let
-    mbsyncAccounts =
-      lib.filter (a: a.mbsync.enable)
-      (lib.attrValues config.accounts.email.accounts);
-  in
-    lib.mkIf (mbsyncAccounts != []) {
-      createMaildir = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] ''
-        run mkdir -m700 -p $VERBOSE_ARG ${
-          lib.concatMapStringsSep " " (a: a.maildir.absPath) mbsyncAccounts
-        }
-      '');
-    };
+  services.mbsync = {
+    enable = true;
+    package = config.programs.mbsync.package;
+  };
+
+  # Only run if gpg is unlocked
+  systemd.user.services.mbsync.Service.ExecCondition = let
+    gpgCmds = import ../cli/gpg-commands.nix {inherit pkgs config lib;};
+  in ''
+    /bin/sh -c "${gpgCmds.isUnlocked}"
+  '';
+
+  # Ensure 'createMaildir' runs after 'linkGeneration'
+  home.activation = {
+    createMaildir = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] ''
+      run mkdir -m700 -p $VERBOSE_ARG ${
+        lib.concatStringsSep " " (lib.mapAttrsToList (_: v: v.maildir.absPath)
+          config.accounts.email.accounts)
+      }
+    '');
+  };
 }

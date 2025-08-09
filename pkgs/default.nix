@@ -1,8 +1,12 @@
-# Custom packages, that can be defined similarly to ones from nixpkgs
-# You can build them using 'nix build .#example'
 {pkgs ? import <nixpkgs> {}, ...}: rec {
-  # example = pkgs.callPackage ./example { };
+  # # Packages with an actual source
+  lyrics = pkgs.python3Packages.callPackage ./lyrics {};
+
+  # # Personal scripts
+  minicava = pkgs.callPackage ./minicava {};
   pass-wofi = pkgs.callPackage ./pass-wofi {};
-  firefly-iii-data-importer = pkgs.callPackage ./firefly-iii-data-importer {};
-  firefly-iii = pkgs.callPackage ./firefly-iii {};
+  xpo = pkgs.callPackage ./xpo {};
+
+  # # My slightly customized plymouth theme, just makes the blue outline white
+  plymouth-spinner-monochrome = pkgs.callPackage ./plymouth-spinner-monochrome {};
 }

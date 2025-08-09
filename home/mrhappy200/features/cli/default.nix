@@ -1,16 +1,19 @@
 {pkgs, ...}: {
   imports = [
+    ./fish
+
+    ./bash.nix
     ./bat.nix
     ./direnv.nix
-    ./fish.nix
-    ./tmux.nix
     ./gh.nix
     ./git.nix
     ./gpg.nix
+    ./lyrics.nix
+    ./nushell.nix
     ./nix-index.nix
     ./pfetch.nix
-    ./screen.nix
     ./ssh.nix
+    ./xpo.nix
     ./fzf.nix
   ];
   home.packages = with pkgs; [
@@ -21,20 +24,19 @@
     bottom # System viewer
     ncdu # TUI disk usage
     eza # Better ls
-    libqalculate # great calculator
     ripgrep # Better grep
     fd # Better find
     httpie # Better curl
-    diffsitter # Better diff
     jq # JSON pretty printer and manipulator
     timer # To help with my ADHD paralysis
+    viddy # Better watch
 
-    nil # Nix LSP
-    nixfmt # Nix formatter
+    nixd # Nix LSP
+    alejandra # Nix formatter
+    nixfmt-rfc-style
     nvd # Differ
+    nix-diff # Differ, more detailed
     nix-output-monitor
     nh # Nice wrapper for NixOS and HM
-
-    ltex-ls # Spell checking LSP
   ];
 }

@@ -1,23 +1,20 @@
 {pkgs, ...}: {
   imports = [
+    ./alacritty.nix
+    ./cliphist.nix
     ./gammastep.nix
-    #./kitty.nix
-    ./foot.nix
     ./mako.nix
     #    ./qutebrowser.nix
-    ./swayidle.nix
-    ./swaylock.nix
     ./waybar.nix
     ./wofi.nix
     ./zathura.nix
     ./imv.nix
+    ./waypipe.nix
+    ./swayosd.nix
   ];
 
   xdg.mimeApps.enable = true;
-  home.packages = with pkgs; [
-    wf-recorder
-    wl-clipboard
-  ];
+  home.packages = with pkgs; [wf-recorder wl-clipboard];
 
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;

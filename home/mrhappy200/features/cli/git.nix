@@ -1,11 +1,42 @@
 {
   pkgs,
-  lib,
   config,
+  lib,
   ...
 }: let
   ssh = "${pkgs.openssh}/bin/ssh";
+
+  # git-m7 = pkgs.writeShellScriptBin "git-m7" ''
+  #   case "''${1:-ls}" in
+  #     ls)
+  #       ${ssh} -TA git@m7.rs ls | grep '\.git$'
+  #       ;;
+  #     init)
+  #       name="''${2:-$(basename "$PWD")}"
+  #       ${ssh} -TA git@m7.rs << EOF
+  #         git init --bare "$name.git"
+  #         git -C "$name.git" branch -m main
+  #   EOF
+  #       git remote add origin git@m7.rs:"$name.git"
+  #       ;;
+  #     *)
+  #       repo="$(git remote -v | grep git@m7.rs | head -1 | cut -d ':' -f2 | cut -d ' ' -f1)"
+  #       if [[ "$repo" != *".git" ]]; then repo="$repo.git"; fi
+  #       ${ssh} -TA git@m7.rs git -C "/srv/git/$repo" "$@"
+  #       ;;
+  #   esac
+  # '';
+  # git commit --amend, but for older commits
+  git-fixup = pkgs.writeShellScriptBin "git-fixup" ''
+    rev="$(git rev-parse "$1")"
+    git commit --fixup "$@"
+    GIT_SEQUENCE_EDITOR=true git rebase -i --autostash --autosquash $rev^
+  '';
 in {
+  home.packages = [
+    #  git-m7
+    git-fixup
+  ];
   programs.git = {
     enable = true;
     package = pkgs.gitAndTools.gitFull;
@@ -17,11 +48,11 @@ in {
       add-nowhitespace = "!git diff -U0 -w --no-color | git apply --cached --ignore-whitespace --unidiff-zero -";
     };
     userName = "Ronan Berntsen";
-    userEmail = "ronanberntsen@gmail.com";
+    userEmail = lib.mkDefault "ronan@hppy200.dev";
     extraConfig = {
       init.defaultBranch = "main";
-      user.signingKey = "3AF8AF8C2C5EC2EC";
-      commit.gpgSign = true;
+      user.signing.key = "3AF8AF8C2C5EC2EC";
+      commit.gpgSign = lib.mkDefault true;
       gpg.program = "${config.programs.gpg.package}/bin/gpg2";
 
       merge.conflictStyle = "zdiff3";
@@ -36,6 +67,10 @@ in {
       rerere.enabled = true;
     };
     lfs.enable = true;
-    ignores = [".direnv" "result"];
+    ignores = [
+      ".direnv"
+      "result"
+      ".jj"
+    ];
   };
 }

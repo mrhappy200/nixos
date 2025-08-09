@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.gh = {
     enable = true;
     extensions = with pkgs; [gh-markdown-preview];
@@ -9,6 +13,6 @@
     };
   };
   home.persistence = {
-    "/nix/persist/home/mrhappy200".directories = [".config/gh"];
+    "/persist/${config.home.homeDirectory}".files = [".config/gh/hosts.yml"];
   };
 }

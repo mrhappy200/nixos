@@ -6,7 +6,7 @@
   programs.password-store = {
     enable = true;
     settings = {PASSWORD_STORE_DIR = "$HOME/.password-store";};
-    package = pkgs.pass.withExtensions (p: [p.pass-otp p.pass-import]);
+    package = pkgs.pass.withExtensions (p: [p.pass-otp]);
   };
 
   services.pass-secret-service = {
@@ -16,6 +16,6 @@
   };
 
   home.persistence = {
-    "/nix/persist/home/mrhappy200".directories = [".password-store"];
+    "/persist/${config.home.homeDirectory}".directories = [".password-store"];
   };
 }

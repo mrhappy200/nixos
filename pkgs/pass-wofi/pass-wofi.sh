@@ -8,8 +8,11 @@ elif [ "$XDG_CURRENT_DESKTOP" == "sway" ]; then
 fi
 
 if [[ "$class" == "org.qutebrowser.qutebrowser" ]] || [[ "$class" == "qutebrowser" ]]; then
-    qutebrowser :yank
+    wtype -k escape
+    wtype yy
+    sleep 0.2
     query=$(wl-paste | cut -d '/' -f3 | sed s/"www."//)
+    wtype i
 elif [[ "$class" == "discord" ]]; then
     query="discord.com"
 elif [[ "$class" == "Steam" ]]; then
@@ -36,39 +39,49 @@ Fill"
     field=$(printf "$fields" | wofi -S dmenu) || field="password"
 fi
 
+secret=0
+
 case "${field,,}" in
-    "password")
-        value="$(pass "$selected" | head -n 1)" && [ -n "$value" ] || \
-            { notify-send "Error" "No password for $selected" -i error -t 6000; exit 3; }
-        ;;
     "username")
         value="$username"
         ;;
     "url")
         value="$url"
         ;;
+    "password")
+        value="$(pass "$selected" | head -n 1)" && [ -n "$value" ] || \
+            { notify-send "Error" "No password for $selected" -i error -t 6000; exit 3; }
+        secret=1
+        ;;
     "otp")
         value="$(pass otp "$selected")" || \
             { notify-send "Error" "No OTP for $selected" -i error -t 6000; exit 3; }
+        secret=1
         ;;
     "fill")
         password="$(pass "$selected" | head -n 1)" && [ -n "$password" ] || \
             { notify-send "Error" "No password for $selected" -i error -t 6000; exit 3; }
-        wtype "$username"
-        sleep 0.1
-        wtype -k tab
-        sleep 0.1
-        wtype "$password"
+        wtype "$username" -s 50 -k tab -s 50 "$password"
         if otp="$(pass otp "$selected")" && [ -n "$otp" ]; then
             field="OTP"
             value="$otp"
+            secret=1
         fi
         ;;
     *)
         exit 4
 esac
 
+
 if [ -n "$value" ]; then
-    wl-copy "$value"
-    notify-send "Copied $field:" "$value" -i edit-copy -t 4000
+    if [ "$secret" = 1 ]; then
+        mime="text/secret"
+    else
+        mime="text/plain"
+    fi
+    wl-copy -t "$mime" "$value"
+    prefix="${value:0:3}"
+    suffix="${value:3}"
+    censored_value="${prefix}${suffix//?/*}"
+    notify-send "Copied $field:" "$censored_value" -i edit-copy -t 4000
 fi

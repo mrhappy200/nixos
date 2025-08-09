@@ -1,19 +1,27 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}:
+{
   imports = [
-    #    ./lutris.nix
+    ./steam.nix
     ./prism-launcher.nix
+    ./mangohud.nix
+    #    ./satisfactory.nix
   ];
   home = {
-    packages = with pkgs; [gamescope];
+    #packages = with pkgs; [heroic gamescope protontricks];
+    packages = with pkgs; [
+      gamescope
+      protontricks
+    ];
     persistence = {
-      "/nix/persist/home/mrhappy200" = {
+      "/persist/${config.home.homeDirectory}" = {
         allowOther = true;
         directories = [
-          {
-            # Use symlink, as games may be IO-heavy
-            directory = "Games";
-            method = "symlink";
-          }
+          #          "Games"
+          ".config/heroic"
         ];
       };
     };

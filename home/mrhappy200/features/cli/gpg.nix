@@ -9,17 +9,13 @@
     enableSshSupport = true;
     sshKeys = ["89F5591EA4E63506116953BF3AF8AF8C2C5EC2EC"];
     enableExtraSocket = true;
-    pinentryPackage =
+    pinentry.package =
       if config.gtk.enable
       then pkgs.pinentry-gnome3
-      else pkgs.pinentry-curses;
+      else pkgs.pinentry-tty;
   };
 
   home.packages = lib.optional config.gtk.enable pkgs.gcr;
-
-  home.persistence."/nix/persist/home/mrhappy200" = {
-    directories = [{directory = ".gnupg";}];
-  };
 
   programs = let
     fixGpg =
@@ -34,6 +30,7 @@
     bash.profileExtra = fixGpg;
     fish.loginShellInit = fixGpg;
     zsh.loginExtra = fixGpg;
+    nushell.extraLogin = fixGpg;
 
     gpg = {
       enable = true;

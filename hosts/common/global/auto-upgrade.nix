@@ -1,33 +1,16 @@
 {
-  config,
   inputs,
-  pkgs,
-  lib,
+  config,
   ...
-}: let
-  inherit (config.networking) hostName;
-  # Only enable auto upgrade if current config came from a clean tree
-  # This avoids accidental auto-upgrades when working locally.
-  isClean = inputs.self ? rev;
-in {
-  system.autoUpgrade = {
-    enable = isClean;
-    dates = "hourly";
-    flags = [
-      "--refresh"
-    ];
-    flake = "github:mrhappy200/nixos";
-  };
-
-  # Only run if current config (self) is older than the new one.
-  systemd.services.nixos-upgrade = lib.mkIf config.system.autoUpgrade.enable {
-    serviceConfig.ExecCondition = lib.getExe (
-      pkgs.writeShellScriptBin "check-date" ''
-        lastModified() {
-          nix flake metadata "$1" --refresh --json | ${lib.getExe pkgs.jq} '.lastModified'
-        }
-        test "$(lastModified "${config.system.autoUpgrade.flake}")"  -gt "$(lastModified "self")"
-      ''
-    );
+}: {
+  system.hydraAutoUpgrade = {
+    # Only enable if not dirty
+    enable = inputs.self ? rev;
+    dates = "*:0/10"; # Every 10 minutes
+    instance = "https://hydra.hppy200.dev";
+    project = "nix-config";
+    jobset = "main";
+    job = "hosts.${config.networking.hostName}";
+    oldFlakeRef = "self";
   };
 }

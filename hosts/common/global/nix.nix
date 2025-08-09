@@ -1,37 +1,30 @@
 {
   inputs,
-  config,
-  pkgs,
   lib,
   ...
-}: {
-  # This will add each flake input as a registry
-  # To make nix3 commands consistent with your flake
-  nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
-
-  # This will additionally add your inputs to the system's legacy channels
-  # Making legacy nix commands consistent as well, awesome!
-  nix.nixPath = ["/etc/nix/path"];
-  nix.package = pkgs.nixVersions.latest;
-  environment.etc =
-    lib.mapAttrs'
-    (name: value: {
-      name = "nix/path/${name}";
-      value.source = value.flake;
-    })
-    config.nix.registry;
-
-  nix.settings = {
-    # Enable flakes and new 'nix' command
-    experimental-features = "nix-command flakes";
-    # Deduplicate and optimize nix store
-    auto-optimise-store = true;
-    trusted-users = ["@wheel"];
-  };
-  systemd.services.nix-daemon.environment.TMPDIR = "/var/tmp";
-  environment.persistence = {
-    "/nix/persist" = {
-      directories = ["/var/tmp"];
+}: let
+  flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+in {
+  nix = {
+    settings = {
+      extra-substituters = lib.mkAfter [];
+      extra-trusted-public-keys = [];
+      trusted-users = ["root" "@wheel"];
+      auto-optimise-store = lib.mkDefault true;
+      experimental-features = ["nix-command" "flakes" "ca-derivations"];
+      warn-dirty = false;
+      system-features = ["kvm" "big-parallel" "nixos-test"];
+      flake-registry = ""; # Disable global flake registry
     };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      # Keep the last 3 generations
+      options = "--delete-older-than +3";
+    };
+
+    # Add each flake input as a registry and nix_path
+    registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
+    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 }

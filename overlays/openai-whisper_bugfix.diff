@@ -1,0 +1,143 @@
+From 4270f5256d0c1d04c98602ea5776a1b25d57d759 Mon Sep 17 00:00:00 2001
+From: Christoph Jabs <contact@christophjabs.info>
+Date: Tue, 8 Jul 2025 09:18:07 +0300
+Subject: [PATCH] rocmPackages.rocdbgapi: fix build
+
+---
+ .../rocm-modules/6/rocdbgapi/default.nix      | 19 ++++
+ .../6/rocdbgapi/override_doxygen_tables.sty   | 89 +++++++++++++++++++
+ 2 files changed, 108 insertions(+)
+ create mode 100644 pkgs/development/rocm-modules/6/rocdbgapi/override_doxygen_tables.sty
+
+diff --git a/pkgs/development/rocm-modules/6/rocdbgapi/default.nix b/pkgs/development/rocm-modules/6/rocdbgapi/default.nix
+index 16ef4b115bddce..cd07af5d4cdf84 100644
+--- a/pkgs/development/rocm-modules/6/rocdbgapi/default.nix
++++ b/pkgs/development/rocm-modules/6/rocdbgapi/default.nix
+@@ -37,6 +37,15 @@ let
+         helvetic
+         wasy
+         courier
++        # FIXME: The following packages are used in the Doxygen table
++        # workaround, can be removed once
++        # https://github.com/doxygen/doxygen/issues/11634 is fixed, depending
++        # on what the fix is
++        tabularray
++        ninecolors
++        codehigh
++        catchfile
++        environ
+       ]
+     )
+   );
+@@ -59,6 +68,16 @@ stdenv.mkDerivation (finalAttrs: {
+     hash = "sha256-6itfBrWVspobU47aiJAOQoxT8chwrq9scRn0or3bXto=";
+   };
+ 
++  # FIXME: remove once https://github.com/doxygen/doxygen/issues/11634 is resolved
++  # Applies workaround based on what was suggested in
++  # https://github.com/doxygen/doxygen/issues/11634#issuecomment-3027000655,
++  # but rewritten to use the `tabularray` LaTeX package. Unfortunately,
++  # verbatim code snippets in the documentation are not formatted very nicely
++  # with this workaround.
++  postPatch = ''
++    substituteInPlace doc/Doxyfile.in --replace 'LATEX_EXTRA_STYLESHEET =' 'LATEX_EXTRA_STYLESHEET = ${./override_doxygen_tables.sty}'
++  '';
++
+   nativeBuildInputs = [
+     cmake
+     rocm-cmake
+diff --git a/pkgs/development/rocm-modules/6/rocdbgapi/override_doxygen_tables.sty b/pkgs/development/rocm-modules/6/rocdbgapi/override_doxygen_tables.sty
+new file mode 100644
+index 00000000000000..6732649570ad76
+--- /dev/null
++++ b/pkgs/development/rocm-modules/6/rocdbgapi/override_doxygen_tables.sty
+@@ -0,0 +1,89 @@
++\NeedsTeXFormat{LaTeX2e}
++
++% Packages used by this style file
++\RequirePackage{doxygen}
++\RequirePackage{tabularray}
++\UseTblrLibrary{varwidth}
++\RequirePackage{codehigh}
++\RequirePackage{environ}
++
++% Used by parameter lists
++\renewenvironment{DoxyParams}[2][]{%
++    \par%
++    \ifthenelse{\equal{#1}{}}%
++      {\begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,l]|X[-1,l]|}}}% name + description
++    {\ifthenelse{\equal{#1}{1}}%
++      {\begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,l]|X[-1,l]|X[-1,l]|}}}% in/out + name + desc
++      {\begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,l]|X[-1,l]|X[-1,l]|X[-1,l]|}}}% in/out + type + name + desc
++    }
++    \SetCell[c=2]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #2 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% Used for fields of simple structs
++\renewenvironment{DoxyFields}[1]{%
++    \par%
++    \begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,r]|X[-1,l]|X[-1,l]|}}%
++    \SetCell[c=3]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% Used for fields simple class style enums
++\renewenvironment{DoxyEnumFields}[2][]{%
++    \par%
++    \ifthenelse{\equal{#1}{2}}%
++      {\begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,r]|X[-1,l]|}}}%
++      {\begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,l]|X[-1,r]|X[-1,l]|}}}% with init value
++    \SetCell[c=2]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #2 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% Used by return value lists
++\renewenvironment{DoxyRetVals}[1]{%
++    \par%
++    \begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,r]|X[-1,l]|}}%
++    \SetCell[c=2]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% Used by exception lists
++\renewenvironment{DoxyExceptions}[1]{%
++    \par%
++    \begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|l[-1,r]|l[-1,l]|}}%
++    \SetCell[c=2]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% Used by template parameter lists
++\renewenvironment{DoxyTemplParams}[1]{%
++    \par%
++    \begin{longtblr}[l]{rowhead=1,measure=vbox,colspec={|X[-1,r]|X[-1,l]|}}%
++    \SetCell[c=2]{l} \hspace{-6pt}\bfseries\fontseries{bc}\selectfont\color{darkgray} #1 \\[1ex]%
++    \hline%
++}{%
++    \end{longtblr}%
++    \vspace{6pt}%
++}
++
++% NOTE: this is not a perfect workaround, and known to loose linebreaks, repeated spaces, etc
++\RenewEnviron{DoxyVerb}{%
++  \par%
++  \footnotesize%
++  \ExpandArgs{o}\fakeverb{\BODY}%
++  \normalsize%
++}

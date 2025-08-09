@@ -35,7 +35,7 @@
       mark_old = "no";
       text_flowed = "yes";
       reverse_name = "yes";
-      # query_command = ''"khard email --parsable '%s'"'';
+      query_command = ''"khard email --parsable '%s'"'';
     };
     binds = [
       {
@@ -90,7 +90,10 @@
     ];
     extraConfig = let
       # Collect all addresses and aliases
-      addresses = lib.flatten (lib.mapAttrsToList (n: v: [v.address] ++ v.aliases) config.accounts.email.accounts);
+      addresses =
+        lib.flatten
+        (lib.mapAttrsToList (_: v: [v.address] ++ v.aliases)
+          config.accounts.email.accounts);
     in
       ''
         alternates "${lib.concatStringsSep "|" addresses}"
