@@ -2,8 +2,7 @@
   pkgs,
   config,
   ...
-}:
-{
+}: {
   imports = [
     ./steam.nix
     ./prism-launcher.nix

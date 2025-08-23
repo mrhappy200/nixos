@@ -140,6 +140,7 @@ in
         disable_splash_rendering = false;
         disable_hyprland_qtutils_check = true;
         enable_swallow = true;
+        vrr = 1;
         swallow_regex = "(?i)(${
           lib.concatMapStringsSep "|" (lib.removeSuffix ".desktop")
             config.xdg.mimeApps.defaultApplications."x-scheme-handler/terminal"
@@ -153,6 +154,7 @@ in
           wineTray = "class:explorer.exe";
           rsiLauncher = "class:rsi launcher.exe";
           steamBigPicture = "title:Steam Big Picture Mode";
+          androidStudio-hover = "class:^jetbrains-(?!toolbox)";
         in
         [
           "idleinhibit focus, fullscreenstate:2 *"
@@ -175,6 +177,8 @@ in
           "tile, ${rsiLauncher}"
 
           "fullscreen, ${steamBigPicture}"
+
+          "nofocus, ${androidStudio-hover}, floating:1,title:^win\\d+$"
         ]
         ++ (lib.mapAttrsToList (
           name: colors:

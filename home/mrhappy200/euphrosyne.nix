@@ -4,7 +4,7 @@ in
 {
   imports = [
     ./global
-    ./features/desktop/hyprland
+    ./features/desktop/hyprland-illogical-impulse-dots
     ./features/desktop/wireless
     ./features/rgb
     ./features/productivity
@@ -17,7 +17,6 @@ in
 
   home.packages = with pkgs; [
     blender-hip
-    android-studio-full
   ];
 
   #  ------   -----   ------
@@ -25,7 +24,7 @@ in
   #  ------   -----   ------
   monitors = [
     {
-      name = "DP-3";
+      name = "DP-1";
       width = 2560;
       height = 1440;
       workspace = "1";

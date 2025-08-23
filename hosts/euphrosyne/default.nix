@@ -2,10 +2,8 @@
   pkgs,
   inputs,
   ...
-}:
-let
-in
-{
+}: let
+in {
   imports = [
     inputs.hardware.nixosModules.common-cpu-amd
     inputs.hardware.nixosModules.common-gpu-amd
@@ -28,6 +26,11 @@ in
 
     ../common/optional/starcitizen-fixes.nix
   ];
+
+  services = {
+    pcscd.enable = true;
+    udev.packages = [pkgs.yubikey-personalization];
+  };
 
   environment.systemPackages = with pkgs; [
     #openai-whisper

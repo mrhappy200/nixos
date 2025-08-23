@@ -45,6 +45,7 @@ in
       dxvk
       wineWowPackages.stable
       winetricks
+      android-studio
     ];
   };
 
@@ -86,7 +87,11 @@ in
   };
 
   environment.persistence."/persist".users.mrhappy200 = {
-    directories = [ ".local/share/PrismLauncher" ];
+    directories = [
+      "Android"
+      "AndroidStudioProjects"
+      ".local/share/PrismLauncher"
+    ];
   };
 
   sops.secrets.mrhappy200-password = {

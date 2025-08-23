@@ -57,6 +57,7 @@
       url = "github:VirtCode/hypr-dynamic-cursors";
       inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
     };
+    illogical-impulse.url = "github:xBLACKICEx/end-4-dots-hyprland-nixos";
   };
 
   outputs =
