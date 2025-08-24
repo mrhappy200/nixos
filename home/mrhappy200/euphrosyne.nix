@@ -4,7 +4,8 @@ in
 {
   imports = [
     ./global
-    ./features/desktop/hyprland-illogical-impulse-dots
+    #./features/desktop/hyprland-illogical-impulse-dots
+    ./features/desktop/hyprland
     ./features/desktop/wireless
     ./features/rgb
     ./features/productivity

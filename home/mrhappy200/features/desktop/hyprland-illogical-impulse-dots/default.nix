@@ -1,9 +1,23 @@
-{ pkgs, inputs, ... }:
-let
-  illogical-dots-HMmodule = inputs.illogical-impulse.homeManagerModules.default;
-in
 {
-  imports = [ illogical-dots-HMmodule ];
+  pkgs,
+  inputs,
+  ...
+}: let
+  illogical-dots-HMmodule = inputs.illogical-impulse.homeManagerModules.default;
+in {
+  imports = [
+    ../common
+    ../common/wayland-wm
+    illogical-dots-HMmodule
+  ];
+
+  home.packages = [
+    pkgs.ydotool
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.rubik
+    pkgs.starship
+  ];
+
   illogical-impulse = {
     # Enable the dotfiles suite
     enable = true;
@@ -18,9 +32,9 @@ in
     };
 
     # Dotfiles configurations
-    #dotfiles = {
-    #    fish.enable = true;
-    #    kitty.enable = true;
-    #};
+    dotfiles = {
+      fish.enable = true;
+      kitty.enable = true;
+    };
   };
 }

@@ -2,7 +2,7 @@
   description = "My NixOS configuration";
 
   nixConfig = {
-    extra-substituters = [ "https://nix-gaming.cachix.org" ];
+    extra-substituters = ["https://nix-gaming.cachix.org"];
     extra-trusted-public-keys = [
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
     ];
@@ -60,67 +60,64 @@
     illogical-impulse.url = "github:xBLACKICEx/end-4-dots-hyprland-nixos";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      systems,
-      ...
-    }@inputs:
-    let
-      inherit (self) outputs;
-      lib = nixpkgs.lib // home-manager.lib;
-      forEachSystem = f: lib.genAttrs (import systems) (system: f pkgsFor.${system});
-      pkgsFor = lib.genAttrs (import systems) (
-        system:
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    systems,
+    ...
+  } @ inputs: let
+    inherit (self) outputs;
+    lib = nixpkgs.lib // home-manager.lib;
+    forEachSystem = f: lib.genAttrs (import systems) (system: f pkgsFor.${system});
+    pkgsFor = lib.genAttrs (import systems) (
+      system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         }
-      );
-    in
-    {
-      inherit lib;
-      nixosModules = import ./modules/nixos;
-      homeManagerModules = import ./modules/home-manager;
+    );
+  in {
+    inherit lib;
+    nixosModules = import ./modules/nixos;
+    homeManagerModules = import ./modules/home-manager;
 
-      overlays = import ./overlays { inherit inputs outputs; };
-      hydraJobs = import ./hydra.nix { inherit inputs outputs; };
+    overlays = import ./overlays {inherit inputs outputs;};
+    hydraJobs = import ./hydra.nix {inherit inputs outputs;};
 
-      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
-      formatter = forEachSystem (pkgs: pkgs.alejandra);
+    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
+    formatter = forEachSystem (pkgs: pkgs.alejandra);
 
-      nixosConfigurations = {
-        # Main desktop
-        euphrosyne = lib.nixosSystem {
-          modules = [ ./hosts/euphrosyne ];
-          specialArgs = { inherit inputs outputs; };
-        };
-        # Personal laptop (TerraQue)
-        HappyPC = lib.nixosSystem {
-          modules = [ ./hosts/HappyPC ];
-          specialArgs = { inherit inputs outputs; };
-        };
-        # Proxmox nix vm
-        pve-nix-vm-1 = lib.nixosSystem {
-          modules = [ ./hosts/pve-nix-vm-1 ];
-          specialArgs = { inherit inputs outputs; };
-        };
+    nixosConfigurations = {
+      # Main desktop
+      euphrosyne = lib.nixosSystem {
+        modules = [./hosts/euphrosyne];
+        specialArgs = {inherit inputs outputs;};
       };
-
-      # Standalone HM only
-      homeConfigurations = {
-        # chromebooks
-        "mrhappy200@penguin" = lib.homeManagerConfiguration {
-          modules = [
-            ./home/mrhappy200/penguin.nix
-            ./home/mrhappy200/nixpkgs.nix
-          ];
-          pkgs = pkgsFor.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs; };
-        };
+      # Personal laptop (TerraQue)
+      HappyPC = lib.nixosSystem {
+        modules = [./hosts/HappyPC];
+        specialArgs = {inherit inputs outputs;};
+      };
+      # Proxmox nix vm
+      pve-nix-vm-1 = lib.nixosSystem {
+        modules = [./hosts/pve-nix-vm-1];
+        specialArgs = {inherit inputs outputs;};
       };
     };
+
+    # Standalone HM only
+    homeConfigurations = {
+      # chromebooks
+      "mrhappy200@penguin" = lib.homeManagerConfiguration {
+        modules = [
+          ./home/mrhappy200/penguin.nix
+          ./home/mrhappy200/nixpkgs.nix
+        ];
+        pkgs = pkgsFor.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+    };
+  };
 }

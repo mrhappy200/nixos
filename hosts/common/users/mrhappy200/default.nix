@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
 }:
 let
@@ -97,6 +98,27 @@ in
   sops.secrets.mrhappy200-password = {
     sopsFile = ../../secrets.yaml;
     neededForUsers = true;
+  };
+
+  programs.uwsm = {
+    enable = true;
+    waylandCompositors = {
+      hyprland = {
+        prettyName = "Hyprland";
+        comment = "Hyprland compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/Hyprland";
+      };
+    };
+  };
+
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    # set the flake package
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    # make sure to also set the portal package, so that they are in sync
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
