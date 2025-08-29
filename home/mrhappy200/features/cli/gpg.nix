@@ -16,10 +16,10 @@
     '';
     sshKeys = ["89F5591EA4E63506116953BF3AF8AF8C2C5EC2EC"];
     enableExtraSocket = true;
-    pinentry.package =
-      if config.gtk.enable
-      then pkgs.pinentry-gnome3
-      else pkgs.pinentry-tty;
+    pinentry.package = pkgs.pinentry-gnome3;
+      #if config.gtk.enable
+      #then pkgs.pinentry-gnome3
+      #else pkgs.pinentry-tty;
   };
 
   home.packages = lib.optional config.gtk.enable pkgs.gcr;
