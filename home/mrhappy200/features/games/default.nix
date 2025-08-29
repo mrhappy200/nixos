@@ -7,7 +7,7 @@
     ./steam.nix
     ./prism-launcher.nix
     ./mangohud.nix
-    #    ./satisfactory.nix
+    ./satisfactory.nix
   ];
   home = {
     #packages = with pkgs; [heroic gamescope protontricks];

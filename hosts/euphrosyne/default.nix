@@ -41,12 +41,17 @@ in {
     })
     hello
   ];
+
   networking = {
     hostName = "euphrosyne";
     useDHCP = true;
   };
 
   #  nixpkgs.config.rocmSupport = true;
+
+  nixpkgs.config.permittedInsecurePackages = [
+                 "libsoup-2.74.3"
+               ];
 
   programs.gamescope = {
     enable = true;

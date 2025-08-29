@@ -4,11 +4,9 @@
   lib,
   inputs,
   ...
-}:
-let
+}: let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in
-{
+in {
   users.mutableUsers = false;
   users.users.mrhappy200 = {
     isNormalUser = true;
@@ -124,7 +122,7 @@ in
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
 
   security.pam.services = {
-    swaylock = { };
-    hyprlock = { };
+    swaylock = {};
+    hyprlock = {};
   };
 }

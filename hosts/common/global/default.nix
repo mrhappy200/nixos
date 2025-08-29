@@ -42,7 +42,7 @@
     };
   };
 
-  security.pam.services = {
+   security.pam.services = {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
   };
@@ -65,7 +65,7 @@
   hardware.enableRedistributableFirmware = true;
   networking.domain = "hppy200.dev";
 
-  environment.systemPackages = [pkgs.qt5.qtwayland];
+  environment.systemPackages = [pkgs.freetype pkgs.qt5.qtwayland];
 
   # Increase open file limit for sudoers
   security.pam.loginLimits = [

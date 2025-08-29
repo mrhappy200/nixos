@@ -26,9 +26,9 @@ in {
         };
         remote = rec {
           type = "caldav";
-          url = "https://dav.hppy200.dev";
-          userName = emailCfg.address;
-          passwordCommand = ["${pass}" "dav.hppy200.dev/${userName}"];
+          url = "https://caldav.hppy200.dev";
+          userName = "mrhappy200";
+          passwordCommand = ["${pass}" "caldav.hppy200.dev/${userName}"];
         };
         vdirsyncer = {
           enable = true;

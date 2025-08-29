@@ -1,7 +1,5 @@
-{ pkgs, ... }:
-let
-in
-{
+{pkgs, ...}: let
+in {
   imports = [
     ./global
     #./features/desktop/hyprland-illogical-impulse-dots
@@ -18,6 +16,7 @@ in
 
   home.packages = with pkgs; [
     blender-hip
+    kitty
   ];
 
   #  ------   -----   ------
@@ -43,8 +42,8 @@ in
   ];
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 }
