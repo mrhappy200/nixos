@@ -1,5 +1,7 @@
-{pkgs, ...}: let
-in {
+{ pkgs, config, ... }:
+let
+in
+{
   imports = [
     ./global
     #./features/desktop/hyprland-illogical-impulse-dots
@@ -15,9 +17,16 @@ in {
   wallpaper = pkgs.inputs.themes.wallpapers.landscape-river-birds;
 
   home.packages = with pkgs; [
-    blender-hip
+    #blender-hip
     kitty
+    hyperhdr
+    anki
+    thonny
   ];
+
+  home.persistence = {
+    "/persist/${config.home.homeDirectory}".directories = [ ".local/share/Anki2" ];
+  };
 
   #  ------   -----   ------
   # | DP-3 | | DP-1| | DP-2 |
@@ -42,8 +51,8 @@ in {
   ];
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 }

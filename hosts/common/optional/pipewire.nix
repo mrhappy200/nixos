@@ -1,6 +1,8 @@
-{...}: let
-  port = 44100;
-in {
+{ ... }:
+let
+  port = 4711;
+in
+{
   security.rtkit.enable = true;
   services.pulseaudio.enable = false;
   services.pipewire = {
@@ -17,12 +19,15 @@ in {
               "name" = "libpipewire-module-protocol-simple";
               "args" = {
                 "capture" = true;
-                "audio.rate" = port;
+                "audio.rate" = 44100;
                 "audio.format" = "S16LE";
                 "audio.channels" = 2;
-                "audio.position" = ["FL" "FR"];
+                "audio.position" = [
+                  "FL"
+                  "FR"
+                ];
                 "server.address" = [
-                  "tcp:4711"
+                  "tcp:${toString port}"
                 ];
               };
             }
@@ -32,6 +37,6 @@ in {
     };
   };
   networking.firewall = {
-    allowedTCPPorts = [port];
+    allowedTCPPorts = [ port ];
   };
 }

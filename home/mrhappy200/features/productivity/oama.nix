@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   pass = "${config.programs.password-store.package}/bin/pass";
-in {
+in
+{
   programs.oama = {
     enable = true;
     settings = {

@@ -10,13 +10,13 @@
 
   inputs = {
     # Nix ecosystem
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     #nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     # The commit that broke everything was 17f6bd177404d6d43017595c5264756764444ab8
-    nixpkgs.url = "github:NixOS/nixpkgs/7379d27cddb838c205119f9eede242810cd299a7";
+    #nixpkgs.url = "github:NixOS/nixpkgs/7379d27cddb838c205119f9eede242810cd299a7";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     systems.url = "github:nix-systems/default-linux";
-
+    nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
     hardware.url = "github:nixos/nixos-hardware";
     impermanence.url = "github:nix-community/impermanence";
     nix-colors.url = "github:misterio77/nix-colors";
@@ -71,8 +71,11 @@
     # process monitor required for dank material shell
     dgop.url = "github:AvengeMedia/dgop";
     illogical-impulse.url = "github:xBLACKICEx/end-4-dots-hyprland-nixos";
-    caelestia.url = "github:caelestia-dots/shell";
-    caelestia-cli.url = "github:caelestia-dots/cli";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.quickshell.follows = "quickshell"; # Use same quickshell version
+    };
   };
 
   outputs =
@@ -81,6 +84,7 @@
       nixpkgs,
       home-manager,
       systems,
+      nixpkgs-xr,
       ...
     }@inputs:
     let
@@ -110,7 +114,10 @@
       nixosConfigurations = {
         # Main desktop
         euphrosyne = lib.nixosSystem {
-          modules = [ ./hosts/euphrosyne ];
+          modules = [
+            nixpkgs-xr.nixosModules.nixpkgs-xr
+            ./hosts/euphrosyne
+          ];
           specialArgs = { inherit inputs outputs; };
         };
         # Personal laptop (TerraQue)

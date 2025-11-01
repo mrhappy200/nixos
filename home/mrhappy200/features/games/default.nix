@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   imports = [
     ./steam.nix
     ./prism-launcher.nix
@@ -14,6 +15,7 @@
     packages = with pkgs; [
       gamescope
       protontricks
+      heroic
     ];
     persistence = {
       "/persist/${config.home.homeDirectory}" = {

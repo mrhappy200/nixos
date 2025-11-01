@@ -4,9 +4,11 @@
   lib,
   inputs,
   ...
-}: let
+}:
+let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in {
+in
+{
   users.mutableUsers = false;
   users.users.mrhappy200 = {
     isNormalUser = true;
@@ -17,6 +19,7 @@ in {
       "docker"
       "git"
       "i2c"
+      "weechat"
       "libvirtd"
       "lxd"
       "minecraft"
@@ -27,6 +30,7 @@ in {
       "tss"
       "video"
       "wheel"
+      "screen"
       "wireshark"
       "dialout"
     ];
@@ -42,48 +46,42 @@ in {
       bottles
       vulkan-loader
       dxvk
-      wineWowPackages.stable
       winetricks
+      freetype
       android-studio
+      wineWowPackages.waylandFull
     ];
   };
 
   #environment.persistence = {"/nix/persist".directories = ["/home/mrhappy200/.local/share/bottles"];};
 
-  services.wivrn = {
+  environment.systemPackages = with pkgs; [
+    inputs.noctalia.packages.${system}.default
+  ];
+
+  imports = [
+    inputs.noctalia.nixosModules.default
+  ];
+  services.noctalia-shell.enable = true;
+
+  services.weechat = {
     enable = true;
-    openFirewall = true;
-
-    # Write information to /etc/xdg/openxr/1/active_runtime.json, VR applications
-    # will automatically read this and work with WiVRn (Note: This does not currently
-    # apply for games run in Valve's Proton)
-    defaultRuntime = true;
-
-    # Run WiVRn as a systemd service on startup
-    autoStart = true;
-
-    # Config for WiVRn (https://github.com/WiVRn/WiVRn/blob/master/docs/configuration.md)
-    config = {
-      enable = true;
-      json = {
-        # 1.0x foveation scaling
-        scale = 1.0;
-        # 100 Mb/s
-        bitrate = 100000000;
-        encoders = [
-          {
-            encoder = "vaapi";
-            codec = "h265";
-            # 1.0 x 1.0 scaling
-            width = 1.0;
-            height = 1.0;
-            offset_x = 0.0;
-            offset_y = 0.0;
-          }
-        ];
-      };
-    };
   };
+  # This allows other users to access the weechat screen session with the following command
+  # screen -x weechat/weechat-screen
+  programs.screen.screenrc = ''
+    multiuser on
+    acladd mrhappy200
+  '';
+  users.users.weechat = {
+    isSystemUser = true;
+    description = "Weechat system user";
+    home = "/var/lib/weechat";
+    createHome = true;
+    shell = "${pkgs.shadow}/bin/nologin";
+  };
+
+  environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
 
   environment.persistence."/persist".users.mrhappy200 = {
     directories = [
@@ -122,7 +120,7 @@ in {
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
 
   security.pam.services = {
-    swaylock = {};
-    hyprlock = {};
+    swaylock = { };
+    hyprlock = { };
   };
 }

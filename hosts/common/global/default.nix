@@ -5,35 +5,35 @@
   lib,
   outputs,
   ...
-}: {
-  imports =
-    [
-      inputs.home-manager.nixosModules.home-manager
-      ./acme.nix
-      #    ./auto-upgrade.nix
-      ./fish.nix
-      ./locale.nix
-      ./nix.nix
-      ./openssh.nix
-      ./optin-persistence.nix
-      ./podman.nix
-      ./sops.nix
-      #./ssh-serve-store.nix
-      ./steam-hardware.nix
-      ./systemd-initrd.nix
-      ./swappiness.nix
-      ./tailscale.nix
-      ./tpm.nix
-      ./gamemode.nix
-      ./nix-ld.nix
-      ./prometheus-node-exporter.nix
-      ./kdeconnect.nix
-      ./upower.nix
-    ]
-    ++ (builtins.attrValues outputs.nixosModules);
+}:
+{
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    ./acme.nix
+    #    ./auto-upgrade.nix
+    ./fish.nix
+    ./locale.nix
+    ./nix.nix
+    ./openssh.nix
+    ./optin-persistence.nix
+    ./podman.nix
+    ./sops.nix
+    #./ssh-serve-store.nix
+    ./steam-hardware.nix
+    ./systemd-initrd.nix
+    ./swappiness.nix
+    ./tailscale.nix
+    ./tpm.nix
+    ./gamemode.nix
+    ./nix-ld.nix
+    ./prometheus-node-exporter.nix
+    ./kdeconnect.nix
+    ./upower.nix
+  ]
+  ++ (builtins.attrValues outputs.nixosModules);
 
   home-manager.useGlobalPkgs = true;
-  home-manager.extraSpecialArgs = {inherit inputs outputs;};
+  home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;
@@ -42,7 +42,7 @@
     };
   };
 
-   security.pam.services = {
+  security.pam.services = {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
   };
@@ -65,7 +65,10 @@
   hardware.enableRedistributableFirmware = true;
   networking.domain = "hppy200.dev";
 
-  environment.systemPackages = [pkgs.freetype pkgs.qt5.qtwayland];
+  environment.systemPackages = [
+    pkgs.freetype
+    pkgs.qt5.qtwayland
+  ];
 
   # Increase open file limit for sudoers
   security.pam.loginLimits = [
@@ -83,7 +86,10 @@
     }
   ];
 
-  systemd.extraConfig = "LimitNOFILE=1048576";
+  #systemd.extraConfig = "LimitNOFILE=1048576";
+  systemd.settings.Manager = {
+    LimitNOFILE = 1048576;
+  };
 
   # Cleanup stuff included by default
   services.speechd.enable = false;

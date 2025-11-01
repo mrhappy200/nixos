@@ -5,20 +5,24 @@
   config,
   outputs,
   ...
-}: {
-  imports =
-    [
-      inputs.impermanence.nixosModules.home-manager.impermanence
-      ../features/cli
-    ]
-    ++ (builtins.attrValues outputs.homeManagerModules);
+}:
+{
+  imports = [
+    inputs.impermanence.nixosModules.home-manager.impermanence
+    ../features/cli
+  ]
+  ++ (builtins.attrValues outputs.homeManagerModules);
 
-  disabledModules = ["programs/vdirsyncer.nix"];
+  disabledModules = [ "programs/vdirsyncer.nix" ];
 
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = ["nix-command" "flakes" "ca-derivations"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "ca-derivations"
+      ];
       warn-dirty = false;
     };
   };
@@ -30,12 +34,34 @@
     git.enable = true;
   };
 
+  xdg.configFile."openvr/openvrpaths.vrpath".text = ''
+    {
+      "config" :
+      [
+        "~/.local/share/Steam/config"
+      ],
+      "external_drivers" : null,
+      "jsonid" : "vrpathreg",
+      "log" :
+      [
+        "~/.local/share/Steam/logs"
+      ],
+      "runtime" :
+      [
+        "${pkgs.opencomposite}/lib/opencomposite"
+      ],
+      "version" : 1
+    }
+  '';
+
   home = {
     username = lib.mkDefault "mrhappy200";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "22.05";
-    sessionPath = ["$HOME/.local/bin"];
-    sessionVariables = {NH_FLAKE = "$HOME/Documents/NixConfig";};
+    sessionPath = [ "$HOME/.local/bin" ];
+    sessionVariables = {
+      NH_FLAKE = "$HOME/Documents/NixConfig";
+    };
 
     persistence = {
       "/persist/${config.home.homeDirectory}" = {
@@ -54,28 +80,6 @@
     };
   };
 
-  xdg.configFile."openxr/1/active_runtime.json".source = "${pkgs.wivrn}/share/openxr/1/openxr_wivrn.json";
-
-  xdg.configFile."openvr/openvrpaths.vrpath".text = ''
-    {
-      "config" :
-      [
-        "${config.xdg.dataHome}/Steam/config"
-      ],
-      "external_drivers" : null,
-      "jsonid" : "vrpathreg",
-      "log" :
-      [
-        "${config.xdg.dataHome}/Steam/logs"
-      ],
-      "runtime" :
-      [
-        "${pkgs.opencomposite}/lib/opencomposite"
-      ],
-      "version" : 1
-    }
-  '';
-
   colorscheme.mode = lib.mkOverride 1499 "dark";
   specialisation = {
     dark.configuration.colorscheme.mode = lib.mkOverride 1498 "dark";
@@ -85,48 +89,54 @@
     ".colorscheme.json".text = builtins.toJSON config.colorscheme;
   };
 
-  home.packages = let
-    specialisation = pkgs.writeShellScriptBin "specialisation" ''
-      profiles="$HOME/.local/state/nix/profiles"
-      current="$profiles/home-manager"
-      base="$profiles/home-manager-base"
+  home.packages =
+    let
+      specialisation = pkgs.writeShellScriptBin "specialisation" ''
+        profiles="$HOME/.local/state/nix/profiles"
+        current="$profiles/home-manager"
+        base="$profiles/home-manager-base"
 
-      # If current contains specialisations, link it as base
-      if [ -d "$current/specialisation" ]; then
-        echo >&2 "Using current profile as base"
-        ln -sfT "$(readlink "$current")" "$base"
-      # Check that $base contains specialisations before proceeding
-      elif [ -d "$base/specialisation" ]; then
-        echo >&2 "Using previously linked base profile"
-      else
-        echo >&2 "No suitable base config found. Try 'home-manager switch' again."
-        exit 1
-      fi
-
-      if [ -z "$1" ] || [ "$1" = "list" ] || [ "$1" = "-l" ] || [ "$1" = "--list" ]; then
-        find "$base/specialisation" -type l -printf "%f\n"
-        exit 0
-      fi
-
-      echo >&2 "Switching to ''${1} specialisation"
-      if [ "$1" == "base"  ]; then
-        "$base/activate"
-      else
-        "$base/specialisation/$1/activate"
-      fi
-    '';
-    toggle-theme = pkgs.writeShellScriptBin "toggle-theme" ''
-      if [ -n "$1" ]; then
-        theme="$1"
-      else
-        current="$(${lib.getExe pkgs.jq} -re '.mode' "$HOME/.colorscheme.json")"
-        if [ "$current" = "light" ]; then
-          theme="dark"
+        # If current contains specialisations, link it as base
+        if [ -d "$current/specialisation" ]; then
+          echo >&2 "Using current profile as base"
+          ln -sfT "$(readlink "$current")" "$base"
+        # Check that $base contains specialisations before proceeding
+        elif [ -d "$base/specialisation" ]; then
+          echo >&2 "Using previously linked base profile"
         else
-          theme="light"
+          echo >&2 "No suitable base config found. Try 'home-manager switch' again."
+          exit 1
         fi
-      fi
-      ${lib.getExe specialisation} "$theme"
-    '';
-  in [specialisation toggle-theme];
+
+        if [ -z "$1" ] || [ "$1" = "list" ] || [ "$1" = "-l" ] || [ "$1" = "--list" ]; then
+          find "$base/specialisation" -type l -printf "%f\n"
+          exit 0
+        fi
+
+        echo >&2 "Switching to ''${1} specialisation"
+        if [ "$1" == "base"  ]; then
+          "$base/activate"
+        else
+          "$base/specialisation/$1/activate"
+        fi
+      '';
+      toggle-theme = pkgs.writeShellScriptBin "toggle-theme" ''
+        if [ -n "$1" ]; then
+          theme="$1"
+        else
+          current="$(${lib.getExe pkgs.jq} -re '.mode' "$HOME/.colorscheme.json")"
+          if [ "$current" = "light" ]; then
+            theme="dark"
+          else
+            theme="light"
+          fi
+        fi
+        ${lib.getExe specialisation} "$theme"
+      '';
+    in
+    [
+      specialisation
+      toggle-theme
+      pkgs.devenv
+    ];
 }

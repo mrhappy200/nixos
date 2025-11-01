@@ -72,11 +72,11 @@ in
         pseudotile = true;
       };
 
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_min_speed_to_force = 10;
-        workspace_swipe_forever = true;
-      };
+      #gestures = {
+      #  workspace_swipe = true;
+      #  workspace_swipe_min_speed_to_force = 10;
+      #  workspace_swipe_forever = true;
+      #};
 
       misc = {
         vfr = true;

@@ -2,8 +2,10 @@
   pkgs,
   inputs,
   ...
-}: let
-in {
+}:
+let
+in
+{
   imports = [
     inputs.hardware.nixosModules.common-cpu-amd
     inputs.hardware.nixosModules.common-gpu-amd
@@ -29,16 +31,11 @@ in {
 
   services = {
     pcscd.enable = true;
-    udev.packages = [pkgs.yubikey-personalization];
+    udev.packages = [ pkgs.yubikey-personalization ];
   };
 
   environment.systemPackages = with pkgs; [
     #openai-whisper
-    (whisper-cpp.override {
-      rocmSupport = true;
-      vulkanSupport = false;
-      rocmGpuTargets = "gfx1200;gfx1201";
-    })
     hello
   ];
 
@@ -47,11 +44,21 @@ in {
     useDHCP = true;
   };
 
+  services.wivrn = {
+    enable = true;
+    package = pkgs.wivrn;
+    steam.importOXRRuntimes = true;
+    openFirewall = true;
+    defaultRuntime = true;
+    highPriority = true;
+    autoStart = true;
+  };
+
   #  nixpkgs.config.rocmSupport = true;
 
   nixpkgs.config.permittedInsecurePackages = [
-                 "libsoup-2.74.3"
-               ];
+    "libsoup-2.74.3"
+  ];
 
   programs.gamescope = {
     enable = true;
