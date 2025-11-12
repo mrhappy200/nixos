@@ -1,1 +1,4 @@
-{pkgs, ...}: {home.packages = with pkgs; [xdragon];}
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [ dragon-drop ];
+}
