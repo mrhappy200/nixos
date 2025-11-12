@@ -42,14 +42,14 @@ in
     #password = "123";
     packages = with pkgs; [
       home-manager
-      lutris
-      bottles
-      vulkan-loader
-      dxvk
-      winetricks
-      freetype
-      android-studio
-      wineWowPackages.waylandFull
+      #lutris
+      #bottles
+      #vulkan-loader
+      #dxvk
+      #winetricks
+      #freetype
+      #android-studio
+      #wineWowPackages.waylandFull
     ];
   };
 
@@ -64,32 +64,32 @@ in
   ];
   services.noctalia-shell.enable = true;
 
-  services.weechat = {
-    enable = true;
-  };
-  # This allows other users to access the weechat screen session with the following command
-  # screen -x weechat/weechat-screen
-  programs.screen.screenrc = ''
-    multiuser on
-    acladd mrhappy200
-  '';
-  users.users.weechat = {
-    isSystemUser = true;
-    description = "Weechat system user";
-    home = "/var/lib/weechat";
-    createHome = true;
-    shell = "${pkgs.shadow}/bin/nologin";
-  };
+  #services.weechat = {
+  #  enable = true;
+  #};
+  ## This allows other users to access the weechat screen session with the following command
+  ## screen -x weechat/weechat-screen
+  #programs.screen.screenrc = ''
+  #  multiuser on
+  #  acladd mrhappy200
+  #'';
+  #users.users.weechat = {
+  #  isSystemUser = true;
+  #  description = "Weechat system user";
+  #  home = "/var/lib/weechat";
+  #  createHome = true;
+  #  shell = "${pkgs.shadow}/bin/nologin";
+  #};
 
-  environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
+  #environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
 
-  environment.persistence."/persist".users.mrhappy200 = {
-    directories = [
-      "Android"
-      "AndroidStudioProjects"
-      ".local/share/PrismLauncher"
-    ];
-  };
+  #environment.persistence."/persist".users.mrhappy200 = {
+  #  directories = [
+  #    "Android"
+  #    "AndroidStudioProjects"
+  #    ".local/share/PrismLauncher"
+  #  ];
+  #};
 
   sops.secrets.mrhappy200-password = {
     sopsFile = ../../secrets.yaml;

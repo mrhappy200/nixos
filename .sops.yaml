@@ -6,11 +6,18 @@ keys:
   - &hosts:
     - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa
     - &euphrosyne age12vt0mctfutp2ge84tmhmcsknytjj8v6fsr2ysrjls9jkj0a7zasswg8kau
+    - &pve-nix-vm-1 age1uxvuygmvwpfjrd9d3ulg6ln8dgvaw4l2c90mw0tr72qg3n8vd9ns3dm000
 creation_rules:
   - path_regex: hosts/euprosyne/secrets.ya?ml$
     key_groups:
     - age:
       - *euphrosyne
+      pgp:
+      - *mrhappy200
+  - path_regex: hosts/pve-nix-vm-1/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *pve-nix-vm-1
       pgp:
       - *mrhappy200
 
@@ -26,6 +33,7 @@ creation_rules:
     - age:
       - *HappyPC
       - *euphrosyne
+      - *pve-nix-vm-1
       pgp:
       - *mrhappy200
 
