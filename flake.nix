@@ -115,8 +115,8 @@
         # Main desktop
         euphrosyne = lib.nixosSystem {
           modules = [
-            nixpkgs-xr.nixosModules.nixpkgs-xr
             ./hosts/euphrosyne
+            nixpkgs-xr.nixosModules.nixpkgs-xr
           ];
           specialArgs = { inherit inputs outputs; };
         };

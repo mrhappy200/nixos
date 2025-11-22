@@ -83,13 +83,13 @@ in
 
   #environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
 
-  #environment.persistence."/persist".users.mrhappy200 = {
-  #  directories = [
+  environment.persistence."/persist".users.mrhappy200 = {
+    directories = [
   #    "Android"
   #    "AndroidStudioProjects"
-  #    ".local/share/PrismLauncher"
-  #  ];
-  #};
+      ".local/share/PrismLauncher"
+    ];
+  };
 
   sops.secrets.mrhappy200-password = {
     sopsFile = ../../secrets.yaml;

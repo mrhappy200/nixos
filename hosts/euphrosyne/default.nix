@@ -37,6 +37,7 @@ in
   environment.systemPackages = with pkgs; [
     #openai-whisper
     hello
+    wlx-overlay-s
   ];
 
   networking = {
@@ -53,6 +54,7 @@ in
     highPriority = true;
     autoStart = true;
   };
+
 
   #  nixpkgs.config.rocmSupport = true;
 
