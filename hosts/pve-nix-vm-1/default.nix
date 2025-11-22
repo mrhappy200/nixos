@@ -1,11 +1,13 @@
-{
+{inputs, ...}: {
   imports = [
-    ./services
-    ./hardware-configuration.nix
+    #./services
+#    ./hardware-configuration.nix
 
     ../common/global
     ../common/users/mrhappy200
     ../common/optional/tailscale-exit-node.nix
+    inputs.disko.nixosModules.disko
+    ./disk-config.nix
   ];
 
   networking = {
