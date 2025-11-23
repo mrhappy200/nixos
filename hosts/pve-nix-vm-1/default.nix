@@ -1,14 +1,29 @@
-{inputs, ...}: {
+{inputs, modulesPath, ...}: {
   imports = [
     #./services
-#    ./hardware-configuration.nix
+    ./hardware-configuration.nix
 
     ../common/global
     ../common/users/mrhappy200
     ../common/optional/tailscale-exit-node.nix
     inputs.disko.nixosModules.disko
+#    (modulesPath + "/profiles/qemu-guest.nix")
     ./disk-config.nix
   ];
+
+# 1. Add support for your filesystem (Btrfs)
+  boot.supportedFilesystems = [ "btrfs" ];
+
+  # 2. Add the required kernel modules for the disk controller and btrfs
+  boot.initrd.availableKernelModules = [
+    # Disk controller for QEMU/VirtIO
+    #"virtio_blk"
+    #"virtio_pci"
+    # Filesystem
+    "btrfs"
+  ];
+
+  nixpkgs.hostPlatform.system = "x86_64-linux";
 
   networking = {
     hostName = "pve-nix-vm-1";

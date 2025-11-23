@@ -3,16 +3,21 @@
     disk = {
       main = {
         type = "disk";
-        #device = "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0";
+        #device = lib.mkDefault "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi";
         device = lib.mkDefault "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
+	  boot = {
+              size = "1M";
+              type = "EF02"; # Essential for BIOS boot on GPT
+              priority = 1;
+            };
             ESP = {
               priority = 1;
               name = "ESP";
               start = "1M";
-              end = "128M";
+              end = "512M";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -56,11 +61,6 @@
                 };
 
                 mountpoint = "/partition-root";
-                swap = {
-                  swapfile = {
-                    size = "8G";
-                  };
-                };
               };
             };
           };
