@@ -9,7 +9,7 @@ in {
     sopsFile = ../../secrets.yaml;
   };
   environment.persistence = {
-    "/nix/persist" = {
+    "/persist" = {
       directories = [
         {
           directory = "/var/lib/lldap";
@@ -23,10 +23,11 @@ in {
     enable = true;
     environment = {
       LLDAP_JWT_SECRET_FILE = toString config.sops.secrets.authelia_jwtsf.path;
-      LLDAP_USER_PASS_FILE = toString config.sops.secrets.lldap_pass.path;
+      LLDAP_LDAP_USER_PASS_FILE = toString config.sops.secrets.lldap_pass.path;
     };
     settings = {
       ldap_user_email = "ronanberntsen@gmail.com";
+      #force_ldap_user_pass_reset = true;
       http_url = "https://ldap.hppy200.dev";
       database_url = "postgres://lldap?host=/run/postgresql&user=lldap";
 

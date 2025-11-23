@@ -68,6 +68,6 @@ in {
   environment.systemPackages = [config.services.headscale.package];
 
   environment.persistence = {
-    "/nix/persist".directories = ["/var/lib/headscale"];
+    "/persist".directories = ["/var/lib/headscale"];
   };
 }
