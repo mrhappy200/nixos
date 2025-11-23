@@ -3,6 +3,10 @@
     #./services
     ./hardware-configuration.nix
 
+    ../common/optional/acme.nix
+    ../common/optional/nginx.nix
+    ../common/optional/podman.nix
+
     ../common/global
     ../common/users/mrhappy200
     ../common/optional/tailscale-exit-node.nix

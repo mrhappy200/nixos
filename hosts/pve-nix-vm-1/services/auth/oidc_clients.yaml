@@ -1,0 +1,59 @@
+identity_providers:
+  oidc:
+    clients:
+      - client_name: 'HappyNet'
+        client_id: -iBxegJlGlA1THMcL1TfDceL4ymN_Pdxa2Qf5j6.VdpQqBpUesj7utg-tziFMuTz0rkNsFO4n2yxK4l12Qo7JLDxVtqef3zghHx
+        client_secret: {{ secret "/run/secrets/headscale_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'vpn'
+        pre_configured_consent_duration: '4 weeks'
+        redirect_uris:
+          - 'https://headscale.hppy200.dev/oidc/callback'
+        scopes:
+          - 'email'
+          - 'openid'
+          - 'profile'
+      - client_name: 'miniflux'
+        client_id: dKe-NfZimN7kn911_BsFC65MJepKft8WKDGieGwAlQn4a3h7dPwQYMgocB1LeKvLj1VFoFgx5tFfnL35RIXZ.d-iHXvRb~rIZgU
+        client_secret: {{ secret "/run/secrets/miniflux_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'miniflux'
+        pre_configured_consent_duration: '4 weeks'
+        redirect_uris:
+          - 'https://rss.hppy200.dev/oauth2/oidc/callback'
+        scopes:
+          - 'openid'
+          - 'groups'
+          - 'email'
+          - 'profile'
+
+      - client_name: 'immich'
+        client_id: LkmUVqTOQK1AnGDmh4YT1Tz9w95R0DVVD52XGIYdbDzhoHQfXXhppwCcpCCrXn1UitceEt85
+        client_secret: {{ secret "/run/secrets/immich_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'immich'
+        pre_configured_consent_duration: '4 weeks'
+        redirect_uris:
+          - 'https://photos.hppy200.dev/auth/login'
+          - 'https://photos.hppy200.dev/user-settings'
+          - 'app.immich:///oauth-callback'
+        scopes:
+          - 'openid'
+          - 'email'
+          - 'profile'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_post'
+
+      #      - client_name: 'grafana'
+      #        client_id: 4fWeEDRkY.6ENci8dpiL2m0eu64M3DZZ~TjEX2iU~KQ1SAmuu02DoAOJPJ7gcKvc1PdoMgIME0uzw9yTo0ONsf~NOYWA1ZDymiw
+      #        client_secret: {{ secret "/run/secrets/grafana_oidc-client-secret" | mindent 10 "|" | msquote }}
+      #        public: false
+      #        authorization_policy: 'grafana'
+      #        pre_configured_consent_duration: '4 weeks'
+      #        redirect_uris:
+      #          - 'https://grafana.hppy200.dev/login/generic_oauth'
+      #        scopes:
+      #          - 'openid'
+      #          - 'groups'
+      #          - 'email'
+      #          - 'profile'
