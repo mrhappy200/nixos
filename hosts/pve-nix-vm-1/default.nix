@@ -5,7 +5,6 @@
 
     ../common/optional/acme.nix
     ../common/optional/nginx.nix
-    ../common/optional/podman.nix
 
     ../common/global
     ../common/users/mrhappy200

@@ -9,7 +9,7 @@
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    ./acme.nix
+    #./acme.nix
     #    ./auto-upgrade.nix
     ./fish.nix
     ./locale.nix

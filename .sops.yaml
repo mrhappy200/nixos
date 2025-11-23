@@ -6,7 +6,7 @@ keys:
   - &hosts:
     - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa
     - &euphrosyne age12vt0mctfutp2ge84tmhmcsknytjj8v6fsr2ysrjls9jkj0a7zasswg8kau
-    - &pve-nix-vm-1 age1l6npss8v4k3m68uwc7l8tjwf2zcwh63mgpvza6rtt64423ta8fyqqv5xl9
+    - &pve-nix-vm-1 age15japh8f69nufz0x6hkhl67d86nv4t7mcd5w8ujhxjzdhmqw9m97sldgfte
 creation_rules:
   - path_regex: hosts/euprosyne/secrets.ya?ml$
     key_groups:
