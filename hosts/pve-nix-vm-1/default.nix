@@ -1,6 +1,6 @@
 {inputs, modulesPath, ...}: {
   imports = [
-    #./services
+    ./services
     ./hardware-configuration.nix
 
     ../common/optional/acme.nix

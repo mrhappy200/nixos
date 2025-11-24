@@ -11,7 +11,7 @@
     sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
     locations."/" = {
-      proxyPass = "http://100.64.0.7:2283";
+      proxyPass = "debianproxmox:2283";
     };
   };
 }

@@ -2,8 +2,10 @@
   config,
   lib,
   ...
-}: let
-in {
+}:
+let
+in
+{
   sops.secrets.lldap_pass = {
     owner = "lldap";
     sopsFile = ../../secrets.yaml;
@@ -27,7 +29,7 @@ in {
     };
     settings = {
       ldap_user_email = "ronanberntsen@gmail.com";
-      #force_ldap_user_pass_reset = true;
+      force_ldap_user_pass_reset = "always";
       http_url = "https://ldap.hppy200.dev";
       database_url = "postgres://lldap?host=/run/postgresql&user=lldap";
 
@@ -37,7 +39,7 @@ in {
   systemd.services.lldap.serviceConfig = {
     DynamicUser = lib.mkForce false;
   };
-  services.postgresql.ensureDatabases = ["lldap"];
+  services.postgresql.ensureDatabases = [ "lldap" ];
   services.postgresql.ensureUsers = [
     {
       name = "lldap";
@@ -50,7 +52,7 @@ in {
     group = "lldap";
     isSystemUser = true;
   };
-  users.groups.lldap = {};
+  users.groups.lldap = { };
   services.nginx.virtualHosts."lldap.hppy200.dev" = {
     forceSSL = true;
     sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
