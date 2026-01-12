@@ -5,6 +5,11 @@
     sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
     sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
 
-    locations."/" = { proxyPass = "debianproxmox:8974"; };
+    locations."/" = {
+      extraConfig = ''
+        set $backend "http://100.64.0.4:8974";
+        proxy_pass $backend;
+      '';
+    };
   };
 }

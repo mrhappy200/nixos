@@ -1,6 +1,8 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
-    ./alacritty.nix
+    #./alacritty.nix
+    ./foot.nix
     ./cliphist.nix
     ./gammastep.nix
     #    ./mako.nix
@@ -26,5 +28,5 @@
     LIBSEAT_BACKEND = "logind";
   };
 
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
 }

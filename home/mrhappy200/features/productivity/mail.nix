@@ -33,25 +33,25 @@ let
         Expunge = "Both";
       };
     };
-    Archive = {
-      farPattern = "Archived Mail";
-      nearPattern = "Archive";
-      extraConfig = {
-        Create = "Both";
-        Expunge = "Both";
-      };
-    };
-    Junk = {
+    #Archive = {
+    #  farPattern = "Archived Mail";
+    #  nearPattern = "Archive";
+    #  extraConfig = {
+    #    Create = "Both";
+    #    Expunge = "Both";
+    #  };
+    #};
+    Spam = {
       farPattern = "[Gmail]/Spam";
-      nearPattern = "Junk";
+      nearPattern = "Spam";
       extraConfig = {
         Create = "Near";
         Expunge = "Both";
       };
     };
-    Trash = {
-      farPattern = "[Gmail]/Trash";
-      nearPattern = "Trash";
+    Bin = {
+      farPattern = "[Gmail]/Bin";
+      nearPattern = "Bin";
       extraConfig = {
         Create = "Near";
         Expunge = "Both";
@@ -129,11 +129,11 @@ in
           enable = true;
           mailboxName = "=== GMAIL ===";
           extraMailboxes = [
-            "Archive"
+            #"Archive"
             "Drafts"
             "Junk"
             "Sent"
-            "Trash"
+            "Bin"
           ];
           # Gmail already stores a copy
           extraConfig = ''

@@ -7,6 +7,7 @@ in
     #./features/desktop/hyprland-illogical-impulse-dots
     ./features/desktop/hyprland
     ./features/desktop/wireless
+    #./features/cli/mpd.nix
     ./features/rgb
     ./features/productivity
     ./features/pass
@@ -33,13 +34,14 @@ in
   #  ------   -----   ------
   monitors = [
     {
-      name = "DP-1";
+      name = "DP-3";
       width = 2560;
       height = 1440;
       workspace = "1";
       primary = true;
       position = "1024x0";
       refreshRate = 180;
+      bitdepth = 10;
     }
     {
       name = "HDMI-A-1";

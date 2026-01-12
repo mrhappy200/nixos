@@ -59,6 +59,8 @@ in
     inputs.noctalia.packages.${system}.default
   ];
 
+hardware.rtl-sdr.enable = true;
+
   imports = [
     inputs.noctalia.nixosModules.default
   ];

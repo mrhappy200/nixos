@@ -1,6 +1,8 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     ./bash.nix
+    ./mpd.nix
     ./bat.nix
     ./direnv.nix
     ./gh.nix

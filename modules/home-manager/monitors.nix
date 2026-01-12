@@ -29,6 +29,10 @@ in {
             type = types.int;
             default = 60;
           };
+	  bitdepth = mkOption {
+            type = types.int;
+            default = 8;
+          };
           position = mkOption {
             type = types.str;
             default = "auto";

@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }:
 let
@@ -21,12 +22,14 @@ in
     ../common/optional/pipewire.nix
     ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
+    ../common/optional/locate.nix
     ../common/optional/systemd-boot.nix
     #    ../common/optional/lxd.nix
     ../common/optional/virtualisation.nix
     ../common/optional/polkit.nix
 
     ../common/optional/starcitizen-fixes.nix
+    ../common/optional/docker.nix
   ];
 
   services = {
@@ -34,9 +37,13 @@ in
     udev.packages = [ pkgs.yubikey-personalization ];
   };
 
+  virtualisation.podman.enable = lib.mkForce false;
+
   environment.systemPackages = with pkgs; [
     #openai-whisper
     hello
+    bottles
+    android-tools
     wlx-overlay-s
   ];
 
@@ -54,7 +61,6 @@ in
     highPriority = true;
     autoStart = true;
   };
-
 
   #  nixpkgs.config.rocmSupport = true;
 
@@ -106,7 +112,6 @@ in
   };
 
   programs = {
-    adb.enable = true;
     dconf.enable = true;
   };
 

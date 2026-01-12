@@ -47,6 +47,8 @@
     sudo.u2fAuth = true;
   };
 
+  boot.kernel.sysctl."kernel.sysrq" = 1;
+
   security.pam.u2f = {
     enable = true;
     settings = {

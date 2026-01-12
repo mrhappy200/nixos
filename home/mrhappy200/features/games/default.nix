@@ -19,7 +19,6 @@
     ];
     persistence = {
       "/persist/${config.home.homeDirectory}" = {
-        allowOther = true;
         directories = [
           #          "Games"
           ".config/heroic"
