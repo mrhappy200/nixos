@@ -16,8 +16,6 @@
     settings = {
       main = {
         term = "xterm-256color";
-
-        font = "${config.fontProfiles.monospace.name}:size=${builtins.toString config.fontProfiles.monospace.size}";
       };
       mouse = {
         hide-when-typing = "yes";

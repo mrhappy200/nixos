@@ -8,7 +8,7 @@
   # Since home manager does not use real bind mounts but uses FUSE instead, this does not work. A bind mount is set in hardware-configuration.nix
   ##
   #home.persistence = {
-  #  "/persist/${config.home.homeDirectory}" = {
+  #  "/persist/" = {
   #    allowOther = true;
   #    directories = [".local/share/Steam"];
   #  };

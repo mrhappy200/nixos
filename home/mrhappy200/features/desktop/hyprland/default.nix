@@ -14,6 +14,7 @@ in
     ../common
     ../common/wayland-wm
     ./basic-binds.nix
+    ./hyprpaper.nix
     ./quickshell
   ];
 
@@ -84,7 +85,7 @@ in
         vrr = 1;
         close_special_on_empty = true;
         focus_on_activate = true;
-        new_window_takes_over_fullscreen = 2;
+        on_focus_under_fullscreen = 1;
         disable_hyprland_logo = true;
         enable_swallow = true;
         swallow_regex = "(?i)(${
@@ -93,45 +94,93 @@ in
         })";
       };
 
-      windowrulev2 =
+      windowrule =
         let
-          steamGame = "class:steam_app_[0-9]*";
-          kdeconnect-pointer = "class:org.kdeconnect.daemon";
-          wineTray = "class:explorer.exe";
-          steamBigPicture = "title:Steam Big Picture Mode";
-          androidStudio-hover = "class:^jetbrains-(?!toolbox)";
+          steamGame = "steam_app_[0-9]*";
+          kdeconnect-pointer = "org.kdeconnect.daemon";
+          wineTray = "explorer.exe";
+          steamBigPicture = "Steam Big Picture Mode";
+          androidStudio-hover = "^jetbrains-(?!toolbox)";
         in
         [
-          "idleinhibit focus, fullscreenstate:2 *"
-          #        "nofocus, ${sweethome3d-tooltips}"
-
-          "immediate, ${steamGame}"
-
-          "size 100% 100%, ${kdeconnect-pointer}"
-          "float, ${kdeconnect-pointer}"
-          "nofocus, ${kdeconnect-pointer}"
-          "noblur, ${kdeconnect-pointer}"
-          "noanim, ${kdeconnect-pointer}"
-          "noshadow, ${kdeconnect-pointer}"
-          "noborder, ${kdeconnect-pointer}"
-          "plugin:hyprbars:nobar, ${kdeconnect-pointer}"
-          "suppressevent fullscreen, ${kdeconnect-pointer}"
-
-          "workspace special silent, ${wineTray}"
-
-          "fullscreen, ${steamBigPicture}"
-
-          "nofocus, ${androidStudio-hover}, floating:1,title:^win\\d+$"
+          {
+            name = "layerrule-1";
+            "match:fullscreen_state_internal" = "2";
+            "match:fullscreen_state_client" = "*";
+            idle_inhibit = "focus";
+          }
+          {
+            name = "layerrule-2";
+            "match:class" = steamGame;
+            immediate = true;
+          }
+          {
+            name = "layerrule-3";
+            "match:class" = kdeconnect-pointer;
+            size = "100% 100%";
+            float = true;
+            no_focus = true;
+            no_blur = true;
+            no_anim = true;
+            no_shadow = true;
+            border_size = "0";
+            suppress_event = "fullscreen";
+          }
+          {
+            name = "layerrule-4";
+            "match:class" = wineTray;
+            workspace = "special silent";
+          }
+          {
+            name = "layerrule-5";
+            "match:title" = steamBigPicture;
+            fullscreen = true;
+          }
+          {
+            name = "layerrule-6";
+            "match:class" = androidStudio-hover;
+            "match:float" = 1;
+            "match:title" = "^win\\d+$";
+            no_focus = true;
+          }
         ];
+
+      #windowrulev2 =
+      #  let
+      #    steamGame = "class:steam_app_[0-9]*";
+      #    kdeconnect-pointer = "class:org.kdeconnect.daemon";
+      #    wineTray = "class:explorer.exe";
+      #    steamBigPicture = "title:Steam Big Picture Mode";
+      #    androidStudio-hover = "class:^jetbrains-(?!toolbox)";
+      #  in
+      #  [
+      #    "idleinhibit focus, fullscreenstate:2 *"
+      #    #        "nofocus, ${sweethome3d-tooltips}"
+
+      #    "immediate, ${steamGame}"
+
+      #    "size 100% 100%, ${kdeconnect-pointer}"
+      #    "float, ${kdeconnect-pointer}"
+      #    "nofocus, ${kdeconnect-pointer}"
+      #    "noblur, ${kdeconnect-pointer}"
+      #    "noanim, ${kdeconnect-pointer}"
+      #    "noshadow, ${kdeconnect-pointer}"
+      #    "noborder, ${kdeconnect-pointer}"
+      #    "plugin:hyprbars:nobar, ${kdeconnect-pointer}"
+      #    "suppressevent fullscreen, ${kdeconnect-pointer}"
+
+      #    "workspace special silent, ${wineTray}"
+
+      #    "fullscreen, ${steamBigPicture}"
+
+      #    "nofocus, ${androidStudio-hover}, floating:1,title:^win\\d+$"
+      #  ];
       layerrule = [
-        "animation fade,hyprpicker"
-        "animation fade,selection"
-        "animation fade,hyprpaper"
-
-        "blur,notifications"
-        "ignorezero,notifications"
-
-        "noanim,wallpaper"
+        "animation fade, match:namespace hyprpicker"
+        "animation fade, match:namespace selection"
+        "animation fade, match:namespace hyprpaper"
+        "blur on, ignore_alpha 0, match:namespace notifications"
+        "no_anim on, match:namespace wallpaper"
       ];
 
       decoration = {

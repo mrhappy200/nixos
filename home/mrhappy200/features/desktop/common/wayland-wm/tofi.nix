@@ -1,14 +1,14 @@
-{pkgs, ...}: let
-in {
+{ pkgs, ... }:
+let
+in
+{
   programs.tofi = {
     enable = true;
     settings = {
-      font = "${pkgs.ibm-plex}/share/fonts/opentype/IBMPlexSerif-Regular.otf";
       anchor = "top";
       width = "100%";
       height = 30;
       horizontal = true;
-      font-size = 14;
       prompt-text = " run: ";
       outline-width = 0;
       border-width = 0;

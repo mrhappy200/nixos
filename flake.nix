@@ -20,6 +20,10 @@
     hardware.url = "github:nixos/nixos-hardware";
     impermanence.url = "github:nix-community/impermanence";
     nix-colors.url = "github:misterio77/nix-colors";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -85,6 +89,7 @@
       home-manager,
       systems,
       nixpkgs-xr,
+      stylix,
       ...
     }@inputs:
     let
@@ -117,6 +122,7 @@
           modules = [
             ./hosts/euphrosyne
             nixpkgs-xr.nixosModules.nixpkgs-xr
+            stylix.nixosModules.stylix
           ];
           specialArgs = { inherit inputs outputs; };
         };

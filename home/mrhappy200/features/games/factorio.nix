@@ -6,7 +6,7 @@
   home = {
     packages = [pkgs.factorio];
     persistence = {
-      "/persist/${config.home.homeDirectory}" = {
+      "/persist/" = {
         directories = [
           {
             directory = ".factorio";

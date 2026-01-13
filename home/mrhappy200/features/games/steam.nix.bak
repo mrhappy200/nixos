@@ -46,7 +46,7 @@ in {
   home.packages =
     [ steam-with-pkgs steam-session pkgs.gamescope pkgs.protontricks ];
   home.persistence = {
-    "/persist/${config.home.homeDirectory}" = {
+    "/persist/" = {
       allowOther = true;
       directories = [ ".local/share/Steam" ];
     };

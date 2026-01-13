@@ -8,14 +8,13 @@ in
     ./features/desktop/hyprland
     ./features/desktop/wireless
     #./features/cli/mpd.nix
-    ./features/rgb
     ./features/productivity
     ./features/pass
     ./features/games
   ];
 
   # Red
-  wallpaper = pkgs.inputs.themes.wallpapers.landscape-river-birds;
+  #wallpaper = pkgs.inputs.themes.wallpapers.cubist-crystal-brown-teal;
 
   home.packages = with pkgs; [
     #blender-hip
@@ -26,7 +25,7 @@ in
   ];
 
   home.persistence = {
-    "/persist/${config.home.homeDirectory}".directories = [ ".local/share/Anki2" ];
+    "/persist/".directories = [ ".local/share/Anki2" ];
   };
 
   #  ------   -----   ------

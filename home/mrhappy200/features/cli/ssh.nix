@@ -16,7 +16,7 @@ in
   # overwrites it. My workaround is to make a known_hosts.d directory instead,
   # which is persisted.
   home.persistence = {
-    "/persist/${config.home.homeDirectory}".directories = [ ".ssh/known_hosts.d" ];
+    "/persist/".directories = [ ".ssh/known_hosts.d" ];
   };
 
   programs.ssh = {

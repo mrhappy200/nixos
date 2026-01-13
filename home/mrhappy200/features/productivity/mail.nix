@@ -77,7 +77,7 @@ let
 in
 {
   home.persistence = {
-    "/persist/${config.home.homeDirectory}".directories = [ "Mail" ];
+    "/persist/".directories = [ "Mail" ];
   };
 
   accounts.email = {

@@ -6,7 +6,7 @@
   ...
 }: {
   imports = [./global ./features/desktop/hyprland ./features/pass];
-  home.persistence."/persist/${config.home.homeDirectory}" = lib.mkForce {};
+  home.persistence."/persist/" = lib.mkForce {};
   home.username = "mrhappy200";
   home.packages = [pkgs.juju pkgs.sshuttle pkgs.lxd-lts];
 

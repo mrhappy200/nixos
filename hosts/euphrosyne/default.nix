@@ -32,6 +32,9 @@ in
     ../common/optional/docker.nix
   ];
 
+  stylix.enable = true;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/woodland.yaml";
+
   services = {
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
