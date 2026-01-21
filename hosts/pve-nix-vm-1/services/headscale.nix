@@ -22,7 +22,7 @@ in {
           base_domain = "ts.hppy200.dev";
           magic_dns = true;
           search_domains = ["ts.hppy200.dev"];
-          nameservers.global = ["100.64.0.1" "1.1.1.1"];
+          nameservers.global = ["100.64.0.2" "1.1.1.1"];
         };
         server_url = "https://headscale.hppy200.dev";
         metrics_listen_addr = "127.0.0.1:8095";

@@ -14,8 +14,9 @@ in
     ../common
     ../common/wayland-wm
     ./basic-binds.nix
+    ./widgets.nix
     ./hyprpaper.nix
-    ./quickshell
+    ./noctalia.nix
   ];
 
   wayland.windowManager.hyprland = {
@@ -287,7 +288,7 @@ in
               tofi = pkgs.tofi;
             in
             lib.optionals config.programs.tofi.enable [
-              "SUPER,x,exec,${uwsm} $(${tofi}/bin/tofi-drun)"
+              #"SUPER,x,exec,${uwsm} $(${tofi}/bin/tofi-drun)"
               "SUPER,s,exec,specialisation $(specialisation | ${tofi}/bin/tofi)"
               "SUPER,d,exec,${tofi}/bin/tofi-run"
             ]
@@ -316,6 +317,7 @@ in
               ''SUPER,c,exec,selected=$(${cliphist} list | ${wofi} -S dmenu) && echo "$selected" | ${cliphist} decode | wl-copy''
             ]
           )
+          ++ ([ "SUPER,x,exec, noctalia-shell ipc call launcher toggle" ])
           ++ (
             let
               # Save to image and share it to device, if png; else share as text to clipboard.

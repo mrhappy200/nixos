@@ -6,6 +6,7 @@
   minicava = pkgs.callPackage ./minicava {};
   pass-wofi = pkgs.callPackage ./pass-wofi {};
   xpo = pkgs.callPackage ./xpo {};
+  hppylrx = pkgs.python3Packages.callPackage ./hppylrx {};
 
   # # My slightly customized plymouth theme, just makes the blue outline white
   plymouth-spinner-monochrome = pkgs.callPackage ./plymouth-spinner-monochrome {};

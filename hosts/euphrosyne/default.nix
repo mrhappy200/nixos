@@ -32,12 +32,16 @@ in
     ../common/optional/docker.nix
   ];
 
-  stylix.enable = true;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/woodland.yaml";
+  stylix = {
+    enable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+    image = ./BenBulben.png;
+  };
 
   services = {
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
+    tuned.enable = true;
   };
 
   virtualisation.podman.enable = lib.mkForce false;
@@ -53,6 +57,59 @@ in
   networking = {
     hostName = "euphrosyne";
     useDHCP = true;
+  };
+
+  #systemd.tmpfiles.rules = [
+  #  # Directory for snapserver runtime data
+  #  "d /run/snapserver 0755 snapserver snapserver -"
+
+  #  # FIFO shared between user MPD and system snapserver
+  #  "p /run/snapserver/snapfifo 0666 - - -"
+  #];
+
+  networking.firewall = {
+    allowedTCPPorts = [ 6600 ];
+  };
+
+  # Snapcast music server
+  services.snapserver = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      stream.source = [
+        "pipe:///run/snapserver/snapfifo?name=mpd&sampleformat=44100:16:2&codec=flac"
+        "file:///example.wav?name=test"
+        "pipe:///run/snapserver/pipewire?name=Euphrosyne&codec=flac"
+      ];
+      tcp-control = {
+        enabled = true;
+      };
+      tcp-streaming = {
+        enabled = true;
+      };
+      http = {
+        enabled = true;
+      };
+    };
+  };
+  systemd.user.services.snapcast-sink = {
+    wantedBy = [
+      "pipewire.service"
+    ];
+    after = [
+      "pipewire.service"
+    ];
+    bindsTo = [
+      "pipewire.service"
+    ];
+    path = with pkgs; [
+      gawk
+      pulseaudio
+    ];
+    script = ''
+      pactl load-module module-pipe-sink file=/run/snapserver/pipewire sink_name=Snapcast format=s16le rate=48000
+      pactl load-module module-loopback source=$(pactl get-default-sink).monitor sink=Snapcast
+    '';
   };
 
   services.wivrn = {

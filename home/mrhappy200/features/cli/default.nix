@@ -5,6 +5,7 @@
     ./mpd.nix
     ./bat.nix
     ./direnv.nix
+    ./wrtag.nix
     ./gh.nix
     ./git.nix
     ./gpg.nix

@@ -1,0 +1,10 @@
+(defwindow time
+           :monitor 1
+           :geometry (geometry :x "5%"
+                               :y "10%"
+                               :anchor "top left")
+           :stacking "bg"
+  time)
+(defpoll time :interval "1s"
+                :initial "12:42"
+    `date +%H:%M:%S`)

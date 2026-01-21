@@ -18,6 +18,7 @@
     systems.url = "github:nix-systems/default-linux";
     nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
     hardware.url = "github:nixos/nixos-hardware";
+    tuwunel.url = "github:matrix-construct/tuwunel";
     impermanence.url = "github:nix-community/impermanence";
     nix-colors.url = "github:misterio77/nix-colors";
     stylix = {

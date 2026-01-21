@@ -21,6 +21,7 @@ in
       "i2c"
       "weechat"
       "libvirtd"
+      "pipewire"
       "lxd"
       "minecraft"
       "mysql"
@@ -55,16 +56,8 @@ in
 
   #environment.persistence = {"/nix/persist".directories = ["/home/mrhappy200/.local/share/bottles"];};
 
-  environment.systemPackages = with pkgs; [
-    inputs.noctalia.packages.${system}.default
-  ];
-
 hardware.rtl-sdr.enable = true;
 
-  imports = [
-    inputs.noctalia.nixosModules.default
-  ];
-  services.noctalia-shell.enable = true;
 
   #services.weechat = {
   #  enable = true;
