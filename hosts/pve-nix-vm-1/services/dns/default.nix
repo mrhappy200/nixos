@@ -5,6 +5,7 @@
   ...
 }:
 let
+  stateDir = "/var/lib/technitium-dns-server";
   package = pkgs.technitium-dns-server;
   binary = "${package}/bin/technitium-dns-server";
 in
@@ -20,12 +21,13 @@ in
   # Ensure the service uses this user (if not already defaulting to it)
   systemd.services.technitium-dns-server.serviceConfig.User = "technitium";
   systemd.services.technitium-dns-server.serviceConfig.Group = "technitium";
-  systemd.services.technitium-dns-server.serviceConfig.ExecStart = lib.mkForce binary;
+  systemd.services.technitium-dns-server.serviceConfig.ExecStart =
+    lib.mkForce "${binary} ${stateDir}";
   systemd.services.technitium-dns-server.serviceConfig.DynamicUser = lib.mkForce false;
 
-  #environment.persistence = {
-  #  "/persist".directories = [ "/var/lib/technitium-dns-server" ];
-  #};
+  environment.persistence = {
+    "/persist".directories = [ stateDir ];
+  };
 
   services.technitium-dns-server = {
     enable = true;
