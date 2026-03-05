@@ -5,6 +5,11 @@
     inputs.noctalia.homeModules.default
   ];
 
+  home.packages = [
+    pkgs.hyprshot
+    pkgs.gpu-screen-recorder
+  ];
+
   # configure options
   programs.noctalia-shell = {
     enable = true;
@@ -27,6 +32,14 @@
           sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
         };
         unicode-picker = {
+          enabled = true;
+          sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
+        screen-recorder = {
+          enabled = true;
+          sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
+        screenshot = {
           enabled = true;
           sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
         };
@@ -75,21 +88,22 @@
         ];
         outerCorners = true;
         position = "top";
+
         showCapsule = true;
         showOutline = false;
         useSeparateOpacity = false;
         widgets = {
           center = [
             {
-              characterCount = 2;
+              characterCount = 10;
               colorizeIcons = false;
               enableScrollWheel = true;
               followFocusedScreen = false;
               groupedBorderOpacity = 1;
-              hideUnoccupied = false;
+              hideUnoccupied = true;
               iconScale = 0.8;
               id = "Workspace";
-              labelMode = "index";
+              labelMode = "name";
               showApplications = false;
               showLabelsOnlyWhenOccupied = true;
               unfocusedIconsOpacity = 1;
@@ -192,6 +206,7 @@
               showCapsLock = true;
               showNumLock = true;
               showScrollLock = true;
+              hideWhenOff = true;
             }
             {
               blacklist = [
@@ -221,6 +236,7 @@
               hideWhenZero = false;
               id = "NotificationHistory";
               showUnreadBadge = true;
+              hideWhenZeroUnread = true;
             }
             {
               displayMode = "onhover";
@@ -230,6 +246,19 @@
             {
               displayMode = "onhover";
               id = "Brightness";
+            }
+            {
+              defaultSettings = {
+                mode = "region";
+              };
+              id = "plugin:screenshot";
+            }
+            {
+              defaultSettings = {
+                videoCodec = "av1";
+                copyToClipboard = true;
+              };
+              id = "plugin:screen-recorder";
             }
             {
               id = "plugin:catwalk";
@@ -391,11 +420,11 @@
         enableKeyboardLayoutToast = true;
         enabled = true;
         location = "top_right";
-        lowUrgencyDuration = 3;
+        lowUrgencyDuration = 2;
         monitors = [
 
         ];
-        normalUrgencyDuration = 8;
+        normalUrgencyDuration = 6;
         overlayLayer = true;
         respectExpireTimeout = true;
         saveToHistory = {
@@ -403,15 +432,19 @@
           low = true;
           normal = true;
         };
-        sounds = {
-          criticalSoundFile = "";
-          enabled = false;
-          excludedApps = "discord,firefox,chrome,chromium,edge";
-          lowSoundFile = "";
-          normalSoundFile = "";
-          separateSounds = false;
-          volume = 0.5;
-        };
+        sounds =
+          let
+            sound = "/home/mrhappy200/Documents/minecraft-achievement.wav";
+          in
+          {
+            enabled = true;
+            excludedApps = "discord,firefox,chrome,chromium,edge";
+            lowSoundFile = sound;
+            normalSoundFile = sound;
+            criticalSoundFile = sound;
+            separateSounds = false;
+            volume = 0.2;
+          };
       };
       osd = {
         autoHideMs = 2000;

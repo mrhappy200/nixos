@@ -1,4 +1,7 @@
 .direnv
+./*/.direnv
 result*
 *.qcow2
 .nixie
+\#*\#
+.\#*

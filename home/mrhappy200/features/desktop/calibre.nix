@@ -1,0 +1,6 @@
+{ ... }:
+{
+  programs.calibre = {
+    #enable = true;
+  };
+}

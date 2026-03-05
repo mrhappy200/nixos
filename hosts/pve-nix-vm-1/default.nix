@@ -1,4 +1,10 @@
-{inputs, modulesPath, ...}: {
+{
+  pkgs,
+  inputs,
+  modulesPath,
+  ...
+}:
+{
   imports = [
     ./services
     ./hardware-configuration.nix
@@ -10,11 +16,11 @@
     ../common/users/mrhappy200
     ../common/optional/tailscale-exit-node.nix
     inputs.disko.nixosModules.disko
-#    (modulesPath + "/profiles/qemu-guest.nix")
+    #    (modulesPath + "/profiles/qemu-guest.nix")
     ./disk-config.nix
   ];
 
-# 1. Add support for your filesystem (Btrfs)
+  # 1. Add support for your filesystem (Btrfs)
   boot.supportedFilesystems = [ "btrfs" ];
 
   # 2. Add the required kernel modules for the disk controller and btrfs
@@ -25,6 +31,16 @@
     # Filesystem
     "btrfs"
   ];
+
+  # For tesla fleet access
+  services.nginx.virtualHosts."hppy200.dev".locations."=/.well-known/appspecific/com.tesla.3p.public-key.pem" =
+    {
+      alias = pkgs.writeText "com.tesla.3p.public-key.pem" ''
+        -----BEGIN PUBLIC KEY-----
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEy8If8HNzPt8v3lTMHP5lZoisFDMy
+        Fh4VVgGBdfu7zcvDnEHQKy2Y1iMU9NBtMBrKanNY21qtOxroktFs/T8x3A==
+        -----END PUBLIC KEY-----'';
+    };
 
   nixpkgs.hostPlatform.system = "x86_64-linux";
 

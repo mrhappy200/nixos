@@ -18,11 +18,17 @@ in
     ../common/users/mrhappy200
 
     ../common/optional/peripherals.nix
+    ../common/optional/guacamole.nix
+    ../common/optional/ollama.nix
     ../common/optional/greetd.nix
     ../common/optional/pipewire.nix
+    ../common/optional/windows
+    ../common/optional/udisks.nix
+    ../common/optional/gamemode.nix
     ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/locate.nix
+    ../common/optional/stylix
     ../common/optional/systemd-boot.nix
     #    ../common/optional/lxd.nix
     ../common/optional/virtualisation.nix
@@ -32,18 +38,13 @@ in
     ../common/optional/docker.nix
   ];
 
-  stylix = {
-    enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-    image = ./BenBulben.png;
-  };
-
   services = {
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
     tuned.enable = true;
   };
 
+  hardware.amdgpu.overdrive.enable = true;
   virtualisation.podman.enable = lib.mkForce false;
 
   environment.systemPackages = with pkgs; [
@@ -51,12 +52,94 @@ in
     hello
     bottles
     android-tools
-    wlx-overlay-s
+    wayvr
   ];
+
+  #Calibre server
+  services.calibre-server = {
+    enable = false;
+    host = "0.0.0.0";
+    port = 8194;
+    libraries = [ "/nix/persist/home/mrhappy200/Calibre\ Library" ];
+    auth.enable = false;
+  };
+
+  # Wyoming for home assistant
+  networking.firewall = {
+    allowedTCPPorts = [
+      6600
+      10300
+      10200
+    ];
+  };
+  services.wyoming = {
+    faster-whisper.servers = {
+      "EuphrosyneWhisper" = {
+        enable = true;
+        #model = "turbo";
+        model = "tiny-int8";
+        language = "en";
+        uri = "tcp://0.0.0.0:10300";
+        #initialPrompt = ''
+        #  Ronan,Max, and Lara are lovely names.
+        #'';
+      };
+    };
+    piper.servers."EuphrosynePiper" = {
+      enable = true;
+      zeroconf = {
+        enable = true;
+        name = "EuphrosynePiper";
+      };
+      voice = "en_GB-alba-medium";
+      uri = "tcp://0.0.0.0:10200";
+    };
+  };
+  systemd.services."wyoming-faster-whisper-EuphrosyneWhisper".serviceConfig = {
+    DynamicUser = lib.mkForce false;
+  };
+  environment.persistence = {
+    "/persist" = {
+      directories = [
+        {
+          directory = "/var/lib/wyoming";
+          user = "wyoming-faster-whisper";
+        }
+      ];
+    };
+  };
+  users.users.wyoming-faster-whisper = {
+    description = "whisper user";
+    createHome = false;
+    group = "wyoming-faster-whisper";
+    isSystemUser = true;
+  };
+  users.groups.wyoming-faster-whisper = { };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      cups-filters
+      cups-browsed
+      hplipWithPlugin
+      gutenprint
+      gutenprintBin
+    ];
+  };
 
   networking = {
     hostName = "euphrosyne";
     useDHCP = true;
+  };
+
+  services.lact = {
+    enable = true;
   };
 
   #systemd.tmpfiles.rules = [
@@ -67,10 +150,6 @@ in
   #  "p /run/snapserver/snapfifo 0666 - - -"
   #];
 
-  networking.firewall = {
-    allowedTCPPorts = [ 6600 ];
-  };
-
   # Snapcast music server
   services.snapserver = {
     enable = true;
@@ -78,7 +157,7 @@ in
     settings = {
       stream.source = [
         "pipe:///run/snapserver/snapfifo?name=mpd&sampleformat=44100:16:2&codec=flac"
-        "file:///example.wav?name=test"
+        #"file:///example.wav?name=test"
         "pipe:///run/snapserver/pipewire?name=Euphrosyne&codec=flac"
       ];
       tcp-control = {
@@ -112,17 +191,18 @@ in
     '';
   };
 
-  services.wivrn = {
-    enable = true;
-    package = pkgs.wivrn;
-    steam.importOXRRuntimes = true;
-    openFirewall = true;
-    defaultRuntime = true;
-    highPriority = true;
-    autoStart = true;
-  };
+  # XRIZER didn't want to build
+  #services.wivrn = {
+  #  enable = true;
+  #  package = pkgs.wivrn;
+  #  steam.importOXRRuntimes = true;
+  #  openFirewall = true;
+  #  defaultRuntime = true;
+  #  highPriority = true;
+  #  autoStart = true;
+  #};
 
-  #  nixpkgs.config.rocmSupport = true;
+  nixpkgs.config.rocmSupport = true;
 
   nixpkgs.config.permittedInsecurePackages = [
     "libsoup-2.74.3"
@@ -139,16 +219,6 @@ in
     capSysAdmin = true;
     openFirewall = true;
   };
-
-  # services.ollama = {
-  #   enable = false;
-  #   host = "0.0.0.0";
-  #   openFirewall = true;
-  #   models = "/persist/ollama/models";
-  #   acceleration = "rocm";
-  #   user = "ollama";
-  #   loadModels = ["PetrosStav/gemma3-tools:12b"];
-  # };
 
   programs.steam = {
     enable = true;
@@ -168,6 +238,7 @@ in
     binfmt.emulatedSystems = [
       "aarch64-linux"
       "i686-linux"
+      "x86_64-windows"
     ];
   };
 

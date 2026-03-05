@@ -6,8 +6,14 @@ in
     ./global
     #./features/desktop/hyprland-illogical-impulse-dots
     ./features/desktop/hyprland
+    ./features/nvim
+    ./features/emacs
     ./features/desktop/wireless
+    ./features/desktop/vnc.nix
+    ./features/desktop/common/blender.nix
     #./features/cli/mpd.nix
+    ./features/cli/ollama.nix
+    ./features/desktop/common/lanmouse.nix
     ./features/productivity
     ./features/pass
     ./features/games
@@ -22,6 +28,12 @@ in
     hyperhdr
     anki
     thonny
+    # emacs
+    graphviz
+    texliveFull
+    hunspell
+    hunspellDicts.nl_NL
+    hunspellDicts.en_GB-ise
   ];
 
   home.persistence = {

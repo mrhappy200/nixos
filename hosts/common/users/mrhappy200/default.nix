@@ -21,6 +21,7 @@ in
       "i2c"
       "weechat"
       "libvirtd"
+      "gamemode"
       "pipewire"
       "lxd"
       "minecraft"
@@ -29,6 +30,7 @@ in
       "plugdev"
       "podman"
       "tss"
+      "lpadmin"
       "video"
       "wheel"
       "screen"
@@ -36,9 +38,10 @@ in
       "dialout"
     ];
 
-    openssh.authorizedKeys.keys = lib.splitString "\n" (
-      builtins.readFile ../../../../home/mrhappy200/ssh.pub
-    );
+    openssh.authorizedKeys.keys =
+      (lib.splitString "\n" (builtins.readFile ../../../../home/mrhappy200/ssh.pub))
+      ++ (lib.splitString "\n" (builtins.readFile ../../../../home/mrhappy200/phonekey.pub))
+      ++ (lib.splitString "\n" (builtins.readFile ../../../../home/mrhappy200/guac.pub));
     hashedPasswordFile = config.sops.secrets.mrhappy200-password.path;
     #password = "123";
     packages = with pkgs; [
@@ -47,17 +50,46 @@ in
       #bottles
       #vulkan-loader
       #dxvk
-      #winetricks
+      winetricks
       #freetype
       #android-studio
-      #wineWowPackages.waylandFull
+      wineWowPackages.waylandFull
     ];
+  };
+
+  specialisation = {
+    theme-light.configuration = {
+      custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/gruvbox-light-hard.yaml";
+    };
+    theme-dark.configuration = {
+      custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+    };
+  };
+  custom-stylix = {
+    enable = true;
+    cachebuster = "8"; # bump to force rebuild
+    width = 2560;
+    height = 1440;
+    # svgTemplate defaults to ./BenBulben.svg.template
+  };
+
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings = {
+        main = {
+          capslock = "overload(control,esc)";
+          esc = "capslock";
+          rightshift = "layer(alt)";
+        };
+      };
+    };
   };
 
   #environment.persistence = {"/nix/persist".directories = ["/home/mrhappy200/.local/share/bottles"];};
 
-hardware.rtl-sdr.enable = true;
-
+  hardware.rtl-sdr.enable = true;
 
   #services.weechat = {
   #  enable = true;
@@ -80,8 +112,8 @@ hardware.rtl-sdr.enable = true;
 
   environment.persistence."/persist".users.mrhappy200 = {
     directories = [
-  #    "Android"
-  #    "AndroidStudioProjects"
+      #    "Android"
+      #    "AndroidStudioProjects"
       ".local/share/PrismLauncher"
     ];
   };
@@ -89,6 +121,9 @@ hardware.rtl-sdr.enable = true;
   sops.secrets.mrhappy200-password = {
     sopsFile = ../../secrets.yaml;
     neededForUsers = true;
+  };
+  sops.secrets.mrhappy200-password-md5 = {
+    sopsFile = ../../secrets.yaml;
   };
 
   programs.uwsm = {
@@ -99,6 +134,19 @@ hardware.rtl-sdr.enable = true;
         comment = "Hyprland compositor managed by UWSM";
         binPath = "/run/current-system/sw/bin/Hyprland";
       };
+    };
+  };
+
+  xdg = {
+    portal = {
+      enable = true;
+
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr
+        xdg-desktop-portal-termfilechooser
+      ];
+
+      config.common."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
     };
   };
 

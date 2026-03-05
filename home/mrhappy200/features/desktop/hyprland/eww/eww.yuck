@@ -1,10 +1,44 @@
-(defwindow time
-           :monitor 1
-           :geometry (geometry :x "5%"
-                               :y "10%"
-                               :anchor "top left")
-           :stacking "bg"
-  time)
-(defpoll time :interval "1s"
-                :initial "12:42"
-    `date +%H:%M:%S`)
+;; Variables
+(defpoll time :interval "1s" "date '+%H:%M:%S'")
+(defpoll date :interval "1s" "date --iso-8601=seconds")
+
+(defvar show_date false)
+
+;; Widget Definition
+(defwidget clock_widget []
+  (eventbox 
+    :onhover "eww update show_date=true" 
+    :onhoverlost "eww update show_date=false"
+    (box 
+      :class "container" 
+      :orientation "v" 
+      :space-evenly false 
+      :halign "center"
+      
+      (label :class "time" :text time)
+      
+      (revealer 
+        :transition "slidedown" 
+        :reveal show_date 
+        :duration "350ms"
+        (label :class "date" :text date)))))
+      
+    
+  
+
+
+;; Window Configuration
+(defwindow my_clock [monitor]
+  ;; 2. Bind monitor to the variable
+  :monitor monitor
+  :geometry (geometry 
+              :x "10%" 
+              :y "10%" 
+              :width "30%" 
+              :height "10px" 
+              :anchor "top left")
+  :stacking "bg"           ;; Keeps it below other windows
+  :windowtype "desktop"    ;; Treats it as a desktop widget (wallpaper layer)
+  :wm-ignore true
+  (clock_widget))
+

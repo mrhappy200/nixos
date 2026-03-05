@@ -1,33 +1,70 @@
 {
   pkgs,
+  nixosConfig,
+  config,
   lib,
   ...
-}: {
+}:
+let
+  mkColor = color: {
+    r = config.lib.stylix.colors."${color}-rgb-r";
+    g = config.lib.stylix.colors."${color}-rgb-g";
+    b = config.lib.stylix.colors."${color}-rgb-b";
+  };
+in
+{
   programs.browserpass.enable = true;
+  stylix.targets.firefox = {
+    profileNames = [ "mrhappy200" ];
+    enable = true;
+    colorTheme.enable = true;
+  };
+  stylix.enable = true;
   programs.firefox = {
     enable = true;
     profiles.mrhappy200 = {
+      extensions = {
+        force = true;
+        packages = with pkgs.inputs.firefox-addons; [
+          ublock-origin
+          sponsorblock
+          firefox-color
+        ];
+        settings."FirefoxColor@mozilla.com".settings = {
+          firstRunDone = true;
+          theme = {
+            images.additional_backgrounds = lib.mkForce [ "${nixosConfig.custom-stylix.svgWallpaper}" ];
+            colors = {
+              toolbar_field = lib.mkForce (mkColor "base01");
+            };
+          };
+        };
+      };
       search = {
         force = true;
         default = "google";
         privateDefault = "ddg";
-        order = ["google" "ddg" "kagi"];
+        order = [
+          "kagi"
+          "ddg"
+          "google"
+        ];
         engines = {
           kagi = {
             name = "Kagi";
-            urls = [{template = "https://kagi.com/search?q={searchTerms}";}];
+            urls = [ { template = "https://kagi.com/search?q={searchTerms}"; } ];
             icon = "https://kagi.com/favicon.ico";
           };
           bing.metaData.hidden = true;
         };
       };
-      bookmarks = {};
-      extensions.packages = with pkgs.inputs.firefox-addons; [
-        ublock-origin
-        browserpass
-      ];
-      bookmarks = {};
+      bookmarks = { };
       settings = {
+        "widget.use-xdg-desktop-portal.file-picker" = 1;
+        "extensions.autoDisableScopes" = 0;
+        "extensions.update.autoUpdateDefault" = false;
+        "extensions.update.enabled" = false;
+
         "browser.startup.homepage" = "about:home";
 
         # Disable irritating first-run stuff
@@ -51,8 +88,7 @@
         # Disable crappy home activity stream page
         "browser.newtabpage.activity-stream.feeds.topsites" = false;
         "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-        "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts" =
-          false;
+        "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts" = false;
         "browser.newtabpage.blocked" = lib.genAttrs [
           # Youtube
           "26UbzFJ7qT9/4DhodHKA1Q=="
@@ -101,23 +137,29 @@
         # Harden
         "privacy.trackingprotection.enabled" = true;
         "dom.security.https_only_mode" = true;
+        # Remove close button
+        "browser.tabs.inTitlebar" = 0;
+        # Compact UI (might break stuff)
+        "browser.uidensity" = 1;
+        # Vertical tabs
+        "sidebar.verticalTabs" = true;
+        "sidebar.revamp" = true;
+        "sidebar.verticalTabs.dragToPinPromo.dismissed" = true;
+        "sidebar.animation.duration-ms" = 100;
+        "sidebar.visibility" = "hide-sidebar";
+        "sidebar.main.tools" = "history,bookmarks";
         # Layout
         "browser.uiCustomization.state" = builtins.toJSON {
-          currentVersion = 20;
-          newElementCount = 5;
-          dirtyAreaCache = [
-            "nav-bar"
-            "PersonalToolbar"
-            "toolbar-menubar"
-            "TabsToolbar"
-            "widget-overflow-fixed-list"
-          ];
           placements = {
-            PersonalToolbar = ["personal-bookmarks"];
-            TabsToolbar = ["tabbrowser-tabs" "new-tab-button" "alltabs-button"];
+            unified-extensions-area = [
+              "sponsorblocker_ajay_app-browser-action"
+              "firefoxcolor_mozilla_com-browser-action"
+            ];
+            widget-overflow-fixed-list = [ ];
             nav-bar = [
               "back-button"
               "forward-button"
+              "vertical-spacer"
               "stop-reload-button"
               "urlbar-container"
               "downloads-button"
@@ -126,32 +168,87 @@
               "reset-pbm-toolbar-button"
               "unified-extensions-button"
             ];
-            toolbar-menubar = ["menubar-items"];
-            unified-extensions-area = [];
-            widget-overflow-fixed-list = [];
+            toolbar-menubar = [ "menubar-items" ];
+            TabsToolbar = [ ];
+            vertical-tabs = [ "tabbrowser-tabs" ];
+            PersonalToolbar = [ "personal-bookmarks" ];
           };
           seen = [
             "save-to-pocket-button"
             "developer-button"
             "ublock0_raymondhill_net-browser-action"
+            "sponsorblocker_ajay_app-browser-action"
+            "firefoxcolor_mozilla_com-browser-action"
             "_testpilot-containers-browser-action"
+            "screenshot-button"
           ];
+          dirtyAreaCache = [
+            "nav-bar"
+            "PersonalToolbar"
+            "toolbar-menubar"
+            "TabsToolbar"
+            "widget-overflow-fixed-list"
+            "vertical-tabs"
+          ];
+          currentVersion = 23;
+          newElementCount = 10;
         };
       };
+      userChrome = ''
+        /* The main window background */
+        #main-window {
+        	-moz-appearance: /*-moz-mac-vibrancy-dark*/ none !important; /* -moz-win-glass */
+        	background-color: rgba(25, 25, 25, .8) !important;
+        	background-image: none !important;
+        	/*background: url(background.jpg);*/
+        }
+
+        #navigator-toolbox {
+        	background-color: rgba(0, 0, 0, .8);
+        }
+
+        /* Transparent Stuff */
+         #TabsToolbar, #titlebar, #navigator-toolbox, box, .theme-body {
+        	-moz-appearance: none !important;
+        	background-color: rgba(0, 0, 0, 0) !important;
+        	background-image: none !important;
+        	border: none;
+        	outline: none;
+        }
+
+        /* Light Transparent Stuff */
+        .tab-content, #tabs-newtab-button {
+        	-moz-appearance: none !important;
+        	color: #eee !important;
+        	background-image: none !important;
+        	fill: #eee !important;
+        }
+
+        .tab-content[selected="true"]{
+        	color: var(--lwt-tab-text) !important;
+        }
+
+        /* Nuke all borders and outlines, they look bad */
+        * {
+        	border: none !important;
+        	outline: none !important;
+        	box-shadow: none !important;
+        }
+      '';
     };
   };
 
   home = {
     persistence = {
       # Not persisting is safer
-      # "/persist/".directories = [ ".mozilla/firefox" ];
+      # "/persist".directories = [ ".mozilla/firefox" ];
     };
   };
 
   xdg.mimeApps.defaultApplications = {
-    "text/html" = ["firefox.desktop"];
-    "text/xml" = ["firefox.desktop"];
-    "x-scheme-handler/http" = ["firefox.desktop"];
-    "x-scheme-handler/https" = ["firefox.desktop"];
+    "text/html" = [ "firefox.desktop" ];
+    "text/xml" = [ "firefox.desktop" ];
+    "x-scheme-handler/http" = [ "firefox.desktop" ];
+    "x-scheme-handler/https" = [ "firefox.desktop" ];
   };
 }

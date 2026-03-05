@@ -1,1 +1,21 @@
-.time {font-size: 96}
+* {
+  all: unset;
+  //font-family: "JetBrains Mono", "Roboto", serif;
+  font-family: sans-serif
+}
+
+/* Text Shadow added for legibility against wallpapers */
+.time {
+  font-size: 6rem;
+  font-weight: 800;
+  color: #83A598;
+  //text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.date {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #83A598;
+  margin-top: 5px;
+  //text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}

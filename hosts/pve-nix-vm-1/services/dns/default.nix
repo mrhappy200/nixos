@@ -19,20 +19,52 @@ in
   };
 
   # Ensure the service uses this user (if not already defaulting to it)
-  systemd.services.technitium-dns-server.serviceConfig.User = "technitium";
-  systemd.services.technitium-dns-server.serviceConfig.Group = "technitium";
-  systemd.services.technitium-dns-server.serviceConfig.ExecStart =
-    lib.mkForce "${binary} ${stateDir}";
-  systemd.services.technitium-dns-server.serviceConfig.DynamicUser = lib.mkForce false;
-
   environment.persistence = {
     "/persist".directories = [ stateDir ];
   };
 
-  services.technitium-dns-server = {
-    enable = true;
-    openFirewall = true;
+  systemd.services.technitium-dns-server.environment = {
+    # Forces .NET to poll for file changes instead of using recursive inotify watchers
+    DOTNET_USE_POLLING_FILE_WATCHER = "1";
   };
+  systemd.services.technitium-dns-server = {
+    serviceConfig = {
+      User = "technitium";
+      Group = "technitium";
+      ExecStart = "${binary} ${stateDir}";
+      # Explicitly set the working directory to the state folder
+      WorkingDirectory = stateDir;
+      # Required for .NET apps on NixOS to find their libraries if not wrapped
+      Restart = "on-failure";
+      AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+      CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+    };
+  };
+
+  networking.firewall.interfaces."tailscale0" = {
+    allowedUDPPorts = [ 53 ];
+    allowedTCPPorts = [
+      53
+      5380
+      53443
+    ];
+  };
+
+  services.nginx.virtualHosts."technitium.hppy200.dev" = {
+    forceSSL = true;
+
+    sslCertificate = "/var/lib/acme/hppy200.dev/fullchain.pem";
+    sslCertificateKey = "/var/lib/acme/hppy200.dev/key.pem";
+
+    locations."/" = {
+      proxyPass = "http://localhost:5380";
+    };
+  };
+
+  #services.technitium-dns-server = {
+  #  enable = true;
+  #  openFirewall = true;
+  #};
   #services.coredns.enable = true;
   #services.coredns.config = ''
   #         . {

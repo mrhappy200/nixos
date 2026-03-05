@@ -33,25 +33,26 @@
     git.enable = true;
   };
 
-  xdg.configFile."openvr/openvrpaths.vrpath".text = ''
-    {
-      "config" :
-      [
-        "~/.local/share/Steam/config"
-      ],
-      "external_drivers" : null,
-      "jsonid" : "vrpathreg",
-      "log" :
-      [
-        "~/.local/share/Steam/logs"
-      ],
-      "runtime" :
-      [
-        "${pkgs.xrizer}/lib/xrizer"
-      ],
-      "version" : 1
-    }
-  '';
+  # XRIZER didn't want to build
+  #xdg.configFile."openvr/openvrpaths.vrpath".text = ''
+  #  {
+  #    "config" :
+  #    [
+  #      "~/.local/share/Steam/config"
+  #    ],
+  #    "external_drivers" : null,
+  #    "jsonid" : "vrpathreg",
+  #    "log" :
+  #    [
+  #      "~/.local/share/Steam/logs"
+  #    ],
+  #    "runtime" :
+  #    [
+  #      "${pkgs.xrizer}/lib/xrizer"
+  #    ],
+  #    "version" : 1
+  #  }
+  #'';
 
   home = {
     username = lib.mkDefault "mrhappy200";
@@ -78,7 +79,6 @@
       };
     };
   };
-
 
   home.packages =
     let

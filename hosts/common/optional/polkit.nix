@@ -1,19 +1,22 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   security.polkit = {
     enable = true;
   };
   systemd = {
-    user.services.polkit-gnome-authentication-agent-1 = {
-      description = "polkit-gnome-authentication-agent-1";
-      wantedBy = ["graphical-session.target"];
-      wants = ["graphical-session.target"];
-      after = ["graphical-session.target"];
+    user.services.hyprpolkitagent = {
+      description = "Hyprland Polkit Authentication Agent";
+      wantedBy = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      unitConfig = {
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
       serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        ExecStart = "${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent";
+        Slice = "session.slice";
+        TimeoutStopSec = "5sec";
         Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
       };
     };
   };

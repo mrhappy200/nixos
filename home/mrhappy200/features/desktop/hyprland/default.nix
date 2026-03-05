@@ -6,17 +6,23 @@
 }:
 let
   getHostname = x: lib.last (lib.splitString "@" x);
-  defaultApp = type: "${lib.getExe pkgs.handlr-regex} launch ${type}";
-  uwsm = "${lib.getExe pkgs.uwsm} app -s a -t service --";
+  uwsm = "${pkgs.uwsm}/bin/uwsm-app -s a -t service --";
+  defaultApp = type: "${uwsm} $(${lib.getExe pkgs.handlr-regex} get ${type})";
+  grimblast = lib.getExe pkgs.grimblast;
 in
 {
   imports = [
     ../common
     ../common/wayland-wm
+    ./dynamic-cursor.nix
+    #    ./hyprfocus.nix
+    #./split-monitor-workspaces.nix
     ./basic-binds.nix
     ./widgets.nix
     ./hyprpaper.nix
     ./noctalia.nix
+    ./hypridle.nix
+    ./hyprlock.nix
   ];
 
   wayland.windowManager.hyprland = {
@@ -36,7 +42,7 @@ in
         gaps_out = 5;
         gaps_workspaces = 50;
 
-        border_size = 1;
+        border_size = 2;
         resize_on_border = true;
 
         no_focus_fallback = true;
@@ -102,6 +108,7 @@ in
           wineTray = "explorer.exe";
           steamBigPicture = "Steam Big Picture Mode";
           androidStudio-hover = "^jetbrains-(?!toolbox)";
+          windowsApps = "^(Microsoft (Word|Excel|PowerPoint|Publisher|Powershell|Visual Studio|Paint))$";
         in
         [
           {
@@ -143,6 +150,16 @@ in
             "match:float" = 1;
             "match:title" = "^win\\d+$";
             no_focus = true;
+          }
+          {
+            name = "WindowsAppFixer";
+            "match:class" = windowsApps;
+            suppress_event = "maximize fullscreen";
+          }
+          {
+            name = "termfilechooser float";
+            "match:class" = "termfilechoose";
+            float = true;
           }
         ];
 
@@ -248,12 +265,15 @@ in
           ## specialWorkspace
           "specialWorkspaceIn, 1, 2.8, emphasizedDecel, slidevert"
           "specialWorkspaceOut, 1, 1.2, emphasizedAccel, slidevert"
+          #Hyprfocus
+          #"hyprfocusIn, 1, 1, emphasizedAccel"
+          #"hyprfocusOut, 1, 1, emphasizedAccel"
         ];
       };
 
       bind = [
         # Rename workspace
-        "SUPER,r,exec,${pkgs.writeShellScript "rename" ''
+        "SUPER,r,exec,${uwsm} ${pkgs.writeShellScript "rename" ''
           workspace="$(hyprctl activeworkspace -j)"
           id="$(jq -r .id <<< "$workspace")"
           prefix="$id - "
@@ -271,6 +291,9 @@ in
         "SUPER,Return,exec,${defaultApp "x-scheme-handler/terminal"}"
         "SUPER,e,exec,${defaultApp "text/plain"}"
         "SUPER,b,exec,${defaultApp "x-scheme-handler/https"}"
+        # Screenshotting
+        ",Print,exec,${grimblast} --notify --freeze copy area"
+        "SHIFT,Print,exec,${grimblast} --notify --freeze copy output"
       ]
       ++
         # Launcher
@@ -338,6 +361,40 @@ in
             in
             lib.optionals config.services.kdeconnect.enable [ "SUPER,v,exec,${share-kdeconnect}" ]
           )
+          ++ (
+            let
+              # Save to image and share it to device, if png; else share as text to clipboard.
+              gamemode = lib.getExe (
+                pkgs.writeShellScriptBin "gamemode" ''
+                  #!/usr/bin/env sh
+                  HYPRGAMEMODE=$(hyprctl getoption animations:enabled | awk 'NR==1{print $2}')
+                  if [ "$HYPRGAMEMODE" = 1 ] ; then
+                      hyprctl --batch "\
+                          keyword animations:enabled 0;\
+                          keyword animation borderangle,0; \
+                          keyword decoration:shadow:enabled 0;\
+                          keyword decoration:blur:enabled 0;\
+                  	    keyword decoration:fullscreen_opacity 1;\
+                          keyword general:gaps_in 0;\
+                          keyword general:gaps_out 0;\
+                          keyword general:border_size 1;\
+                          keyword decoration:rounding 0"
+                      systemctl --user stop noctalia-shell.service
+                      hyprctl notify 1 5000 "rgb(40a02b)" "Gamemode [ON]"
+                      exit
+                  else
+                      hyprctl notify 1 5000 "rgb(d20f39)" "Gamemode [OFF]"
+                      hyprctl reload
+                      systemctl --user start noctalia-shell.service
+                      exit 0
+                  fi
+                  exit 1
+
+                ''
+              );
+            in
+            [ "SUPER,F1,exec,${gamemode}" ]
+          )
         );
 
       monitor =
@@ -382,6 +439,7 @@ in
 
     # This is order sensitive, so it has to come here.
     extraConfig = ''
+      env = HYPRCURSOR_THEME,rose-pine-hyprcursor
       debug:disable_logs = false
       # Passthrough mode (e.g. for VNC)
       bind=SUPER,P,submap,passthrough

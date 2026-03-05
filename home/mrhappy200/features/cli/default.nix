@@ -2,6 +2,7 @@
 {
   imports = [
     ./bash.nix
+    ./zoxide.nix
     ./mpd.nix
     ./bat.nix
     ./direnv.nix
@@ -10,9 +11,11 @@
     ./git.nix
     ./gpg.nix
     ./lyrics.nix
+    ./fish
     ./nushell.nix
     ./nix-index.nix
     ./pfetch.nix
+    ./yazi
     ./ssh.nix
     ./xpo.nix
     ./fzf.nix

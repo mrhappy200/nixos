@@ -20,6 +20,7 @@
   home.packages = with pkgs; [
     wf-recorder
     wl-clipboard
+    pwvucontrol
   ];
 
   home.sessionVariables = {
@@ -28,5 +29,27 @@
     LIBSEAT_BACKEND = "logind";
   };
 
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+  xdg = {
+    portal = {
+      enable = true;
+
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr
+        xdg-desktop-portal-termfilechooser
+      ];
+
+      config.common."org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+    };
+  };
+  xdg.configFile."xdg-desktop-portal-termfilechooser/config" = {
+    enable = true;
+    text = ''
+      [filechooser]
+      cmd=${pkgs.xdg-desktop-portal-termfilechooser}/share/xdg-desktop-portal-termfilechooser/yazi-wrapper.sh
+      default_dir=$HOME
+      env=TERMCMD='footclient -a "termfilechooser" -T "terminal filechooser"'
+      open_mode=suggested
+      save_mode=last
+    '';
+  };
 }

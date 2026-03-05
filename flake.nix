@@ -2,8 +2,12 @@
   description = "My NixOS configuration";
 
   nixConfig = {
-    extra-substituters = [ "https://nix-gaming.cachix.org" ];
+    extra-substituters = [
+      "https://yazi.cachix.org"
+      "https://nix-gaming.cachix.org"
+    ];
     extra-trusted-public-keys = [
+      "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
     ];
   };
@@ -15,15 +19,41 @@
     # The commit that broke everything was 17f6bd177404d6d43017595c5264756764444ab8
     #nixpkgs.url = "github:NixOS/nixpkgs/7379d27cddb838c205119f9eede242810cd299a7";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     systems.url = "github:nix-systems/default-linux";
     nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
     hardware.url = "github:nixos/nixos-hardware";
     tuwunel.url = "github:matrix-construct/tuwunel";
     impermanence.url = "github:nix-community/impermanence";
+
+    rose-pine-hyprcursor = {
+      url = "github:ndom91/rose-pine-hyprcursor";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.hyprlang.follows = "hyprland/hyprlang";
+    };
+    yazi = {
+      url = "github:sxyazi/yazi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    emacs-overlay = {
+      url = "github:/nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lan-mouse.url = "github:feschber/lan-mouse";
     nix-colors.url = "github:misterio77/nix-colors";
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hppynvim = {
+      url = "github:mrhappy200/nvim";
+    };
+    hppyemacs = {
+      url = "github:mrhappy200/emacs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -52,6 +82,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    guacamole-oidc-extension = {
+      url = "https://apache.org/dyn/closer.lua/guacamole/1.6.0/binary/guacamole-auth-sso-1.6.0.tar.gz?action=download";
+      flake = false;
+    };
+    ## TODO: Couldn't be arsed to do this (guacamole extensions) with flakes.
+    #guacamole-psql-extension = {
+    #  url = "https://dlcdn.apache.org/guacamole/1.6.0/binary/guacamole-auth-jdbc-1.6.0.tar.gz";
+    #  flake = false;
+    #};
+
+    #guacamole-psql-driver = {
+    #  url = "https://jdbc.postgresql.org/download/postgresql-1.6.0.jar";
+    #  flake = false;
+    #};
+
     # My own programs, packaged with nix
     themes = {
       url = "github:misterio77/themes";
@@ -61,6 +106,15 @@
     hypr-dynamic-cursors = {
       url = "github:VirtCode/hypr-dynamic-cursors";
       inputs.hyprland.follows = "hyprland"; # to make sure that the plugin is built for the correct version of hyprland
+    };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    };
+
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
     };
 
     quickshell = {
@@ -79,7 +133,6 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell"; # Use same quickshell version
     };
   };
 
@@ -89,7 +142,9 @@
       nixpkgs,
       home-manager,
       systems,
+      determinate,
       nixpkgs-xr,
+      winapps,
       stylix,
       ...
     }@inputs:
@@ -114,7 +169,7 @@
       hydraJobs = import ./hydra.nix { inherit inputs outputs; };
 
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit inputs pkgs; });
       formatter = forEachSystem (pkgs: pkgs.alejandra);
 
       nixosConfigurations = {
@@ -124,6 +179,7 @@
             ./hosts/euphrosyne
             nixpkgs-xr.nixosModules.nixpkgs-xr
             stylix.nixosModules.stylix
+            determinate.nixosModules.default
           ];
           specialArgs = { inherit inputs outputs; };
         };

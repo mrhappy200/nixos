@@ -36,14 +36,16 @@
   home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
   nixpkgs = {
-    overlays = builtins.attrValues outputs.overlays;
+    overlays =
+      (builtins.attrValues outputs.overlays) ++ (builtins.attrValues inputs.emacs-overlay.overlays);
     config = {
       allowUnfree = true;
     };
   };
 
   security.pam.services = {
-    login.u2fAuth = true;
+    login.u2fAuth = lib.mkForce false;
+    sshd.u2fAuth = lib.mkForce false;
     sudo.u2fAuth = true;
   };
 
