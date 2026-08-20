@@ -1,8 +1,14 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.virt-manager.enable = true;
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      vhostUserPackages = with pkgs; [ virtiofsd ];
+      verbatimConfig = ''
+        remember_owner = 0
+      '';
+    };
+  };
   virtualisation.spiceUSBRedirection.enable = true;
-  virtualisation.libvirtd.qemu.verbatimConfig = ''
-    remember_owner = 0
-  '';
 }

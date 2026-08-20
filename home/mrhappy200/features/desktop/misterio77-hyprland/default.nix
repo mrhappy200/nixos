@@ -66,8 +66,8 @@ in {
     enable = true;
     #package =
     #  config.lib.nixGL.wrap
-    #  (inputs.hyprland.packages.${pkgs.system}.hyprland.override {wrapRuntimeDeps = false;});
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    #  (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland.override {wrapRuntimeDeps = false;});
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     #package = pkgs.stable.hyprland;
     systemd = {
       enable = true;

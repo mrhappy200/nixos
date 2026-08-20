@@ -52,11 +52,6 @@
             on-resume = brightnessRestore;
           }
           {
-            timeout = 10;
-            on-timeout = "brightnessctl --device *:kbd_backlight --save set 0";
-            on-resume = "brightnessctl --device *:kbd_backlight --restore";
-          }
-          {
             timeout = 20;
             on-timeout = "${(brightnessSetRelative (-50))}";
           }

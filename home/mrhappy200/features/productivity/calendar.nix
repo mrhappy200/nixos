@@ -3,39 +3,56 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   pass = "${config.programs.password-store.package}/bin/pass";
   oama = "${config.programs.oama.package}/bin/oama";
-in {
+in
+{
   home.persistence = {
-    "/persist/".directories = ["Calendars" "Contacts" ".local/share/vdirsyncer"];
+    "/persist/".directories = [
+      "Calendars"
+      "Contacts"
+      ".local/share/vdirsyncer"
+    ];
   };
 
   accounts.calendar = {
     basePath = "Calendars";
     accounts = {
-      personal = let
-        emailCfg = config.accounts.email.accounts.personal;
-      in {
-        primary = true;
-        primaryCollection = "Personal";
-        khal = {
-          enable = true;
-          addresses = [emailCfg.address] ++ emailCfg.aliases;
-          type = "discover";
+      personal =
+        let
+          emailCfg = config.accounts.email.accounts.personal;
+        in
+        {
+          primary = true;
+          primaryCollection = "Personal";
+          khal = {
+            enable = true;
+            addresses = [ emailCfg.address ] ++ emailCfg.aliases;
+            type = "discover";
+          };
+          remote = rec {
+            type = "caldav";
+            url = "https://caldav.hppy200.dev";
+            userName = "mrhappy200";
+            passwordCommand = [
+              "${pass}"
+              "caldav.hppy200.dev/${userName}"
+            ];
+          };
+          vdirsyncer = {
+            enable = true;
+            metadata = [
+              "color"
+              "displayname"
+            ];
+            collections = [
+              "from a"
+              "from b"
+            ];
+          };
         };
-        remote = rec {
-          type = "caldav";
-          url = "https://caldav.hppy200.dev";
-          userName = "mrhappy200";
-          passwordCommand = ["${pass}" "caldav.hppy200.dev/${userName}"];
-        };
-        vdirsyncer = {
-          enable = true;
-          metadata = ["color" "displayname"];
-          collections = ["from a" "from b"];
-        };
-      };
     };
   };
 
@@ -44,11 +61,13 @@ in {
 
   # Only run if gpg is unlocked
   systemd.user.services.vdirsyncer.Service = {
-    ExecCondition = let
-      gpgCmds = import ../cli/gpg-commands.nix {inherit pkgs config lib;};
-    in ''
-      /bin/sh -c "${gpgCmds.isUnlocked}"
-    '';
+    ExecCondition =
+      let
+        gpgCmds = import ../cli/gpg-commands.nix { inherit pkgs config lib; };
+      in
+      ''
+        /bin/sh -c "${gpgCmds.isUnlocked}"
+      '';
     Restart = "on-failure";
     StartLimitBurst = 2;
     ExecStopPost = pkgs.writeShellScript "stop-post" ''

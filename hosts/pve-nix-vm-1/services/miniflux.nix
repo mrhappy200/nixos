@@ -2,8 +2,11 @@
   config,
   pkgs,
   ...
-}: {
-  sops.secrets.miniflux_admin_pass = {sopsFile = ../secrets.yaml;};
+}:
+{
+  sops.secrets.miniflux_admin_pass = {
+    sopsFile = ../secrets.yaml;
+  };
 
   sops.secrets.miniflux_oidc-client-secret = {
     owner = "miniflux";
@@ -18,14 +21,14 @@
     group = "miniflux";
     isSystemUser = true;
   };
-  users.groups.miniflux = {};
+  users.groups.miniflux = { };
 
   sops.templates."creds.env".content = ''
     ADMIN_USERNAME = "TheAdmin"
     ADMIN_PASSWORD = "${config.sops.placeholder.miniflux_admin_pass}"
   '';
 
-  environment.systemPackages = [pkgs.miniflux];
+  environment.systemPackages = [ pkgs.miniflux ];
 
   services.miniflux = {
     enable = true;

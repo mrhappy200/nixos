@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 let
 in
 {
@@ -8,6 +13,8 @@ in
     ./features/desktop/hyprland
     ./features/nvim
     ./features/emacs
+    ./features/desktop/common/3dprinter.nix
+    ./features/desktop/common/flatpak.nix
     ./features/desktop/wireless
     ./features/desktop/vnc.nix
     ./features/desktop/common/blender.nix
@@ -17,6 +24,8 @@ in
     ./features/productivity
     ./features/pass
     ./features/games
+    #./features/games/vr.nix
+    inputs.nix-flatpak.homeManagerModules.nix-flatpak
   ];
 
   # Red
@@ -34,11 +43,18 @@ in
     hunspell
     hunspellDicts.nl_NL
     hunspellDicts.en_GB-ise
+    moondeck-buddy
   ];
 
   home.persistence = {
     "/persist/".directories = [ ".local/share/Anki2" ];
   };
+
+  # autostart moondeck
+  xdg.autostart.enable = true;
+  xdg.autostart.entries = [
+    "${pkgs.moondeck-buddy}/share/applications/MoonDeckBuddy.desktop"
+  ];
 
   #  ------   -----   ------
   # | DP-3 | | DP-1| | DP-2 |
@@ -52,6 +68,10 @@ in
       primary = true;
       position = "1024x0";
       refreshRate = 180;
+      vrr = 1;
+      cm = "hdredid";
+      sdrbrightness = 2;
+      sdrsaturation = 1;
       bitdepth = 10;
     }
     {

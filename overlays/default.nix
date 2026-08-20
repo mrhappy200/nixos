@@ -11,8 +11,8 @@ let
 in
 {
   # For every flake input, aliases 'pkgs.inputs.${flake}' to
-  # 'inputs.${flake}.packages.${pkgs.system}' or
-  # 'inputs.${flake}.legacyPackages.${pkgs.system}'
+  # 'inputs.${flake}.packages.${pkgs.stdenv.hostPlatform.system}' or
+  # 'inputs.${flake}.legacyPackages.${pkgs.stdenv.hostPlatform.system}'
   flake-inputs = final: _: {
     inputs = builtins.mapAttrs (
       _: flake:
@@ -24,7 +24,7 @@ in
     ) inputs;
   };
 
-  # Adds pkgs.stable == inputs.nixpkgs-stable.legacyPackages.${pkgs.system}
+  # Adds pkgs.stable == inputs.nixpkgs-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}
   stable = final: _: {
     stable = inputs.nixpkgs-stable.legacyPackages.${final.system};
   };
@@ -63,7 +63,7 @@ in
     };
 
     # https://github.com/mdellweg/pass_secret_service/pull/37
-    pass-secret-service = addPatches prev.pass-secret-service [ ./pass-secret-service-native.diff ];
+    #pass-secret-service = addPatches prev.pass-secret-service [ ./pass-secret-service-native.diff ];
 
     whisper-cpp = prev.whisper-cpp.overrideAttrs (oldAttrs: {
       src = final.fetchFromGitHub {
@@ -73,6 +73,19 @@ in
         sha256 = "sha256-dppBhiCS4C3ELw/Ckx5W0KOMUvOHUiisdZvkS7gkxj4=";
       };
     });
+
+    screen =
+      (prev.screen.override {
+        stdenv = final.gcc13Stdenv;
+      }).overrideAttrs
+        (old: rec {
+          version = "4.9.1";
+          src = final.fetchurl {
+            url = "mirror://gnu/screen/screen-${version}.tar.gz";
+            sha256 = "0sdc0ms6qxm4gbx0caw7pwghj5aw1h8syvxdhkac0w95qkiz7ki6";
+          };
+          patches = [ ];
+        });
 
     qutebrowser = prev.qutebrowser.overrideAttrs (oldAttrs: {
       preFixup =
@@ -97,7 +110,7 @@ in
       ];
     });
 
-    wl-clipboard = addPatches prev.wl-clipboard [ ./wl-clipboard-secrets.diff ];
+    #wl-clipboard = addPatches prev.wl-clipboard [ ./wl-clipboard-secrets.diff ];
 
     pass = addPatches prev.pass [ ./pass-wlclipboard-secret.diff ];
 

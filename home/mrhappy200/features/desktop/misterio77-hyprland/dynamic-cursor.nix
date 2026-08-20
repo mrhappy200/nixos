@@ -6,7 +6,7 @@
   outputs,
   ...
 }: let
-  hypr-dynamic-cursors = inputs.hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors;
+  hypr-dynamic-cursors = inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors;
 in {
   wayland.windowManager.hyprland = {
     plugins = [hypr-dynamic-cursors];

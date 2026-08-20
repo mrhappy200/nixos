@@ -21,3 +21,8 @@ require("dupes"):setup {
 		-- },
 	},
 }
+require("gvfs"):setup({
+	which_keys = "1234567890qwertyuiopasdfghjklzxcvbnm",
+	-- hide noisy entries like plain file:// mounts
+	blacklist_devices = { { scheme = "file" } },
+})

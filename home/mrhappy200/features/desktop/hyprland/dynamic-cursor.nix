@@ -7,12 +7,13 @@
   ...
 }:
 let
-  hypr-dynamic-cursors = inputs.hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors;
+  hypr-dynamic-cursors =
+    inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors;
 in
 {
   home.pointerCursor = {
     enable = true;
-    package = inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default;
+    package = inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default;
     name = "rose-pine-hyprcursor";
     gtk.enable = true;
     hyprcursor.enable = true;

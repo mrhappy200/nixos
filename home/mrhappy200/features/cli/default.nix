@@ -3,6 +3,7 @@
   imports = [
     ./bash.nix
     ./zoxide.nix
+    ./tmux.nix
     ./mpd.nix
     ./bat.nix
     ./direnv.nix
@@ -10,7 +11,7 @@
     ./gh.nix
     ./git.nix
     ./gpg.nix
-    ./lyrics.nix
+    #./lyrics.nix
     ./fish
     ./nushell.nix
     ./nix-index.nix
@@ -37,7 +38,7 @@
 
     nixd # Nix LSP
     alejandra # Nix formatter
-    nixfmt-rfc-style
+    nixfmt
     nvd # Differ
     nix-diff # Differ, more detailed
     nix-output-monitor

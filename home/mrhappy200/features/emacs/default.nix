@@ -4,7 +4,7 @@
   ...
 }:
 let
-  myEmacs = inputs.hppyemacs.packages.${pkgs.system}.default;
+  myEmacs = inputs.hppyemacs.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   services.emacs = {

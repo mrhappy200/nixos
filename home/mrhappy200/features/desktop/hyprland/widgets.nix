@@ -8,7 +8,6 @@
 {
   programs.eww = {
     enable = true;
-    enableFishIntegration = true;
   };
 
   systemd.user.services.eww = {

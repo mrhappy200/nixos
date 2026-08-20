@@ -19,15 +19,20 @@ in
 
     ../common/optional/peripherals.nix
     ../common/optional/guacamole.nix
+    ../common/optional/arr
+    ../common/optional/flatpak.nix
     ../common/optional/ollama.nix
+    ../common/optional/nginx.nix
+    ../common/optional/acme.nix
     ../common/optional/greetd.nix
     ../common/optional/pipewire.nix
-    ../common/optional/windows
+    #../common/optional/windows
     ../common/optional/udisks.nix
     ../common/optional/gamemode.nix
     ../common/optional/quietboot.nix
     ../common/optional/wireless.nix
     ../common/optional/locate.nix
+    #../common/optional/vr.nix
     ../common/optional/stylix
     ../common/optional/systemd-boot.nix
     #    ../common/optional/lxd.nix
@@ -35,8 +40,11 @@ in
     ../common/optional/polkit.nix
 
     ../common/optional/starcitizen-fixes.nix
-    ../common/optional/docker.nix
+    #../common/optional/docker.nix
   ];
+
+  services.flatpak.update.onActivation = true;
+  services.flatpak.enable = true;
 
   services = {
     pcscd.enable = true;
@@ -45,14 +53,20 @@ in
   };
 
   hardware.amdgpu.overdrive.enable = true;
-  virtualisation.podman.enable = lib.mkForce false;
+
+  services.xserver.enable = true;
+  services.xserver.displayManager.startx.enable = true;
+  services.xserver.windowManager.openbox.enable = true;
 
   environment.systemPackages = with pkgs; [
+    openbox
+    obconf
+    tint2
+    rxvt-unicode
     #openai-whisper
     hello
-    bottles
+    #bottles
     android-tools
-    wayvr
   ];
 
   #Calibre server
@@ -67,6 +81,9 @@ in
   # Wyoming for home assistant
   networking.firewall = {
     allowedTCPPorts = [
+      # Moondeckbuddy
+      59999
+
       6600
       10300
       10200
@@ -76,8 +93,12 @@ in
     faster-whisper.servers = {
       "EuphrosyneWhisper" = {
         enable = true;
+        # Set to 'auto' for normal whisper models
+        sttLibrary = "sherpa";
+        model = "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8";
+        #model = "nvidia/parakeet-tdt-0.6b-v3";
         #model = "turbo";
-        model = "tiny-int8";
+        #model = "tiny-int8";
         language = "en";
         uri = "tcp://0.0.0.0:10300";
         #initialPrompt = ''
@@ -122,14 +143,18 @@ in
     openFirewall = true;
   };
 
+  services.ipp-usb.enable = true;
+
   services.printing = {
     enable = true;
     drivers = with pkgs; [
       cups-filters
       cups-browsed
+      cups-brother-dcp1610wlpr
       hplipWithPlugin
       gutenprint
       gutenprintBin
+
     ];
   };
 
@@ -191,17 +216,6 @@ in
     '';
   };
 
-  # XRIZER didn't want to build
-  #services.wivrn = {
-  #  enable = true;
-  #  package = pkgs.wivrn;
-  #  steam.importOXRRuntimes = true;
-  #  openFirewall = true;
-  #  defaultRuntime = true;
-  #  highPriority = true;
-  #  autoStart = true;
-  #};
-
   nixpkgs.config.rocmSupport = true;
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -218,6 +232,71 @@ in
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
+    settings = {
+      "capture" = "wlr";
+      "output_name" = "2";
+    };
+    applications = {
+      apps = [
+        {
+          "name" = "Desktop";
+          "image-path" = "desktop.png";
+        }
+        {
+          "name" = "Headless";
+          "image-path" = "desktop.png";
+          "prep-cmd" = [
+
+            {
+              "do" =
+                "sh -c \"hyprctl keyword monitor HEADLESS-2,\$\{SUNSHINE_CLIENT_WIDTH\}x\$\{SUNSHINE_CLIENT_HEIGHT\}@\$\{SUNSHINE_CLIENT_FPS\},auto,1\"";
+              "undo" = "hyprctl keyword monitor HEADLESS-2,disable";
+            }
+            {
+              "do" = "hyprctl dispatch focusmonitor HEADLESS-2";
+              "undo" = "hyprctl dispatch focusmonitor DP-3";
+            }
+          ];
+        }
+        {
+          "name" = "Headless Steam";
+          "image-path" = "steam.png";
+          "prep-cmd" = [
+            {
+              "do" =
+                "sh -c \"hyprctl keyword monitor HEADLESS-2,\$\{SUNSHINE_CLIENT_WIDTH\}x\$\{SUNSHINE_CLIENT_HEIGHT\}@\$\{SUNSHINE_CLIENT_FPS\},auto,1\"";
+              "undo" = "hyprctl keyword monitor HEADLESS-2,disable";
+            }
+            {
+              "do" = "hyprctl dispatch focusmonitor HEADLESS-2";
+              "undo" = "hyprctl dispatch focusmonitor DP-3";
+            }
+            { "undo" = "setsid steam steam://close/bigpicture"; }
+          ];
+          "detached" = [
+            "setsid steam steam://open/bigpicture"
+          ];
+        }
+        {
+          name = "MoonDeckStream";
+          "prep-cmd" = [
+            {
+              "do" =
+                "sh -c \"hyprctl keyword monitor HEADLESS-2,\$\{SUNSHINE_CLIENT_WIDTH\}x\$\{SUNSHINE_CLIENT_HEIGHT\}@\$\{SUNSHINE_CLIENT_FPS\},auto,1\"";
+              "undo" = "hyprctl keyword monitor HEADLESS-2,disable";
+            }
+            {
+              "do" = "hyprctl dispatch focusmonitor HEADLESS-2";
+              "undo" = "hyprctl dispatch focusmonitor DP-3";
+            }
+
+          ];
+          cmd = "${pkgs.moondeck-buddy}/bin/MoonDeckStream";
+          exclude-global-prep-cmd = "false";
+          elevated = "false";
+        }
+      ];
+    };
   };
 
   programs.steam = {
@@ -226,10 +305,21 @@ in
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
     gamescopeSession.enable = true;
+    extraPackages = with pkgs; [
+      SDL2
+      SDL2_image
+      xorg.libxcb
+      xorg.xcbutil
+      xorg.xcbutilwm # libxcb-icccm
+      xorg.xcbutilimage # libxcb-image
+      xorg.xcbutilkeysyms # libxcb-keysyms
+      xorg.xcbutilrenderutil # libxcb-render-util
+    ];
   };
 
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;
+  hardware.graphics.extraPackages = [ pkgs.amf ];
 
   boot.loader.grub.enable = false;
 
@@ -237,6 +327,7 @@ in
     #    kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
     binfmt.emulatedSystems = [
       "aarch64-linux"
+      "armv7l-linux"
       "i686-linux"
       "x86_64-windows"
     ];

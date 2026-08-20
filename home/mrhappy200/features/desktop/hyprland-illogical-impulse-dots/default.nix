@@ -24,8 +24,8 @@ in {
 
     hyprland = {
       # Use customized Hyprland build
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-      xdgPortalPackage = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      xdgPortalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
       # Enable Wayland ozone
       ozoneWayland.enable = true;

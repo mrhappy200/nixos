@@ -89,6 +89,13 @@ let
   };
 in
 {
+  sops.secrets.tuwunel_oidc-client-secret = {
+    owner = "conduit";
+    group = config.services.authelia.instances.plsFriend.group;
+    mode = "770";
+    sopsFile = ../secrets.yaml;
+  };
+
   users.groups.conduit = { };
 
   users.users.conduit = {
@@ -110,9 +117,19 @@ in
       server_name = matrix_hostname;
       allow_registration = false;
       database_backend = "rocksdb";
-      registration_token = "verysecretpassword";
+      registration_token = "aalksdjfhlkajsfhueuir";
       trusted_servers = [ "matrix.org" ];
       sentry = true;
+      identity_provider = [
+        {
+          brand = "Authelia";
+          client_id = "IDxdpUoGNi.T6PwRxF~Qa.I_oe-cikIoZl06NPlYHtgApgu8jrVy8~Nz8nYfBzCV8Js0Uefq";
+          client_secret_file = config.sops.secrets."tuwunel_oidc-client-secret".path;
+          issuer_url = "https://auth.hppy200.dev";
+          callback_url = "https://hppy200.dev/_matrix/client/unstable/login/sso/callback/IDxdpUoGNi.T6PwRxF~Qa.I_oe-cikIoZl06NPlYHtgApgu8jrVy8~Nz8nYfBzCV8Js0Uefq";
+          trusted = true;
+        }
+      ];
     };
   };
   environment.persistence = {
@@ -123,16 +140,81 @@ in
   networking.firewall.allowedUDPPorts = [ 8448 ];
 
   services.nginx = {
-    virtualHosts."${matrix_hostname}" = listenBlock;
-    virtualHosts."62.45.51.87" = listenBlock;
-    virtualHosts."[2001:4c3d:803:9c00:be24:11ff:fef1:6b70]" = listenBlock;
-
     upstreams = {
-      "backend_conduit" = {
+      "backend_tuwunel" = {
         servers = {
-          "[::1]:${toString config.services.matrix-conduit.settings.global.port}" = { };
+          "127.0.0.1:8008" = { };
         };
       };
     };
+
+    virtualHosts."${matrix_hostname}" = listenBlock // {
+      extraConfig = "client_max_body_size 100M;";
+      locations."/" = {
+        proxyPass = "http://backend_tuwunel";
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header X-Forwarded-Proto https;
+        '';
+      };
+    };
+
+    virtualHosts."62.45.51.87" = listenBlock // {
+      extraConfig = "client_max_body_size 100M;";
+      locations."/" = {
+        proxyPass = "http://backend_tuwunel";
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header X-Forwarded-Proto https;
+        '';
+      };
+    };
+
+    virtualHosts."[2001:4c3d:803:9c00:be24:11ff:fef1:6b70]" = listenBlock // {
+      extraConfig = "client_max_body_size 100M;";
+      locations."/" = {
+        proxyPass = "http://backend_tuwunel";
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header X-Forwarded-Proto https;
+        '';
+      };
+    };
+
+    virtualHosts."${matrix_hostname}_federation" = {
+      serverName = matrix_hostname;
+      extraConfig = ''
+        client_max_body_size 100M;
+        listen 8448 ssl;
+        listen [::]:8448 ssl;
+        http2 on;
+      '';
+      locations."/" = {
+        proxyPass = "http://backend_tuwunel";
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header X-Forwarded-Proto https;
+        '';
+      };
+      useACMEHost = matrix_hostname;
+      forceSSL = false;
+    };
   };
+  #services.nginx = {
+  #  virtualHosts."${matrix_hostname}" = listenBlock;
+  #  virtualHosts."62.45.51.87" = listenBlock;
+  #  virtualHosts."[2001:4c3d:803:9c00:be24:11ff:fef1:6b70]" = listenBlock;
+
+  #  upstreams = {
+  #    "backend_conduit" = {
+  #      servers = {
+  #        "[::1]:${toString config.services.matrix-conduit.settings.global.port}" = { };
+  #      };
+  #    };
+  #  };
+  #};
 }

@@ -3,6 +3,7 @@
   imports = [
     ./auth
     ./headscale.nix
+    ./organisation
     ./dns
     ./tuwunel.nix
     ./postgresql.nix
@@ -11,5 +12,6 @@
     ./miniflux.nix
     ./ha-proxy.nix
     ./overleaf-proxy.nix
+    ./firefly.nix
   ];
 }

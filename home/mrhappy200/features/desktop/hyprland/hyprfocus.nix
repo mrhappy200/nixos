@@ -7,7 +7,7 @@ let
 in
 {
   wayland.windowManager.hyprland = {
-    plugins = [ inputs.hyprland-plugins.packages.${pkgs.system}.hyprfocus ];
+    plugins = [ inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus ];
     settings = {
       "plugin:hyprfocus" = {
         enabled = true;

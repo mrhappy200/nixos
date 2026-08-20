@@ -7,7 +7,8 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -33,12 +34,13 @@
     "ahci"
     "usb_storage"
     "usbhid"
+    "vhci_hcd"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = ["amdgpu"];
-  boot.kernelModules = [];
-  boot.kernelParams = ["amdgpu.ppfeaturemask=0xfffd3fff"];
-  boot.extraModulePackages = [];
+  boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.kernelModules = [ ];
+  boot.kernelParams = [ "amdgpu.ppfeaturemask=0xfffd3fff" ];
+  boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   fileSystems."/" = {
@@ -54,7 +56,7 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/25B4-F069";
     fsType = "vfat";
-    options = ["umask=0077"];
+    options = [ "umask=0077" ];
   };
 
   fileSystems."/nix" = {
@@ -62,18 +64,19 @@
     fsType = "ext4";
   };
 
-  boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/ce705e66-0f94-4194-a8e8-60d509aa94e8";
+  boot.initrd.luks.devices."crypted".device =
+    "/dev/disk/by-uuid/ce705e66-0f94-4194-a8e8-60d509aa94e8";
 
   fileSystems."/etc/nixos" = {
     device = "/nix/persist/etc/nixos";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
   };
 
   fileSystems."/var/log" = {
     device = "/nix/persist/var/log";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
   };
 
   swapDevices = [
@@ -86,39 +89,39 @@
   fileSystems."/persist" = {
     device = "/nix/persist";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     neededForBoot = true;
   };
 
   fileSystems."/etc/ssh" = {
     device = "/nix/persist/etc/ssh";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
   };
 
   fileSystems."/home/mrhappy200/.steam" = {
     device = "/persist/steam/.steam";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     noCheck = true;
   };
 
   fileSystems."/home/mrhappy200/.local/share/Steam" = {
     device = "/persist/steam/.local/share/Steam";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     noCheck = true;
   };
   fileSystems."/home/mrhappy200/.local/share/bottles" = {
     device = "/persist/home/mrhappy200/.local/share/bottles";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     noCheck = true;
   };
   fileSystems."/home/mrhappy200/Games" = {
     device = "/persist/home/mrhappy200/Games";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     noCheck = true;
   };
 

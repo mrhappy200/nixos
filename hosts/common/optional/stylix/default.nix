@@ -21,7 +21,7 @@ let
   '';
   wallpaper = pkgs.runCommand "wallpaper.png" { } ''
     echo ${cfg.cachebuster}
-    ${lib.getExe pkgs.inkscape} -w ${toString cfg.width} -h ${toString cfg.height} ${wallpaper-svg} -o $out
+    ${lib.getExe pkgs.stable.inkscape} -w ${toString cfg.width} -h ${toString cfg.height} ${wallpaper-svg} -o $out
   '';
 in
 {

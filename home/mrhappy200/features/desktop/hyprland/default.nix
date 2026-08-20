@@ -27,6 +27,7 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang";
     package = null; # get it from the nixos module. Less modularised but should work better
     systemd.enable = false;
 
@@ -77,7 +78,7 @@ in
 
       dwindle = {
         split_width_multiplier = 1.35;
-        pseudotile = true;
+        #pseudotile = true;
       };
 
       #gestures = {
@@ -87,7 +88,6 @@ in
       #};
 
       misc = {
-        vfr = true;
         # 1 = always, 2 = only on fullscreen
         vrr = 1;
         close_special_on_empty = true;
@@ -161,6 +161,17 @@ in
             "match:class" = "termfilechoose";
             float = true;
           }
+          {
+            name = "UE5 fixer";
+            "match:class" = "UnrealEditor";
+            "match:title" = "";
+            no_focus = true;
+            suppress_event = [
+              "activate"
+              "activatefocus"
+              "fullscreen"
+            ];
+          }
         ];
 
       #windowrulev2 =
@@ -222,7 +233,7 @@ in
 
         shadow = {
           enabled = true;
-          ignore_window = true;
+          #ignore_window = true;
           range = 30;
           offset = "0 2";
           render_power = 4;
@@ -294,6 +305,7 @@ in
         # Screenshotting
         ",Print,exec,${grimblast} --notify --freeze copy area"
         "SHIFT,Print,exec,${grimblast} --notify --freeze copy output"
+        # Access pop-ups that have been no_focus ed
       ]
       ++
         # Launcher
@@ -426,7 +438,7 @@ in
           m:
           "${m.name},${
             if m.enabled then
-              "${toString m.width}x${toString m.height}@${toString m.refreshRate},${m.position},${m.scale},bitdepth,${toString m.bitdepth}"
+              "${toString m.width}x${toString m.height}@${toString m.refreshRate},${m.position},${m.scale},bitdepth,${toString m.bitdepth},transform,${toString m.transform}"
             else
               "disable"
           }"
@@ -439,6 +451,8 @@ in
 
     # This is order sensitive, so it has to come here.
     extraConfig = ''
+      ## This is to fix ue5
+
       env = HYPRCURSOR_THEME,rose-pine-hyprcursor
       debug:disable_logs = false
       # Passthrough mode (e.g. for VNC)
@@ -446,6 +460,8 @@ in
       submap=passthrough
       bind=SUPER,P,submap,reset
       submap=reset
+      monitor = HEADLESS-2,disable
+      exec-once = hyprctl output create headless
     '';
   };
 }

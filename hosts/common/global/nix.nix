@@ -32,7 +32,7 @@ in
         "flakes"
         "ca-derivations"
       ];
-      lazy-trees = true;
+      #lazy-trees = true;
       warn-dirty = false;
       system-features = [
         "kvm"

@@ -63,3 +63,37 @@ identity_providers:
         access_token_signed_response_alg: 'none'
         userinfo_signed_response_alg: 'none'
         #token_endpoint_auth_method: 'client_secret_basic'
+      - client_name: 'tuwunel-matrix'
+        token_endpoint_auth_method: 'client_secret_post'
+        client_id: IDxdpUoGNi.T6PwRxF~Qa.I_oe-cikIoZl06NPlYHtgApgu8jrVy8~Nz8nYfBzCV8Js0Uefq
+        client_secret: {{ secret "/run/secrets/tuwunel_oidc-client-secret" | mindent 10 "|" | msquote }}
+        public: false
+        authorization_policy: 'matrix'
+        pre_configured_consent_duration: '4 weeks'
+        redirect_uris:
+          - 'https://hppy200.dev/_matrix/client/unstable/login/sso/callback/IDxdpUoGNi.T6PwRxF~Qa.I_oe-cikIoZl06NPlYHtgApgu8jrVy8~Nz8nYfBzCV8Js0Uefq'
+        scopes:
+          - 'openid'
+          - 'groups'
+          - 'email'
+          - 'profile'
+      - client_id: 'memos'
+        client_name: 'Memos'
+        client_secret: '$pbkdf2-sha512$310000$97Vhg.ybGsvXOQ9o.QRVLQ$8U1gM62Ip7XXMfYuR81g1LOQ2ZIbrcyQURbjKxPTM6BOOqLPFWldc3mn0at/S9tzSHZ2CeUW09Y.U.6grl24SQ'
+        public: false
+        authorization_policy: 'two_factor'
+        require_pkce: false
+        pkce_challenge_method: ''
+        redirect_uris:
+          - 'https://memos.hppy200.dev/auth/callback'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'email'
+        response_types:
+          - 'code'
+        grant_types:
+          - 'authorization_code'
+        access_token_signed_response_alg: 'none'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_post'

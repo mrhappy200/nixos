@@ -9,8 +9,8 @@
     syncModels = true;
     user = "ollama";
     loadModels = [
-      "granite4:tiny-h"
-      "qwen3-vl:8b"
+      "gemma4:e2b"
+      "gemma4:26b"
     ];
     environmentVariables = {
       OLLAMA_CONTEXT_LENGTH = "64000";

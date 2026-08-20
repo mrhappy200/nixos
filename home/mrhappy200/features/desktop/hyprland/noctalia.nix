@@ -50,7 +50,8 @@
       appLauncher = {
         autoPasteClipboard = false;
         clipboardWrapText = true;
-        customLaunchPrefix = "uwsm app --";
+        customLaunchPrefix = "${pkgs.uwsm}/bin/uwsm-app -s a -t service --";
+        #customLaunchPrefix = "uwsm app --";
         customLaunchPrefixEnabled = true;
         enableClipPreview = true;
         enableClipboardHistory = true;

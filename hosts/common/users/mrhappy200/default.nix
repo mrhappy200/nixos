@@ -25,12 +25,15 @@ in
       "pipewire"
       "lxd"
       "minecraft"
+      "flatpak"
       "mysql"
       "network"
       "plugdev"
       "podman"
       "tss"
       "lpadmin"
+      "lp"
+      "scannner"
       "video"
       "wheel"
       "screen"
@@ -53,9 +56,11 @@ in
       winetricks
       #freetype
       #android-studio
-      wineWowPackages.waylandFull
+      wineWow64Packages.waylandFull
     ];
   };
+
+  # Disable to build for pve-nix-vm-1
 
   specialisation = {
     theme-light.configuration = {
@@ -67,7 +72,7 @@ in
   };
   custom-stylix = {
     enable = true;
-    cachebuster = "8"; # bump to force rebuild
+    cachebuster = "9"; # bump to force rebuild
     width = 2560;
     height = 1440;
     # svgTemplate defaults to ./BenBulben.svg.template
@@ -91,24 +96,18 @@ in
 
   hardware.rtl-sdr.enable = true;
 
-  #services.weechat = {
-  #  enable = true;
-  #};
-  ## This allows other users to access the weechat screen session with the following command
-  ## screen -x weechat/weechat-screen
-  #programs.screen.screenrc = ''
-  #  multiuser on
-  #  acladd mrhappy200
-  #'';
-  #users.users.weechat = {
-  #  isSystemUser = true;
-  #  description = "Weechat system user";
-  #  home = "/var/lib/weechat";
-  #  createHome = true;
-  #  shell = "${pkgs.shadow}/bin/nologin";
-  #};
+  services.weechat = {
+    enable = true;
+  };
+  # This allows other users to access the weechat screen session with the following command
+  # screen -x weechat/weechat-screen
+  programs.screen.enable = true;
+  programs.screen.screenrc = ''
+    multiuser on
+    acladd mrhappy200
+  '';
 
-  #environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
+  environment.persistence."/persist".directories = [ "/var/lib/weechat" ];
 
   environment.persistence."/persist".users.mrhappy200 = {
     directories = [
@@ -154,10 +153,12 @@ in
     enable = true;
     withUWSM = true;
     # set the flake package
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    #package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     # make sure to also set the portal package, so that they are in sync
-    portalPackage =
-      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    #portalPackage =
+    #  inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    package = pkgs.stable.hyprland;
+    portalPackage = pkgs.stable.xdg-desktop-portal-hyprland;
   };
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;

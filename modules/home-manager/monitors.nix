@@ -2,9 +2,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkOption types;
-in {
+in
+{
   options.monitors = mkOption {
     type = types.listOf (
       types.submodule {
@@ -29,9 +31,25 @@ in {
             type = types.int;
             default = 60;
           };
-	  bitdepth = mkOption {
+          bitdepth = mkOption {
             type = types.int;
             default = 8;
+          };
+          vrr = mkOption {
+            type = types.int;
+            default = 0;
+          };
+          cm = mkOption {
+            type = types.str;
+            default = "auto";
+          };
+          sdrbrightness = mkOption {
+            type = types.int;
+            default = 0;
+          };
+          sdrsaturation = mkOption {
+            type = types.int;
+            default = 1;
           };
           position = mkOption {
             type = types.str;
@@ -40,6 +58,10 @@ in {
           scale = mkOption {
             type = types.str;
             default = "1";
+          };
+          transform = mkOption {
+            type = types.str;
+            default = "0";
           };
           enabled = mkOption {
             type = types.bool;
@@ -52,7 +74,7 @@ in {
         };
       }
     );
-    default = [];
+    default = [ ];
   };
   config = {
     assertions = [

@@ -18,7 +18,8 @@
     #nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     # The commit that broke everything was 17f6bd177404d6d43017595c5264756764444ab8
     #nixpkgs.url = "github:NixOS/nixpkgs/7379d27cddb838c205119f9eede242810cd299a7";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    # This used to be .05
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     systems.url = "github:nix-systems/default-linux";
     nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
@@ -26,10 +27,16 @@
     tuwunel.url = "github:matrix-construct/tuwunel";
     impermanence.url = "github:nix-community/impermanence";
 
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+
     rose-pine-hyprcursor = {
       url = "github:ndom91/rose-pine-hyprcursor";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.hyprlang.follows = "hyprland/hyprlang";
+    };
+    nixflix = {
+      url = "github:kiriwalawren/nixflix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     yazi = {
       url = "github:sxyazi/yazi";
@@ -86,6 +93,12 @@
       url = "https://apache.org/dyn/closer.lua/guacamole/1.6.0/binary/guacamole-auth-sso-1.6.0.tar.gz?action=download";
       flake = false;
     };
+
+    f3d-preview-yazi = {
+      url = "github:ruudjhuu/f3d-preview.yazi";
+      flake = false;
+    };
+
     ## TODO: Couldn't be arsed to do this (guacamole extensions) with flakes.
     #guacamole-psql-extension = {
     #  url = "https://dlcdn.apache.org/guacamole/1.6.0/binary/guacamole-auth-jdbc-1.6.0.tar.gz";
@@ -131,7 +144,7 @@
     dgop.url = "github:AvengeMedia/dgop";
     illogical-impulse.url = "github:xBLACKICEx/end-4-dots-hyprland-nixos";
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia-shell/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -144,6 +157,8 @@
       systems,
       determinate,
       nixpkgs-xr,
+      nix-flatpak,
+      nixflix,
       winapps,
       stylix,
       ...
@@ -178,6 +193,8 @@
           modules = [
             ./hosts/euphrosyne
             nixpkgs-xr.nixosModules.nixpkgs-xr
+            nixflix.nixosModules.default
+            nix-flatpak.nixosModules.nix-flatpak
             stylix.nixosModules.stylix
             determinate.nixosModules.default
           ];

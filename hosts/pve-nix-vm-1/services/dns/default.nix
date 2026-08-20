@@ -1,3 +1,4 @@
+# Has an issue where it does not start on vm boot (possibly due to dependency on tailscale link?)
 {
   config,
   pkgs,

@@ -25,7 +25,7 @@ in
     createHome = true;
   };
 
-  programs.regreet = {
+  services.displayManager.regreet = {
     enable = true;
     iconTheme = {
       name = "Papirus-Dark";

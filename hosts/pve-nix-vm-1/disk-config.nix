@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   disko.devices = {
     disk = {
       main = {
@@ -8,7 +9,7 @@
         content = {
           type = "gpt";
           partitions = {
-	  boot = {
+            boot = {
               size = "1M";
               type = "EF02"; # Essential for BIOS boot on GPT
               priority = 1;

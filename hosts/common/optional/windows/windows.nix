@@ -68,7 +68,7 @@ in
       "docker-compose-winapps-root.target"
     ];
     wantedBy = [
-      "docker-compose-winapps-root.target"
+      #"docker-compose-winapps-root.target"
     ];
   };
 

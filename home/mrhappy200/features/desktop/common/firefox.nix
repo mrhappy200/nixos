@@ -30,12 +30,21 @@ in
           sponsorblock
           firefox-color
         ];
-        settings."FirefoxColor@mozilla.com".settings = {
-          firstRunDone = true;
-          theme = {
-            images.additional_backgrounds = lib.mkForce [ "${nixosConfig.custom-stylix.svgWallpaper}" ];
-            colors = {
-              toolbar_field = lib.mkForce (mkColor "base01");
+        settings = {
+          "uBlock0@raymondhill.net".settings.userFilters = ''
+            ! Block YouTube Shorts (F*ck them and the time they waste)
+            youtube.com##a[href*="/shorts/"]
+            youtube.com##div[data-rich-metadata-content-category="Shorts"]
+            youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer #video-title-link[href*="/shorts/"])
+            youtube.com##ytd-video-renderer:has(a[href*="/shorts/"])
+          '';
+          "FirefoxColor@mozilla.com".settings = {
+            firstRunDone = true;
+            theme = {
+              images.additional_backgrounds = lib.mkForce [ "${nixosConfig.custom-stylix.svgWallpaper}" ];
+              colors = {
+                toolbar_field = lib.mkForce (mkColor "base01");
+              };
             };
           };
         };

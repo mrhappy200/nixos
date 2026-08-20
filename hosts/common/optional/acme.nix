@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   sops.secrets.cloudflare_api_token = {
     sopsFile = ../secrets.yaml;
   };
@@ -10,6 +11,7 @@
   security.acme = {
     defaults = {
       email = "ronan@hppy200.dev";
+      dnsResolver = "1.1.1.1:53";
       #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
     };
     acceptTerms = true;
@@ -18,16 +20,16 @@
       "hppy200.dev" = {
         dnsProvider = "cloudflare";
         environmentFile = config.sops.templates."cloudflare.env".path;
-        extraDomainNames = ["*.hppy200.dev"];
+        extraDomainNames = [ "*.hppy200.dev" ];
       };
     };
   };
 
-  users.users.nginx.extraGroups = ["acme"];
+  users.users.nginx.extraGroups = [ "acme" ];
 
   environment.persistence = {
     "/nix/persist" = {
-      directories = ["/var/lib/acme"];
+      directories = [ "/var/lib/acme" ];
     };
   };
 }

@@ -15,7 +15,7 @@
     forEachSystem = nixpkgs.lib.genAttrs (import systems);
   in {
     packages = forEachSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
       p2nix = poetry2nix.lib.mkPoetry2Nix {inherit pkgs;};
     in {
       default = p2nix.mkPoetryApplication {

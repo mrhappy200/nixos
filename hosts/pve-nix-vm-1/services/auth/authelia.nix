@@ -2,8 +2,10 @@
   lib,
   config,
   ...
-}: let
-in {
+}:
+let
+in
+{
   sops.secrets = {
     authelia_sekf = {
       owner = config.services.authelia.instances.plsFriend.user;
@@ -33,7 +35,7 @@ in {
     };
   };
 
-  services.postgresql.ensureDatabases = [config.services.authelia.instances."plsFriend".user];
+  services.postgresql.ensureDatabases = [ config.services.authelia.instances."plsFriend".user ];
   services.postgresql.ensureUsers = [
     {
       name = config.services.authelia.instances."plsFriend".user;
@@ -69,7 +71,9 @@ in {
       };
 
       authentication_backend = {
-        password_reset = {disable = false;};
+        password_reset = {
+          disable = false;
+        };
         refresh_interval = "1m";
         ldap = {
           implementation = "custom";
@@ -151,6 +155,16 @@ in {
               }
             ];
           };
+          matrix = {
+            default_policy = "deny";
+            rules = [
+              {
+                "subject" = "group:matrix";
+                "policy" = "two_factor";
+              }
+            ];
+          };
+
           grafana = {
             default_policy = "deny";
             rules = [
@@ -160,11 +174,20 @@ in {
               }
             ];
           };
+          memos = {
+            default_policy = "deny";
+            rules = [
+              {
+                "subject" = "group:memos";
+                "policy" = "two_factor";
+              }
+            ];
+          };
         };
       };
     };
 
-    settingsFiles = [./oidc_clients.yaml];
+    settingsFiles = [ ./oidc_clients.yaml ];
 
     secrets = {
       storageEncryptionKeyFile = config.sops.secrets.authelia_sekf.path;
@@ -182,6 +205,8 @@ in {
     locations = {
       "/" = {
         proxyPass = "http://localhost:9091";
+        recommendedProxySettings = false;
+
         extraConfig = ''
           				## Headers
           proxy_set_header Host $host;

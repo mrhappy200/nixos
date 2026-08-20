@@ -42,16 +42,16 @@ in
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
-    aliases = {
+    settings.alias = {
       p = "pull --ff-only";
       ff = "merge --ff-only";
       graph = "log --decorate --oneline --graph";
       pushall = "!git remote | xargs -L1 git push --all";
       add-nowhitespace = "!git diff -U0 -w --no-color | git apply --cached --ignore-whitespace --unidiff-zero -";
     };
-    userName = "Ronan Berntsen";
-    userEmail = lib.mkDefault "ronan@hppy200.dev";
-    extraConfig = {
+    settings = {
+      user.name = "Ronan Berntsen";
+      user.email = lib.mkDefault "ronan@hppy200.dev";
       init.defaultBranch = "main";
       user.signing.key = "3AF8AF8C2C5EC2EC";
       commit.gpgSign = lib.mkDefault true;

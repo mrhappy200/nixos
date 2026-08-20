@@ -14,6 +14,7 @@
     ./fish.nix
     ./locale.nix
     ./nix.nix
+    ./sane.nix
     ./openssh.nix
     ./optin-persistence.nix
     ./podman.nix
@@ -42,6 +43,8 @@
       allowUnfree = true;
     };
   };
+
+  services.fwupd.enable = true;
 
   security.pam.services = {
     login.u2fAuth = lib.mkForce false;
@@ -89,6 +92,8 @@
       value = "1048576";
     }
   ];
+
+  services.gvfs.enable = true;
 
   #systemd.extraConfig = "LimitNOFILE=1048576";
   systemd.settings.Manager = {

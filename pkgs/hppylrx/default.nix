@@ -3,7 +3,7 @@
   lib,
   fetchPypi,
   setuptools,
-  mpd2,
+  python-mpd2,
   mutagen,
 }:
 let
@@ -26,7 +26,7 @@ let
     propagatedBuildInputs = [
       pylrcPkg
       mutagen
-      mpd2
+      python-mpd2
     ];
     pyproject = true;
     build-system = [ setuptools ];

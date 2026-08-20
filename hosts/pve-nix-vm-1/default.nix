@@ -32,7 +32,7 @@
     "btrfs"
   ];
 
-  # For tesla fleet access
+  # For tesla (f*ck Musk) fleet access
   services.nginx.virtualHosts."hppy200.dev".locations."=/.well-known/appspecific/com.tesla.3p.public-key.pem" =
     {
       alias = pkgs.writeText "com.tesla.3p.public-key.pem" ''
