@@ -69,6 +69,13 @@
     noCheck = true;
   };
 
+  systemd.tmpfiles.rules = [
+    "d /persist/steam/.local/share/Steam 0750 mrhappy200 users -"
+    "d /persist/steam/.steam 0750 mrhappy200 users -"
+    "d /persist/home/mrhappy200/.local/share/bottles 0750 mrhappy200 users -"
+    "d /persist/home/mrhappy200/Games 0750 mrhappy200 users -"
+  ];
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
