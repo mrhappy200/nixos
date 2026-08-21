@@ -7,13 +7,13 @@
     ./mpd.nix
     ./bat.nix
     ./direnv.nix
-    ./wrtag.nix
+    #./wrtag.nix
     ./gh.nix
     ./git.nix
     ./gpg.nix
     #./lyrics.nix
     ./fish
-    ./nushell.nix
+    #./nushell.nix
     ./nix-index.nix
     ./pfetch.nix
     ./yazi

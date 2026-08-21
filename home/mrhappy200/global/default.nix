@@ -65,6 +65,6 @@
     let
     in
     [
-      pkgs.devenv
+      #pkgs.devenv
     ];
 }

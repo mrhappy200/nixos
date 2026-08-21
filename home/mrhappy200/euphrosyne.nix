@@ -18,12 +18,17 @@ in
     ./features/desktop/wireless
     ./features/desktop/vnc.nix
     ./features/desktop/common/blender.nix
+    ./features/desktop/common/deluge.nix
     #./features/cli/mpd.nix
     ./features/cli/ollama.nix
+    ./features/cli/wrtag.nix
     ./features/desktop/common/lanmouse.nix
     ./features/productivity
     ./features/pass
     ./features/games
+    ./features/games/satisfactory.nix
+    ./features/games/heroic.nix
+    ./features/games/prism-launcher.nix
     #./features/games/vr.nix
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
   ];

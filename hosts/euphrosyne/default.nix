@@ -18,6 +18,8 @@ in
     ../common/users/mrhappy200
 
     ../common/optional/peripherals.nix
+    ../common/optional/rgb.nix
+    ../common/optional/weechat.nix
     ../common/optional/guacamole.nix
     ../common/optional/arr
     ../common/optional/flatpak.nix

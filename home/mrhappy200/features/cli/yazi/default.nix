@@ -12,12 +12,14 @@ let
     gnome-online-accounts = pkgs.gnome-online-accounts;
   };
 
+  ## f3d uses quite a lot of storage space (3.5 GiB)
+
   #f3d-preview = inputs.f3d-preview-yazi;
-  f3d-preview = pkgs.runCommand "f3d-preview-patched" { } ''
-    cp -r ${inputs.f3d-preview-yazi} $out
-    chmod -R +w $out
-    sed -i '/ya\.preview_widgets/d' $out/main.lua
-  '';
+  #f3d-preview = pkgs.runCommand "f3d-preview-patched" { } ''
+  #  cp -r ${inputs.f3d-preview-yazi} $out
+  #  chmod -R +w $out
+  #  sed -i '/ya\.preview_widgets/d' $out/main.lua
+  #'';
 in
 {
   home.packages = with pkgs; [
@@ -41,7 +43,7 @@ in
     gnome-online-accounts
     dragon-drop
     libsecret
-    f3d
+    #  f3d
     gcr_4
     glib # provides the `gio` CLI binary
   ];
@@ -77,10 +79,10 @@ in
             mime = "application/postscript";
             run = "mediainfo";
           }
-          {
-            url = "*.{3mf,obj,pts,ply,stl,step,stp}";
-            run = "f3d-preview";
-          }
+          #{
+          #  url = "*.{3mf,obj,pts,ply,stl,step,stp}";
+          #  run = "f3d-preview";
+          #}
         ];
         prepend_previewers = [
           {
@@ -95,10 +97,10 @@ in
             mime = "application/postscript";
             run = "mediainfo";
           }
-          {
-            url = "*.{3mf,obj,pts,ply,stl,step,stp}";
-            run = "f3d-preview";
-          }
+          #{
+          #  url = "*.{3mf,obj,pts,ply,stl,step,stp}";
+          #  run = "f3d-preview";
+          #}
         ];
       };
     };
@@ -112,7 +114,7 @@ in
       inherit mount;
       inherit mediainfo;
       inherit gvfs;
-      inherit f3d-preview;
+      #inherit f3d-preview;
     };
     initLua = ./init.lua;
     keymap = {

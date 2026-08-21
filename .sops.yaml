@@ -6,6 +6,7 @@ keys:
   - &hosts:
     - &HappyPC age1ykhz9tz5sen5penge8zstxsses9yy9r63r9w3awjrr8lgsex7slsvd9naa
     - &euphrosyne age12vt0mctfutp2ge84tmhmcsknytjj8v6fsr2ysrjls9jkj0a7zasswg8kau
+    - &thalia age1km0xdjnatja23at4240s2dr33mvckv4mtlv7f0mskj5ht5emxvfsse0tqj
     - &pve-nix-vm-1 age1dm8xh05kjs6xxju7g2f56nzaz70fkmanupvnu74x3tren0sglccszy9x3w
 creation_rules:
   - path_regex: hosts/euprosyne/secrets.ya?ml$
@@ -27,12 +28,19 @@ creation_rules:
       - *HappyPC
       pgp:
       - *mrhappy200
+  - path_regex: hosts/thalia/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *thalia
+      pgp:
+      - *mrhappy200
 
   - path_regex: hosts/common/secrets.ya?ml$
     key_groups:
     - age:
       - *HappyPC
       - *euphrosyne
+      - *thalia
       - *pve-nix-vm-1
       pgp:
       - *mrhappy200

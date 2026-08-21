@@ -1,75 +1,60 @@
-# This file contains an ephemeral btrfs root configuration
-# TODO: perhaps partition using disko in the future
-# TODO: set the device through a custom option, or extract from config.disko.devices.disk.<name>.content.partitions.<name>.device
+# This module implements an ephemeral root in btrfs by restoring the 'root' subvolume of ${config.fileSystems."/".device} to 'root-blank' on boot
 {
   lib,
   config,
   ...
-}: let
-  hostname = config.networking.hostName;
+}:
+let
+  root = config.fileSystems."/";
+
   wipeScript = ''
     mkdir /tmp -p
     MNTPOINT=$(mktemp -d)
     (
-      mount -t btrfs -o subvol=/ /dev/disk/by-label/${hostname} "$MNTPOINT"
+      mount -t btrfs -o subvol=/ ${root.device} "$MNTPOINT"
       trap 'umount "$MNTPOINT"' EXIT
 
       echo "Creating needed directories"
       mkdir -p "$MNTPOINT"/persist/var/{log,lib/{nixos,systemd}}
-      if [ -e "$MNTPOINT/persist/dont-wipe" ]; then
+      if [ -e "$MNTPOINT/dont-wipe" ]; then
         echo "Skipping wipe"
       else
-        echo "Cleaning root subvolume"
+        echo "Cleaning subvolumes"
         btrfs subvolume delete -R "$MNTPOINT/root"
-        echo "Restoring blank subvolume"
+        btrfs subvolume delete -R "$MNTPOINT/home"
+
+        echo "Restoring blank subvolumes"
         btrfs subvolume snapshot "$MNTPOINT/root-blank" "$MNTPOINT/root"
+        btrfs subvolume snapshot "$MNTPOINT/home-blank" "$MNTPOINT/home"
       fi
     )
   '';
+
+  # Convert a device path to a systemd .device
+  toSystemdDevice =
+    device:
+    lib.concatStringsSep "-" (
+      lib.tail (map (lib.replaceString "-" "\\x2d") (lib.splitString "/" device))
+    )
+    + ".device";
+
   phase1Systemd = config.boot.initrd.systemd.enable;
-in {
+in
+{
   boot.initrd = {
-    supportedFilesystems = ["btrfs"];
+    supportedFilesystems = [ "btrfs" ];
     postDeviceCommands = lib.mkIf (!phase1Systemd) (lib.mkBefore wipeScript);
     systemd.services.restore-root = lib.mkIf phase1Systemd {
       description = "Rollback btrfs rootfs";
-      wantedBy = ["initrd.target"];
-      requires = ["dev-disk-by\\x2dlabel-${hostname}.device"];
-      after = [
-        "dev-disk-by\\x2dlabel-${hostname}.device"
-        "systemd-cryptsetup@${hostname}.service"
-      ];
-      before = ["sysroot.mount"];
+      wantedBy = [ "initrd.target" ];
+      requires = [ (toSystemdDevice root.device) ];
+      after = [ (toSystemdDevice root.device) ];
+      before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = wipeScript;
     };
   };
 
-  fileSystems = {
-    "/" = lib.mkDefault {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = ["subvol=root" "compress=zstd"];
-    };
-
-    "/nix" = lib.mkDefault {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = ["subvol=nix" "noatime" "compress=zstd"];
-    };
-
-    "/persist" = lib.mkDefault {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = ["subvol=persist" "compress=zstd"];
-      neededForBoot = true;
-    };
-
-    "/swap" = lib.mkDefault {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = ["subvol=swap" "noatime"];
-    };
-  };
+  fileSystems."/persist".neededForBoot = lib.mkDefault true;
 }

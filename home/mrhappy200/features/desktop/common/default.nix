@@ -5,7 +5,7 @@
 }:
 {
   imports = [
-    ./deluge.nix
+    #./deluge.nix
     ./discord.nix
     ./dragon.nix
     ./firefox.nix

@@ -18,7 +18,6 @@
 
   xdg.mimeApps.enable = true;
   home.packages = with pkgs; [
-    wf-recorder
     wl-clipboard
     pwvucontrol
   ];

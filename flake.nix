@@ -200,7 +200,18 @@
           ];
           specialArgs = { inherit inputs outputs; };
         };
-        # Personal laptop (TerraQue)
+        # Personal laptop (ThinkPad X1 Yoga gen 7)
+        thalia = lib.nixosSystem {
+          modules = [
+            ./hosts/thalia
+            nixflix.nixosModules.default
+            nix-flatpak.nixosModules.nix-flatpak
+            stylix.nixosModules.stylix
+            determinate.nixosModules.default
+          ];
+          specialArgs = { inherit inputs outputs; };
+        };
+        # Old Personal laptop (TerraQue)
         HappyPC = lib.nixosSystem {
           modules = [ ./hosts/HappyPC ];
           specialArgs = { inherit inputs outputs; };
