@@ -14,7 +14,7 @@ in
 
     ../common/global
     ../common/users/mrhappy200
-    ../common/users/mrhappy200/inkscape-binds.nix
+    ../common/users/mrhappy200/inkscape-binds
 
     ./disk-config.nix
     ../common/optional/ephemeral-btrfs.nix

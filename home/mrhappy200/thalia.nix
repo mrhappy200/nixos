@@ -13,6 +13,7 @@ in
     ./features/nvim
     ./features/emacs
     ./features/desktop/common/flatpak.nix
+    ./features/desktop/common/lanmouse.nix
     ./features/desktop/wireless
     ./features/desktop/vnc.nix
     ./features/productivity
