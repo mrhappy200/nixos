@@ -20,6 +20,7 @@ in
     ../common/optional/peripherals.nix
     ../common/optional/rgb.nix
     ../common/optional/weechat.nix
+    ../common/optional/ssh-serve-store.nix
     ../common/optional/guacamole.nix
     ../common/optional/arr
     ../common/optional/flatpak.nix
