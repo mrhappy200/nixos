@@ -5,6 +5,18 @@
   pkgs,
   ...
 }:
+let
+  # Fallback to config.monitors if the module is evaluated in home-manager instead of NixOS
+  monitorConfig = osConfig.monitors or config.monitors;
+
+  # Filter out disabled monitors
+  activeMonitors = lib.filter (m: m.enabled) monitorConfig;
+
+  # Generates: "my_clock:DP-1 --arg DP-1:monitor=DP-1 my_clock:HDMI-A-1 ..."
+  ewwMonitorsArg = lib.concatMapStringsSep " " (
+    m: "my_clock:${m.name} --arg ${m.name}:monitor=${m.name}"
+  ) activeMonitors;
+in
 {
   programs.eww = {
     enable = true;
@@ -54,7 +66,7 @@
         COLOUR=$(${lib.getExe pkgs.yq} -r .palette.base0$(cat ${osConfig.custom-stylix.randomColourPath}) ${osConfig.custom-stylix.theme})
         echo -e "Text colour: $COLOUR"
         cat ${config.home.homeDirectory}/.config/eww/eww.scss.template | sed "s/REPLACEME/$COLOUR/g" > ${config.home.homeDirectory}/.config/eww/eww.scss
-        ${lib.getExe pkgs.eww} open-many --no-daemonize my_clock:primary my_clock:secondary --arg primary:monitor=DP-3 --arg secondary:monitor=HDMI-A-1
+        ${lib.getExe pkgs.eww} open-many --no-daemonize ${ewwMonitorsArg}
       ''}";
       ExecStop = "${pkgs.writeShellScript "Stop EWW" ''
         ${lib.getExe pkgs.eww} close --no-daemonize
@@ -62,6 +74,8 @@
       ''}";
     };
   };
+
+  # ... xdg.configFile sections remain unchanged ...
   xdg.configFile."eww/eww.yuck".text = ''
     ;; Variables
     (defpoll time :interval "1s" "date '+%H:%M:%S'")

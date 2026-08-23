@@ -20,9 +20,10 @@ in
     ./basic-binds.nix
     ./widgets.nix
     ./hyprpaper.nix
-    ./noctalia.nix
+    #./noctalia.nix
+    ./noctalia-v5.nix
     ./hypridle.nix
-    ./hyprlock.nix
+    #./hyprlock.nix
   ];
 
   wayland.windowManager.hyprland = {
@@ -305,7 +306,12 @@ in
         # Screenshotting
         ",Print,exec,${grimblast} --notify --freeze copy area"
         "SHIFT,Print,exec,${grimblast} --notify --freeze copy output"
-        # Access pop-ups that have been no_focus ed
+        # XF86 Special Keys
+        ",XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_SINK@ 5%+"
+        ",XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_SINK@ 5%-"
+        ",XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_SINK@ toggle"
+        ",XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} set 5%+"
+        ",XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} set 5%-"
       ]
       ++
         # Launcher
@@ -349,10 +355,11 @@ in
               cliphist = lib.getExe config.services.cliphist.package;
             in
             lib.optionals config.services.cliphist.enable [
-              ''SUPER,c,exec,selected=$(${cliphist} list | ${wofi} -S dmenu) && echo "$selected" | ${cliphist} decode | wl-copy''
+#              ''SUPER,c,exec,selected=$(${cliphist} list | ${wofi} -S dmenu) && echo "$selected" | ${cliphist} decode | wl-copy''
+              ''SUPER,c,exec,noctalia msg panel-toggle clipboard''
             ]
           )
-          ++ ([ "SUPER,x,exec, noctalia-shell ipc call launcher toggle" ])
+          ++ ([ "SUPER,x,exec, noctalia msg panel-toggle launcher" ])
           ++ (
             let
               # Save to image and share it to device, if png; else share as text to clipboard.

@@ -14,7 +14,7 @@ in
 
     ./hardware-configuration.nix
 
-    ../common/global
+    ../common/global/ssh-serve-store.nix
     ../common/users/mrhappy200
 
     ../common/optional/peripherals.nix

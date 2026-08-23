@@ -18,6 +18,9 @@ in
       "deluge"
       "docker"
       "git"
+      "input"
+      "uinput"
+      config.programs.ydotool.group
       "i2c"
       "weechat"
       "libvirtd"
@@ -86,11 +89,12 @@ in
         main = {
           capslock = "overload(control,esc)";
           esc = "capslock";
-          rightshift = "layer(alt)";
         };
       };
     };
   };
+
+  programs.ydotool.enable = true;
 
   #environment.persistence = {"/nix/persist".directories = ["/home/mrhappy200/.local/share/bottles"];};
 
@@ -151,7 +155,25 @@ in
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;
 
   security.pam.services = {
-    swaylock = { };
-    hyprlock = { };
+    login.u2fAuth = lib.mkForce false;
+    sshd.u2fAuth = lib.mkForce false;
+    sudo.u2fAuth = true;
+  };
+
+  boot.kernel.sysctl."kernel.sysrq" = 1;
+
+  security.pam.u2f = {
+    enable = true;
+    settings = {
+      interactive = true;
+      cue = true;
+      origin = "pam://yubi";
+      authfile = pkgs.writeText "u2f-mappings" (
+        lib.concatStrings [
+          "mrhappy200"
+          ":oUbv3TIjCep+Rkt3BKBRTps7z0DNlQ3ysDjWa2cFlaNVg2N9LmbAwiXYz1x+SQK5met8vmOjFqk5r1JuomlenQ==,KZ4Z8FyF6zM7N1qP03Ann9eauf8L6YLYN6Gn7z2BEpowf5GPRNkJ5LM0HVdDsib1b5Ef+JmbVEmMhGrKUgbkRw==,es256,+presence"
+        ]
+      );
+    };
   };
 }

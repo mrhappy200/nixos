@@ -51,7 +51,6 @@
         autoPasteClipboard = false;
         clipboardWrapText = true;
         customLaunchPrefix = "${pkgs.uwsm}/bin/uwsm-app -s a -t service --";
-        #customLaunchPrefix = "uwsm app --";
         customLaunchPrefixEnabled = true;
         enableClipPreview = true;
         enableClipboardHistory = true;
@@ -86,6 +85,7 @@
         marginVertical = 4;
         monitors = [
           "DP-3"
+          "eDP-1"
         ];
         outerCorners = true;
         position = "top";

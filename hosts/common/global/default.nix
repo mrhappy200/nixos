@@ -46,29 +46,6 @@
 
   services.fwupd.enable = true;
 
-  security.pam.services = {
-    login.u2fAuth = lib.mkForce false;
-    sshd.u2fAuth = lib.mkForce false;
-    sudo.u2fAuth = true;
-  };
-
-  boot.kernel.sysctl."kernel.sysrq" = 1;
-
-  security.pam.u2f = {
-    enable = true;
-    settings = {
-      interactive = true;
-      cue = true;
-      origin = "pam://yubi";
-      authfile = pkgs.writeText "u2f-mappings" (
-        lib.concatStrings [
-          "mrhappy200"
-          ":oUbv3TIjCep+Rkt3BKBRTps7z0DNlQ3ysDjWa2cFlaNVg2N9LmbAwiXYz1x+SQK5met8vmOjFqk5r1JuomlenQ==,KZ4Z8FyF6zM7N1qP03Ann9eauf8L6YLYN6Gn7z2BEpowf5GPRNkJ5LM0HVdDsib1b5Ef+JmbVEmMhGrKUgbkRw==,es256,+presence"
-        ]
-      );
-    };
-  };
-
   hardware.enableRedistributableFirmware = true;
   networking.domain = "hppy200.dev";
 

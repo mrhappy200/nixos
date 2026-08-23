@@ -14,11 +14,17 @@ in
 
     ../common/global
     ../common/users/mrhappy200
+    ../common/users/mrhappy200/inkscape-binds.nix
 
     ./disk-config.nix
     ../common/optional/ephemeral-btrfs.nix
 
     ../common/optional/peripherals.nix
+    ../common/optional/trackpoint.nix
+    ../common/optional/rotate-hyprland.nix
+    ../common/optional/powermanagement.nix
+    ../common/optional/fingerprint.nix
+    ../common/optional/face_rec.nix
     ../common/optional/flatpak.nix
     ../common/optional/greetd.nix
     ../common/optional/pipewire.nix

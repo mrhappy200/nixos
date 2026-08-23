@@ -10,7 +10,7 @@ in
   imports = [
     ./global
     ./features/desktop/hyprland
-    #    ./features/nvim
+    ./features/nvim
     ./features/emacs
     ./features/desktop/common/flatpak.nix
     ./features/desktop/wireless

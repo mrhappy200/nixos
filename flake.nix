@@ -5,10 +5,12 @@
     extra-substituters = [
       "https://yazi.cachix.org"
       "https://nix-gaming.cachix.org"
+      "https://noctalia.cachix.org"
     ];
     extra-trusted-public-keys = [
       "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
   };
 
@@ -144,8 +146,7 @@
     dgop.url = "github:AvengeMedia/dgop";
     illogical-impulse.url = "github:xBLACKICEx/end-4-dots-hyprland-nixos";
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:noctalia-dev/noctalia-shell";
     };
   };
 
