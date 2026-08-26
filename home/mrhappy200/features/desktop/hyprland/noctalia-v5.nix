@@ -1,5 +1,16 @@
-{ pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  osConfig,
+  inputs,
+  ...
+}:
 let
+  rawIndex = builtins.readFile osConfig.custom-stylix.randomColourPath;
+  cleanIndex = lib.strings.trim rawIndex;
+  colourKey = "base0${cleanIndex}";
+  COLOUR = osConfig.lib.stylix.colors.${colourKey};
 in
 {
   imports = [ inputs.noctalia.homeModules.default ];
@@ -16,7 +27,7 @@ in
       audio = {
         enable_overdrive = true;
         enable_sounds = true;
-        notification_sound = "REPLACEME";
+        notification_sound = "/home/mrhappy200/Documents/minecraft-achievement.wav";
       };
       bar = {
         default = {
@@ -93,7 +104,7 @@ in
       };
       lockscreen = {
         allow_empty_password = true;
-        wallpaper = "REPLACEME";
+        wallpaper = "${config.stylix.image}";
       };
       lockscreen_widgets = {
         enabled = true;
@@ -152,7 +163,7 @@ in
             settings = {
               background = false;
               clock_style = "digital";
-              color = "#CCAACC";
+              color = "${COLOUR}";
               format = "{:%H:%M:%S}";
             };
           };
@@ -249,7 +260,7 @@ in
       shell = {
         external_ip_enabled = true;
         font_family = "DejaVu Sans";
-        launch_apps_custom_command = "REPLACEME";
+        launch_apps_custom_command = "${pkgs.uwsm}/bin/uwsm-app -s a -t service --";
         password_style = "random";
         polkit_agent = true;
         screen_time_enabled = true;

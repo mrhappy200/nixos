@@ -1,0 +1,44 @@
+# Manual steps:
+# 1. bootctl status
+# 2. Make sure you have BIOS password and disk encryption
+# 3. systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=true --tpm2-pcrlock=/var/lib/systemd/pcrlock.json /dev/nvme0
+# 3. Enable secure boot
+{
+  pkgs,
+  inputs,
+  lib,
+  config,
+  ...
+}:
+{
+  imports = [ inputs.lanzaboote.nixosModules.lanzaboote ];
+
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+
+    autoGenerateKeys.enable = true;
+    autoEnrollKeys.enable = true;
+    autoEnrollKeys.autoReboot = true;
+
+    configurationLimit = 2;
+    measuredBoot = {
+      enable = true;
+      pcrs = [
+        0
+        4
+        7
+      ];
+    };
+  };
+
+  environment.persistence."/persist" = {
+    directories = [
+      "/var/lib/sbctl"
+      "/var/lib/auto-cryptenroll"
+      config.boot.lanzaboote.measuredBoot.pcrlockDirectory # /var/lib/pcrlock.d
+    ];
+  };
+}

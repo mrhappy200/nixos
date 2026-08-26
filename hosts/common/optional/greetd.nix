@@ -25,6 +25,9 @@ in
     createHome = true;
   };
 
+  services.seatd.enable = true;
+  services.displayManager.enable = true;
+
   services.displayManager.regreet = {
     enable = true;
     iconTheme = {
@@ -33,13 +36,16 @@ in
     };
   };
 
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = sway-kiosk (lib.getExe config.programs.regreet.package);
-        user = config.users.extraUsers.greeter.name;
-      };
-    };
-  };
+  #services.displayManager.noctalia-greeter = {
+  #  enable = true;
+  #  settings = {
+  #    session = {
+  #      default = "Hyprland (UWSM)";
+  #    };
+  #    user = {
+  #      default = "mrhappy200";
+  #    };
+  #  };
+  #};
+
 }

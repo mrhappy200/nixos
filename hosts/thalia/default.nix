@@ -24,9 +24,10 @@ in
     ../common/optional/rotate-hyprland.nix
     ../common/optional/powermanagement.nix
     ../common/optional/fingerprint.nix
-    ../common/optional/face_rec.nix
+    #../common/optional/face_rec.nix
     ../common/optional/flatpak.nix
-    ../common/optional/greetd.nix
+    #../common/optional/greetd.nix
+    ../common/optional/gdm.nix
     ../common/optional/pipewire.nix
     ../common/optional/udisks.nix
     ../common/optional/gamemode.nix
@@ -35,6 +36,7 @@ in
     ../common/optional/locate.nix
     ../common/optional/stylix
     ../common/optional/systemd-boot.nix
+    ../common/optional/secure-boot.nix
     ../common/optional/polkit.nix
   ];
 

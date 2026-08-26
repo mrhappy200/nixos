@@ -35,6 +35,7 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.extraSpecialArgs = { inherit inputs outputs; };
+  systemd.services.dhcpcd.wantedBy = pkgs.lib.mkForce [ "network-online.target" ];
 
   nixpkgs = {
     overlays =

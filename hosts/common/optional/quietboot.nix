@@ -16,7 +16,12 @@
     };
     loader.timeout = 0;
     kernelParams = [
+      "video=efifb:nobgrt"
+      "fbcon=nodefer"
+      "nobgrt"
+      "bgrt_disable"
       "quiet"
+      "splash"
       "loglevel=3"
       "systemd.show_status=auto"
       "udev.log_level=3"
