@@ -11,6 +11,8 @@
   };
 
   networking.wireless = {
+    networkmanager.enable = true;
+    networkmanager.wifi.powersave = true;
     enable = true;
     fallbackToWPA2 = false;
     # The sandbox binds secretsFile into the unit's namespace, so a secret that

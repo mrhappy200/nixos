@@ -38,6 +38,7 @@ in
       "lp"
       "scannner"
       "video"
+      "networkmanager"
       "wheel"
       "screen"
       "wireshark"

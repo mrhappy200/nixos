@@ -19,6 +19,8 @@ in
     ./disk-config.nix
     ../common/optional/ephemeral-btrfs.nix
 
+    ../common/optional/uva-vpn.nix
+
     ../common/optional/peripherals.nix
     ../common/optional/trackpoint.nix
     ../common/optional/rotate-hyprland.nix
