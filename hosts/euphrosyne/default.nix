@@ -12,10 +12,13 @@ in
     inputs.hardware.nixosModules.common-gpu-amd
     inputs.hardware.nixosModules.common-pc-ssd
 
+    ../common/global
     ./hardware-configuration.nix
 
     ../common/global/ssh-serve-store.nix
     ../common/users/mrhappy200
+
+    ../common/users/mrhappy200/inkscape-binds
 
     ../common/optional/peripherals.nix
     ../common/optional/rgb.nix
@@ -163,7 +166,7 @@ in
 
   networking = {
     hostName = "euphrosyne";
-    useDHCP = true;
+    #useDHCP = true;
   };
 
   services.lact = {

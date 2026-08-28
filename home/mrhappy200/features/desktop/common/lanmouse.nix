@@ -12,6 +12,11 @@
           hostname = "happypc";
           ips = [ "192.168.1.29" ];
         }
+        {
+          position = "left";
+          hostname = "thalia";
+          ips = [ "192.168.1.121" ];
+        }
       ];
     };
   };

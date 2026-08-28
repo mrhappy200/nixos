@@ -23,6 +23,8 @@ in
     ./features/cli/ollama.nix
     ./features/cli/wrtag.nix
     ./features/desktop/common/lanmouse.nix
+    # Doesn't work (yet)
+    #./features/desktop/common/wayland-wm/kando.nix
     ./features/productivity
     ./features/pass
     ./features/games

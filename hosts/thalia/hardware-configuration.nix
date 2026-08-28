@@ -15,15 +15,16 @@
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
-    "thunderbolt"
     "nvme"
-    "usb_storage"
-    "sd_mod"
     "aesni_intel"
     "cryptd"
   ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
+  boot.kernelModules = [
+    "thunderbolt"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.kernelParams = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;

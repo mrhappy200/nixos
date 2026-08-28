@@ -29,6 +29,12 @@
       "vt.global_cursor_default=0"
     ];
     consoleLogLevel = lib.mkDefault 0;
-    initrd.verbose = false;
+    initrd = {
+      verbose = false;
+      network.enable = false;
+      systemd.fido2.enable = false;
+      compressor = "zstd";
+      compressorArgs = [ "-1" ];
+    };
   };
 }
