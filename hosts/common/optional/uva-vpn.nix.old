@@ -1,0 +1,79 @@
+# UvA eduVPN (Studenten profile) via systemd-networkd, full-tunnel.
+#
+# Portal:  https://uva.eduvpn.nl/portal/
+# Profile: Studenten (studenten)
+# Expires: 2026-08-28T17:30:48+00:00 <- re-generate the portal config before this date
+
+{ lib, config, ... }:
+
+let
+  interfaceName = "eduvpn";
+in
+{
+  sops.secrets.uva-vpn-key = {
+    sopsFile = ../secrets.yaml;
+    owner = "systemd-network";
+  };
+  sops.secrets.uva-vpn-psk = {
+    sopsFile = ../secrets.yaml;
+    owner = "systemd-network";
+  };
+
+  networking.firewall.allowedUDPPorts = [ 51820 ];
+  networking.useNetworkd = true;
+  networking.dhcpcd.enable = lib.mkForce false;
+  systemd.network = {
+    enable = true;
+
+    netdevs."50-${interfaceName}" = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = interfaceName;
+        MTUBytes = "1392";
+      };
+
+      wireguardConfig = {
+        PrivateKeyFile = config.sops.secrets.uva-vpn-key.path;
+      };
+
+      wireguardPeers = [
+        {
+          wireguardPeerConfig = {
+            PublicKey = "NzttUCZjNyqjYW4/G9s9vK8K58o7SrSIBCWTrCItFhI=";
+            PresharedKeyFile = config.sops.secrets.uva-vpn-psk.path;
+            Endpoint = "n1.uva.eduvpn.nl:443";
+            PersistentKeepalive = 25;
+
+            AllowedIPs = [
+              "0.0.0.0/0"
+              "::/0"
+            ];
+            # Force VPN route to take precedence over standard interfaces
+            RouteMetric = 10;
+          };
+        }
+      ];
+    };
+
+    networks."50-${interfaceName}" = {
+      matchConfig.Name = interfaceName;
+
+      address = [
+        "145.3.0.98/21"
+        "2001:610:159:9999:145:3:0:62/104"
+      ];
+
+      # Removed domains = [ "~" ] as it is purely for systemd-resolved
+
+      networkConfig = {
+        IPv6AcceptRA = false;
+      };
+      linkConfig = {
+        RequiredForOnline = false;
+        ActivationPolicy = "manual";
+      };
+    };
+  };
+
+  services.resolved.enable = true;
+}

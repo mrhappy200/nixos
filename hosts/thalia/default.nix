@@ -19,7 +19,7 @@ in
     ./disk-config.nix
     ../common/optional/ephemeral-btrfs.nix
 
-    ../common/optional/uva-vpn.nix
+    #../common/optional/uva-vpn.nix
 
     ../common/optional/peripherals.nix
     ../common/optional/trackpoint.nix
@@ -87,7 +87,7 @@ in
 
   networking = {
     hostName = "thalia";
-    useDHCP = true;
+    #useDHCP = true;
   };
 
   services.lact = {

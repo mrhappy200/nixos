@@ -4,49 +4,75 @@
     enable = true;
   };
 
+  # Same secrets file as before — it's already in `key=value` line format
+  # (marola=..., eduroam=...), which happens to also be valid EnvironmentFile
+  # syntax, so we can reuse it as-is for ensureProfiles' variable substitution.
+  # NetworkManager-ensure-profiles.service runs as root, so no need for a
+  # custom owner/group anymore (defaults to root:root, mode 0400).
   sops.secrets.wireless = {
     sopsFile = ../secrets.yaml;
-    owner = config.users.users.wpa_supplicant.name;
-    group = config.users.users.wpa_supplicant.group;
   };
 
-  networking.wireless = {
-    networkmanager.enable = true;
-    networkmanager.wifi.powersave = true;
+  networking.networkmanager = {
     enable = true;
-    fallbackToWPA2 = false;
-    # The sandbox binds secretsFile into the unit's namespace, so a secret that
-    # can't be decrypted kills the daemon (and the control socket needed to
-    # connect by hand and fix it). Also breaks wpa_gui.
-    enableHardening = false;
-    # The P2P device's control socket never gets ctrl_interface_group applied
-    # (upstream doesn't copy the field when creating that interface), so with
-    # the daemon running as root it ends up root-only. wpa_gui scans the socket
-    # directory, hits p2p-dev-* first and gives up before reaching the real
-    # interface. We don't use Wi-Fi Direct anyway.
-    extraConfig = "p2p_disabled=1";
-    # Declarative
-    secretsFile = config.sops.secrets.wireless.path;
-    networks = {
-      "Marola_WiFi" = {
-        pskRaw = "ext:marola";
-      };
-      "eduroam" = {
-        hidden = true;
-        priority = 2;
-        auth = ''
-          key_mgmt=WPA-EAP
-          eap=TTLS
-          identity="16942701@uva.nl" #not your email but your id + @uva.nl
-          password=ext:eduroam
-          anonymous_identity="anonymous@uva.nl"
-          phase2="auth=PAP"
-        '';
+    wifi.powersave = true;
+
+    # Declarative connection profiles (NM keyfile format), with secrets
+    # pulled in from the sops-decrypted environment file at activation time.
+    ensureProfiles = {
+      environmentFiles = [
+        config.sops.secrets.wireless.path
+      ];
+
+      profiles = {
+        "Marola_WiFi" = {
+          connection = {
+            id = "Marola_WiFi";
+            type = "wifi";
+          };
+          wifi = {
+            mode = "infrastructure";
+            ssid = "Marola_WiFi";
+          };
+          wifi-security = {
+            key-mgmt = "sae";
+            psk = "$marola";
+          };
+          ipv4.method = "auto";
+          ipv6 = {
+            method = "auto";
+            addr-gen-mode = "default";
+          };
+        };
+
+        "eduroam" = {
+          connection = {
+            id = "eduroam";
+            type = "wifi";
+            autoconnect-priority = 2;
+          };
+          wifi = {
+            mode = "infrastructure";
+            ssid = "eduroam";
+            hidden = true;
+          };
+          wifi-security = {
+            key-mgmt = "wpa-eap";
+          };
+          "802-1x" = {
+            eap = "ttls";
+            identity = "16942701@uva.nl"; # not your email but your id + @uva.nl
+            anonymous-identity = "anonymous@uva.nl";
+            phase2-auth = "pap";
+            password = "$eduroam";
+          };
+          ipv4.method = "auto";
+          ipv6 = {
+            method = "auto";
+            addr-gen-mode = "default";
+          };
+        };
       };
     };
-
-    # Imperative
-    allowAuxiliaryImperativeNetworks = true;
-    userControlled = true;
   };
 }
