@@ -44,4 +44,6 @@
     nix-output-monitor
     nh # Nice wrapper for NixOS and HM
   ];
+
+  home.persistence."/persist/".directories = [ ".local/share/containers" ];
 }

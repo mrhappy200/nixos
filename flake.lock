@@ -1377,11 +1377,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1787479774,
-        "narHash": "sha256-wU37xxaYn7qcIxU6DWpnEB+trIPgVm0vnv7QFygFiIg=",
+        "lastModified": 1787720975,
+        "narHash": "sha256-S4llVN7soZ8dwnZdm4uxH7caStnSnqjqYyQWCaTLAjc=",
         "owner": "mrhappy200",
         "repo": "emacs",
-        "rev": "b11a30718348373b2b2c9074048e44b916492452",
+        "rev": "8b9c34fde7ba68f991244570b75b876379610c09",
         "type": "github"
       },
       "original": {

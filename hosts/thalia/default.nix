@@ -19,7 +19,7 @@ in
     ./disk-config.nix
     ../common/optional/ephemeral-btrfs.nix
 
-    #../common/optional/uva-vpn.nix
+    ../common/optional/uva-vpn.nix
 
     ../common/optional/peripherals.nix
     ../common/optional/trackpoint.nix
@@ -120,6 +120,12 @@ in
       xorg.xcbutilrenderutil # libxcb-render-util
     ];
   };
+
+  # Bind the touch screen with the stylus to keep it from interfering
+  services.udev.extraRules = ''
+    # Bind all sub-devices matching the Wacom vendor and product IDs into one group
+    ACTION=="add|change", KERNEL=="event*", SUBSYSTEM=="input", ATTRS{id/vendor}=="056a", ATTRS{id/product}=="530a", ENV{LIBINPUT_DEVICE_GROUP}="wacom_hybrid_panel"
+  '';
 
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;

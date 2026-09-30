@@ -45,15 +45,16 @@
     };
   };
 
+
+  environment.systemPackages = [pkgs.man-pages pkgs.man-pages-posix pkgs.freetype pkgs.qt5.qtwayland];
+  documentation.man.cache.enable = true;
+  documentation.dev.enable = true;
+  documentation.nixos.enable = true;
+
   services.fwupd.enable = true;
 
   hardware.enableRedistributableFirmware = true;
   networking.domain = "hppy200.dev";
-
-  environment.systemPackages = [
-    pkgs.freetype
-    pkgs.qt5.qtwayland
-  ];
 
   # Increase open file limit for sudoers
   security.pam.loginLimits = [
@@ -79,5 +80,5 @@
   };
 
   # Cleanup stuff included by default
-  services.speechd.enable = false;
+  services.speechd.enable = true;
 }

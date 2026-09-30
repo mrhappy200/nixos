@@ -78,7 +78,7 @@ in
 
         WOL_DISABLE = "Y";
 
-        MEM_SLEEP_ON_AC = "s2idle";
+        MEM_SLEEP_ON_AC = "deep";
         MEM_SLEEP_ON_BAT = "deep";
 
         # Radio Devices

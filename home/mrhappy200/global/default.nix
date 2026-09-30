@@ -31,17 +31,20 @@
   programs = {
     home-manager.enable = true;
     git.enable = true;
+    man.enable = true;
   };
 
-  home = {
-    username = lib.mkDefault "mrhappy200";
-    homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "22.05";
-    sessionPath = [ "$HOME/.local/bin" ];
-    sessionVariables = {
-      NH_FLAKE = "$HOME/Documents/NixConfig";
-    };
+  manual.manpages.enable = true;
 
+  home = {
+    homeDirectory = lib.mkDefault "/home/${config.home.username}";
+    packages =
+      let
+      in
+      [
+        pkgs.libqalculate
+        #pkgs.devenv
+      ];
     persistence = {
       "/persist/" = {
         directories = [
@@ -59,12 +62,11 @@
         ];
       };
     };
+    sessionPath = [ "$HOME/.local/bin" ];
+    sessionVariables = {
+      NH_FLAKE = "$HOME/Documents/NixConfig";
+    };
+    stateVersion = lib.mkDefault "22.05";
+    username = lib.mkDefault "mrhappy200";
   };
-
-  home.packages =
-    let
-    in
-    [
-      #pkgs.devenv
-    ];
 }

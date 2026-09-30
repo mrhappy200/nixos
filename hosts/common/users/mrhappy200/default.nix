@@ -69,14 +69,16 @@ in
   specialisation = {
     theme-light.configuration = {
       custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/gruvbox-light-hard.yaml";
+      #custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/atelier-savanna-light.yaml";
     };
     theme-dark.configuration = {
       custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+      #custom-stylix.theme = "${pkgs.base16-schemes}/share/themes/atelier-savanna.yaml";
     };
   };
   custom-stylix = {
     enable = true;
-    cachebuster = "9"; # bump to force rebuild
+    cachebuster = "10"; # bump to force rebuild
     width = 2560;
     height = 1440;
     # svgTemplate defaults to ./BenBulben.svg.template

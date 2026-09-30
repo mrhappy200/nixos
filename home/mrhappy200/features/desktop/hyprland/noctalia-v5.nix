@@ -260,7 +260,7 @@ in
       shell = {
         external_ip_enabled = true;
         font_family = "DejaVu Sans";
-        launch_apps_custom_command = "${pkgs.uwsm}/bin/uwsm-app -s a -t service --";
+        launch_apps_custom_command = "${pkgs.uwsm}/bin/uwsm-app -s a -t service -- $CMD";
         password_style = "random";
         polkit_agent = true;
         screen_time_enabled = true;
