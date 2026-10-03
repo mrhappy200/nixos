@@ -60,8 +60,8 @@ in
             default = "1";
           };
           transform = mkOption {
-            type = types.str;
-            default = "0";
+            type = types.int;
+            default = 0;
           };
           enabled = mkOption {
             type = types.bool;

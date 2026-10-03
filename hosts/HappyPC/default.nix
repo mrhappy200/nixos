@@ -2,7 +2,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.framework-13-7040-amd
@@ -21,11 +22,16 @@
     ../common/optional/secure-boot.nix
   ];
 
-  networking = {hostName = "HappyPC";};
+  networking = {
+    hostName = "HappyPC";
+  };
 
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
-    binfmt.emulatedSystems = ["aarch64-linux" "i686-linux"];
+    binfmt.emulatedSystems = [
+      "aarch64-linux"
+      "i686-linux"
+    ];
   };
 
   powerManagement.powertop.enable = true;
@@ -34,7 +40,7 @@
     adb.enable = true;
     dconf.enable = true;
   };
-  environment.systemPackages = [pkgs.brightnessctl];
+  environment.systemPackages = [ pkgs.brightnessctl ];
 
   # Lid settings
   services.logind = {

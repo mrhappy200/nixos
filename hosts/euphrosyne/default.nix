@@ -18,16 +18,16 @@ in
     ../common/global/ssh-serve-store.nix
     ../common/users/mrhappy200
 
-    ../common/users/mrhappy200/inkscape-binds
+    #    ../common/users/mrhappy200/inkscape-binds
 
     ../common/optional/peripherals.nix
     ../common/optional/rgb.nix
     ../common/optional/weechat.nix
     ../common/optional/ssh-serve-store.nix
-    ../common/optional/guacamole.nix
-    ../common/optional/arr
+    #../common/optional/guacamole.nix
+    #    ../common/optional/arr
     ../common/optional/flatpak.nix
-    ../common/optional/ollama.nix
+    #    ../common/optional/ollama.nix
     ../common/optional/nginx.nix
     ../common/optional/acme.nix
     ../common/optional/greetd.nix
@@ -45,7 +45,7 @@ in
     ../common/optional/virtualisation.nix
     ../common/optional/polkit.nix
 
-    ../common/optional/starcitizen-fixes.nix
+    #../common/optional/starcitizen-fixes.nix
     #../common/optional/docker.nix
   ];
 
@@ -68,7 +68,7 @@ in
     openbox
     obconf
     tint2
-    rxvt-unicode
+    #rxvt-unicode
     #openai-whisper
     hello
     #bottles
@@ -88,60 +88,60 @@ in
   networking.firewall = {
     allowedTCPPorts = [
       # Moondeckbuddy
-      59999
+      #59999
 
       6600
       10300
       10200
     ];
   };
-  services.wyoming = {
-    faster-whisper.servers = {
-      "EuphrosyneWhisper" = {
-        enable = true;
-        # Set to 'auto' for normal whisper models
-        sttLibrary = "sherpa";
-        model = "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8";
-        #model = "nvidia/parakeet-tdt-0.6b-v3";
-        #model = "turbo";
-        #model = "tiny-int8";
-        language = "en";
-        uri = "tcp://0.0.0.0:10300";
-        #initialPrompt = ''
-        #  Ronan,Max, and Lara are lovely names.
-        #'';
-      };
-    };
-    piper.servers."EuphrosynePiper" = {
-      enable = true;
-      zeroconf = {
-        enable = true;
-        name = "EuphrosynePiper";
-      };
-      voice = "en_GB-alba-medium";
-      uri = "tcp://0.0.0.0:10200";
-    };
-  };
-  systemd.services."wyoming-faster-whisper-EuphrosyneWhisper".serviceConfig = {
-    DynamicUser = lib.mkForce false;
-  };
-  environment.persistence = {
-    "/persist" = {
-      directories = [
-        {
-          directory = "/var/lib/wyoming";
-          user = "wyoming-faster-whisper";
-        }
-      ];
-    };
-  };
-  users.users.wyoming-faster-whisper = {
-    description = "whisper user";
-    createHome = false;
-    group = "wyoming-faster-whisper";
-    isSystemUser = true;
-  };
-  users.groups.wyoming-faster-whisper = { };
+  #services.wyoming = {
+  #  faster-whisper.servers = {
+  #    "EuphrosyneWhisper" = {
+  #      enable = true;
+  #      # Set to 'auto' for normal whisper models
+  #      sttLibrary = "sherpa";
+  #      model = "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8";
+  #      #model = "nvidia/parakeet-tdt-0.6b-v3";
+  #      #model = "turbo";
+  #      #model = "tiny-int8";
+  #      language = "en";
+  #      uri = "tcp://0.0.0.0:10300";
+  #      #initialPrompt = ''
+  #      #  Ronan,Max, and Lara are lovely names.
+  #      #'';
+  #    };
+  #  };
+  #  piper.servers."EuphrosynePiper" = {
+  #    enable = true;
+  #    zeroconf = {
+  #      enable = true;
+  #      name = "EuphrosynePiper";
+  #    };
+  #    voice = "en_GB-alba-medium";
+  #    uri = "tcp://0.0.0.0:10200";
+  #  };
+  #};
+  #systemd.services."wyoming-faster-whisper-EuphrosyneWhisper".serviceConfig = {
+  #  DynamicUser = lib.mkForce false;
+  #};
+  #environment.persistence = {
+  #  "/persist" = {
+  #    directories = [
+  #      {
+  #        directory = "/var/lib/wyoming";
+  #        user = "wyoming-faster-whisper";
+  #      }
+  #    ];
+  #  };
+  #};
+  #users.users.wyoming-faster-whisper = {
+  #  description = "whisper user";
+  #  createHome = false;
+  #  group = "wyoming-faster-whisper";
+  #  isSystemUser = true;
+  #};
+  #users.groups.wyoming-faster-whisper = { };
 
   services.avahi = {
     enable = true;
@@ -183,7 +183,7 @@ in
 
   # Snapcast music server
   services.snapserver = {
-    enable = true;
+    enable = false;
     openFirewall = true;
     settings = {
       stream.source = [
@@ -202,25 +202,25 @@ in
       };
     };
   };
-  systemd.user.services.snapcast-sink = {
-    wantedBy = [
-      "pipewire.service"
-    ];
-    after = [
-      "pipewire.service"
-    ];
-    bindsTo = [
-      "pipewire.service"
-    ];
-    path = with pkgs; [
-      gawk
-      pulseaudio
-    ];
-    script = ''
-      pactl load-module module-pipe-sink file=/run/snapserver/pipewire sink_name=Snapcast format=s16le rate=48000
-      pactl load-module module-loopback source=$(pactl get-default-sink).monitor sink=Snapcast
-    '';
-  };
+  #systemd.user.services.snapcast-sink = {
+  #  wantedBy = [
+  #    "pipewire.service"
+  #  ];
+  #  after = [
+  #    "pipewire.service"
+  #  ];
+  #  bindsTo = [
+  #    "pipewire.service"
+  #  ];
+  #  path = with pkgs; [
+  #    gawk
+  #    pulseaudio
+  #  ];
+  #  script = ''
+  #    pactl load-module module-pipe-sink file=/run/snapserver/pipewire sink_name=Snapcast format=s16le rate=48000
+  #    pactl load-module module-loopback source=$(pactl get-default-sink).monitor sink=Snapcast
+  #  '';
+  #};
 
   nixpkgs.config.rocmSupport = true;
 
@@ -234,7 +234,7 @@ in
   };
 
   services.sunshine = {
-    enable = true;
+    enable = false;
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
@@ -283,24 +283,24 @@ in
             "setsid steam steam://open/bigpicture"
           ];
         }
-        {
-          name = "MoonDeckStream";
-          "prep-cmd" = [
-            {
-              "do" =
-                "sh -c \"hyprctl keyword monitor HEADLESS-2,\$\{SUNSHINE_CLIENT_WIDTH\}x\$\{SUNSHINE_CLIENT_HEIGHT\}@\$\{SUNSHINE_CLIENT_FPS\},auto,1\"";
-              "undo" = "hyprctl keyword monitor HEADLESS-2,disable";
-            }
-            {
-              "do" = "hyprctl dispatch focusmonitor HEADLESS-2";
-              "undo" = "hyprctl dispatch focusmonitor DP-3";
-            }
+        #{
+        #  name = "MoonDeckStream";
+        #  "prep-cmd" = [
+        #    {
+        #      "do" =
+        #        "sh -c \"hyprctl keyword monitor HEADLESS-2,\$\{SUNSHINE_CLIENT_WIDTH\}x\$\{SUNSHINE_CLIENT_HEIGHT\}@\$\{SUNSHINE_CLIENT_FPS\},auto,1\"";
+        #      "undo" = "hyprctl keyword monitor HEADLESS-2,disable";
+        #    }
+        #    {
+        #      "do" = "hyprctl dispatch focusmonitor HEADLESS-2";
+        #      "undo" = "hyprctl dispatch focusmonitor DP-3";
+        #    }
 
-          ];
-          cmd = "${pkgs.moondeck-buddy}/bin/MoonDeckStream";
-          exclude-global-prep-cmd = "false";
-          elevated = "false";
-        }
+        #  ];
+        #  cmd = "${pkgs.moondeck-buddy}/bin/MoonDeckStream";
+        #  exclude-global-prep-cmd = "false";
+        #  elevated = "false";
+        #}
       ];
     };
   };
@@ -314,12 +314,12 @@ in
     extraPackages = with pkgs; [
       SDL2
       SDL2_image
-      xorg.libxcb
-      xorg.xcbutil
-      xorg.xcbutilwm # libxcb-icccm
-      xorg.xcbutilimage # libxcb-image
-      xorg.xcbutilkeysyms # libxcb-keysyms
-      xorg.xcbutilrenderutil # libxcb-render-util
+      libxcb
+      libxcb-util
+      libxcb-wm # libxcb-icccm
+      libxcb-image # libxcb-image
+      libxcb-keysyms # libxcb-keysyms
+      libxcb-render-util # libxcb-render-util
     ];
   };
 

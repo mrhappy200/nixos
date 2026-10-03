@@ -20,7 +20,7 @@
 
   home.packages = [
     pkgs.libnotify
-    pkgs.handlr-regex
+    pkgs.stable.handlr-regex
     (pkgs.writeShellScriptBin "xterm" ''
       handlr launch x-scheme-handler/terminal -- "$@"
     '')

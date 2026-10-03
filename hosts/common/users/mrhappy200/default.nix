@@ -92,6 +92,8 @@ in
         main = {
           capslock = "overload(control,esc)";
           esc = "capslock";
+          leftalt = "leftmeta";
+          leftmeta = "leftalt";
         };
       };
     };
@@ -147,12 +149,12 @@ in
     enable = true;
     withUWSM = true;
     # set the flake package
-    #package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     # make sure to also set the portal package, so that they are in sync
-    #portalPackage =
-    #  inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-    package = pkgs.stable.hyprland;
-    portalPackage = pkgs.stable.xdg-desktop-portal-hyprland;
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    #package = pkgs.stable.hyprland;
+    #portalPackage = pkgs.stable.xdg-desktop-portal-hyprland;
   };
 
   home-manager.users.mrhappy200 = import ../../../../home/mrhappy200/${config.networking.hostName}.nix;

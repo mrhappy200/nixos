@@ -54,6 +54,8 @@
   services.fwupd.enable = true;
 
   hardware.enableRedistributableFirmware = true;
+  hardware.keyboard.qmk.enable = true;
+  hardware.keyboard.qmk.keychronSupport = true;
   networking.domain = "hppy200.dev";
 
   # Increase open file limit for sudoers

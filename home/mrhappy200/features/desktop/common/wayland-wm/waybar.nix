@@ -5,34 +5,43 @@
   pkgs,
   inputs,
   ...
-}: let
-  gpgCmds = import ../../../cli/gpg-commands.nix {inherit pkgs config lib;};
-  commonDeps = with pkgs; [coreutils gnugrep systemd];
+}:
+let
+  gpgCmds = import ../../../cli/gpg-commands.nix { inherit pkgs config lib; };
+  commonDeps = with pkgs; [
+    coreutils
+    gnugrep
+    systemd
+  ];
   # Function to simplify making waybar outputs
-  mkScript = {
-    name ? "script",
-    deps ? [],
-    script ? "",
-  }:
-    lib.getExe (pkgs.writeShellApplication {
-      inherit name;
-      text = script;
-      runtimeInputs = commonDeps ++ deps;
-    });
+  mkScript =
+    {
+      name ? "script",
+      deps ? [ ],
+      script ? "",
+    }:
+    lib.getExe (
+      pkgs.writeShellApplication {
+        inherit name;
+        text = script;
+        runtimeInputs = commonDeps ++ deps;
+      }
+    );
   # Specialized for JSON outputs
-  mkScriptJson = {
-    name ? "script",
-    deps ? [],
-    script ? "",
-    text ? "",
-    tooltip ? "",
-    alt ? "",
-    class ? "",
-    percentage ? "",
-  }:
+  mkScriptJson =
+    {
+      name ? "script",
+      deps ? [ ],
+      script ? "",
+      text ? "",
+      tooltip ? "",
+      alt ? "",
+      class ? "",
+      percentage ? "",
+    }:
     mkScript {
       inherit name;
-      deps = [pkgs.jq] ++ deps;
+      deps = [ pkgs.jq ] ++ deps;
       script = ''
         ${script}
         jq -cn \
@@ -47,20 +56,21 @@
 
   swayCfg = config.wayland.windowManager.sway;
   hyprlandCfg = config.wayland.windowManager.hyprland;
-in {
+in
+{
   systemd.user.services.waybar = {
     Unit = {
       # Let it try to start a few more times
       StartLimitBurst = 30;
       # Reload instead of restarting
-      X-Restart-Triggers = lib.mkForce [];
+      X-Restart-Triggers = lib.mkForce [ ];
       X-SwitchMethod = "reload";
     };
   };
   programs.waybar = {
     enable = true;
     package = pkgs.waybar.overrideAttrs (oa: {
-      mesonFlags = (oa.mesonFlags or []) ++ ["-Dexperimental=true"];
+      mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];
     });
     systemd.enable = true;
     settings = {
@@ -70,14 +80,21 @@ in {
         height = 40;
         margin = "6";
         position = "top";
-        modules-left =
-          ["custom/menu"]
-          ++ (lib.optionals swayCfg.enable ["sway/workspaces" "sway/mode"])
-          ++ (lib.optionals hyprlandCfg.enable [
-            "hyprland/workspaces"
-            "hyprland/submap"
-          ])
-          ++ ["custom/currentplayer" "custom/player"];
+        modules-left = [
+          "custom/menu"
+        ]
+        ++ (lib.optionals swayCfg.enable [
+          "sway/workspaces"
+          "sway/mode"
+        ])
+        ++ (lib.optionals hyprlandCfg.enable [
+          "hyprland/workspaces"
+          "hyprland/submap"
+        ])
+        ++ [
+          "custom/currentplayer"
+          "custom/player"
+        ];
 
         modules-right = [
           "tray"
@@ -121,7 +138,12 @@ in {
           format-source-muted = " 󰍭";
           format-icons = {
             default-muted = "󰸈";
-            default = ["󰕿" "󰖀" "󰖀" "󰕾"];
+            default = [
+              "󰕿"
+              "󰖀"
+              "󰖀"
+              "󰕾"
+            ];
             headphone-muted = "󰟎";
             headphone = "󰋋";
             headset-muted = "󰋐";
@@ -138,13 +160,26 @@ in {
         };
         battery = {
           interval = 10;
-          format-icons = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+          format-icons = [
+            "󰁺"
+            "󰁻"
+            "󰁼"
+            "󰁽"
+            "󰁾"
+            "󰁿"
+            "󰂀"
+            "󰂁"
+            "󰂂"
+            "󰁹"
+          ];
           format = "{icon}";
           format-charging = "󰂄";
           tooltip-format = "{capacity}% ({time})";
           onclick = "";
         };
-        "sway/window" = {max-length = 20;};
+        "sway/window" = {
+          max-length = 20;
+        };
         network = {
           interval = 3;
           format-wifi = "󰖩";
@@ -170,7 +205,10 @@ in {
           interval = 10;
           return-type = "json";
           exec = mkScriptJson {
-            deps = [pkgs.findutils pkgs.gawk];
+            deps = [
+              pkgs.findutils
+              pkgs.gawk
+            ];
             script = ''
               inbox_count="$(find ~/Mail/*/Inbox/new -type f | cut -d / -f5 | uniq -c | awk '{$1=$1};1')"
               if [ -z "$inbox_count" ]; then
@@ -189,7 +227,7 @@ in {
             "unread" = "󰇮";
           };
           on-click = mkScript {
-            deps = [pkgs.handlr-regex];
+            deps = [ pkgs.stable.handlr-regex ];
             script = "handlr launch x-scheme-handler/mailto";
           };
         };
@@ -197,7 +235,10 @@ in {
           interval = 10;
           return-type = "json";
           exec = mkScriptJson {
-            deps = [config.programs.khal.package pkgs.gnugrep];
+            deps = [
+              config.programs.khal.package
+              pkgs.gnugrep
+            ];
             script = ''
               events="$(khal list now tomorrow --notstarted --json title --json start-time | jq 'map("\(."start-time") \(.title)")[]' -r)"
               count="$(printf "%s" "$events" | grep -c "^" || true)"
@@ -222,7 +263,7 @@ in {
             no-event = "󰃮";
           };
           on-click = mkScript {
-            deps = [pkgs.handlr-regex];
+            deps = [ pkgs.stable.handlr-regex ];
             script = "handlr launch text/calendar";
           };
         };
@@ -296,7 +337,7 @@ in {
           interval = 2;
           return-type = "json";
           exec = mkScriptJson {
-            deps = [pkgs.playerctl];
+            deps = [ pkgs.playerctl ];
             script = ''
               all_players=$(playerctl -l 2>/dev/null)
               selected_player="$(playerctl status -f "{{playerName}}" 2>/dev/null || true)"
@@ -321,14 +362,14 @@ in {
         };
         "custom/player" = {
           exec-if = mkScript {
-            deps = [pkgs.playerctl];
+            deps = [ pkgs.playerctl ];
             script = ''
               selected_player="$(playerctl status -f "{{playerName}}" 2>/dev/null || true)"
               playerctl status -p "$selected_player" 2>/dev/null
             '';
           };
           exec = mkScript {
-            deps = [pkgs.playerctl];
+            deps = [ pkgs.playerctl ];
             script = ''
               selected_player="$(playerctl status -f "{{playerName}}" 2>/dev/null || true)"
               playerctl metadata -p "$selected_player" \
@@ -345,18 +386,18 @@ in {
             "Stopped" = "󰓛";
           };
           on-click = mkScript {
-            deps = [pkgs.playerctl];
+            deps = [ pkgs.playerctl ];
             script = "playerctl play-pause";
           };
         };
         "custom/minicava" = {
-          exec = mkScript {script = lib.getExe pkgs.minicava;};
+          exec = mkScript { script = lib.getExe pkgs.minicava; };
           "restart-interval" = 5;
         };
         "custom/rfkill" = {
           interval = 3;
           exec-if = mkScript {
-            deps = [pkgs.util-linux];
+            deps = [ pkgs.util-linux ];
             script = "rfkill list wifi | grep yes -q";
           };
           exec = "echo 󰀝";
@@ -368,85 +409,87 @@ in {
     # x y -> vertical, horizontal
     # x y z -> top, horizontal, bottom
     # w x y z -> top, right, bottom, left
-    style = let
-      inherit (inputs.nix-colors.lib.conversions) hexToRGBString;
-      inherit (config.colorscheme) colors;
-      toRGBA = color: opacity: "rgba(${hexToRGBString "," (lib.removePrefix "#" color)},${opacity})";
-      # css
-    in ''
-      * {
-        font-family: ${config.fontProfiles.regular.name}, ${config.fontProfiles.monospace.name};
-        font-size: 12pt;
-        padding: 0;
-        margin: 0 0.4em;
-      }
+    style =
+      let
+        inherit (inputs.nix-colors.lib.conversions) hexToRGBString;
+        inherit (config.colorscheme) colors;
+        toRGBA = color: opacity: "rgba(${hexToRGBString "," (lib.removePrefix "#" color)},${opacity})";
+        # css
+      in
+      ''
+        * {
+          font-family: ${config.fontProfiles.regular.name}, ${config.fontProfiles.monospace.name};
+          font-size: 12pt;
+          padding: 0;
+          margin: 0 0.4em;
+        }
 
-      window#waybar {
-        padding: 0;
-        background-color: transparent;
-        color: ${colors.on_surface};
-      }
-      .modules-left {
-        background-color: ${toRGBA colors.surface "0.8"};
-        margin-left: 0;
-        border-radius: 0.5em;
-        border-right: solid 0.4em ${colors.surface};
-      }
-      .modules-right {
-        background-color: ${toRGBA colors.surface "0.8"};
-        margin-right: 0;
-        border-radius: 0.5em;
-        border-left: solid 0.4em ${colors.surface};
-      }
+        window#waybar {
+          padding: 0;
+          background-color: transparent;
+          color: ${colors.on_surface};
+        }
+        .modules-left {
+          background-color: ${toRGBA colors.surface "0.8"};
+          margin-left: 0;
+          border-radius: 0.5em;
+          border-right: solid 0.4em ${colors.surface};
+        }
+        .modules-right {
+          background-color: ${toRGBA colors.surface "0.8"};
+          margin-right: 0;
+          border-radius: 0.5em;
+          border-left: solid 0.4em ${colors.surface};
+        }
 
-      #workspaces button {
-        color: ${colors.on_surface};
-        padding-left: 0.2em;
-        padding-right: 0.2em;
-        margin-top: 0.15em;
-        margin-bottom: 0.15em;
-        margin-left: 0.1em;
-        margin-right: 0.1em;
-      }
-      #workspaces button.hidden {
-        background-color: ${colors.surface};
-        color: ${colors.on_surface_variant};
-      }
-      #workspaces button.focused,
-      #workspaces button.active {
-        background-color: ${colors.primary};
-        color: ${colors.on_primary};
-      }
+        #workspaces button {
+          color: ${colors.on_surface};
+          padding-left: 0.2em;
+          padding-right: 0.2em;
+          margin-top: 0.15em;
+          margin-bottom: 0.15em;
+          margin-left: 0.1em;
+          margin-right: 0.1em;
+        }
+        #workspaces button.hidden {
+          background-color: ${colors.surface};
+          color: ${colors.on_surface_variant};
+        }
+        #workspaces button.focused,
+        #workspaces button.active {
+          background-color: ${colors.primary};
+          color: ${colors.on_primary};
+        }
 
-      #custom-menu {
-        background-color: ${colors.surface_container};
-        color: ${colors.primary};
-        padding-right: 1.5em;
-        padding-left: 1em;
-        margin-left: 0;
-        border-radius: 0.5em;
-      }
-      #clock {
-        background-color: ${colors.surface_container};
-        color: ${colors.primary};
-        padding-right: 0.8em;
-        padding-left: 0.7em;
-        margin-right: 0;
-        border-radius: 0.5em;
-      }
+        #custom-menu {
+          background-color: ${colors.surface_container};
+          color: ${colors.primary};
+          padding-right: 1.5em;
+          padding-left: 1em;
+          margin-left: 0;
+          border-radius: 0.5em;
+        }
+        #clock {
+          background-color: ${colors.surface_container};
+          color: ${colors.primary};
+          padding-right: 0.8em;
+          padding-left: 0.7em;
+          margin-right: 0;
+          border-radius: 0.5em;
+        }
 
-      #custom-player {
-        padding-left: 0;
-        margin-left: 0;
-        margin-right: 1em;
-      }
-      #custom-currentplayer {
-        padding-right: 0;
-        margin-left: 1em;
-      }
-      #tray {
-        color: ${colors.on_surface};
-      }
-    '';
+        #custom-player {
+          padding-left: 0;
+          margin-left: 0;
+          margin-right: 1em;
+        }
+        #custom-currentplayer {
+          padding-right: 0;
+          margin-left: 1em;
+        }
+        #tray {
+          color: ${colors.on_surface};
+        }
+      '';
   };
 }

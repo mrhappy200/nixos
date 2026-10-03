@@ -58,7 +58,7 @@ in
     openbox
     obconf
     tint2
-    rxvt-unicode
+    #rxvt-unicode
     #openai-whisper
     hello
     #bottles
@@ -112,12 +112,12 @@ in
     extraPackages = with pkgs; [
       SDL2
       SDL2_image
-      xorg.libxcb
-      xorg.xcbutil
-      xorg.xcbutilwm # libxcb-icccm
-      xorg.xcbutilimage # libxcb-image
-      xorg.xcbutilkeysyms # libxcb-keysyms
-      xorg.xcbutilrenderutil # libxcb-render-util
+      libxcb
+      libxcb-util
+      libxcb-wm # libxcb-icccm
+      libxcb-image # libxcb-image
+      libxcb-keysyms # libxcb-keysyms
+      libxcb-render-util # libxcb-render-util
     ];
   };
 

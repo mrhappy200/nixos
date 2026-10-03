@@ -1394,11 +1394,25 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1787720975,
         "narHash": "sha256-S4llVN7soZ8dwnZdm4uxH7caStnSnqjqYyQWCaTLAjc=",
+||||||| parent of 106e5c1 (Fix all warnings and update Hyprland config to lua)
+        "lastModified": 1787479774,
+        "narHash": "sha256-wU37xxaYn7qcIxU6DWpnEB+trIPgVm0vnv7QFygFiIg=",
+=======
+        "lastModified": 1790779652,
+        "narHash": "sha256-RihROgrs4BRx5j0n+YywzA6SZZIMSTL8TBr18zlyaZU=",
+>>>>>>> 106e5c1 (Fix all warnings and update Hyprland config to lua)
         "owner": "mrhappy200",
         "repo": "emacs",
+<<<<<<< HEAD
         "rev": "8b9c34fde7ba68f991244570b75b876379610c09",
+||||||| parent of 106e5c1 (Fix all warnings and update Hyprland config to lua)
+        "rev": "b11a30718348373b2b2c9074048e44b916492452",
+=======
+        "rev": "2b99ca5c848354b05a28cd0db0dbe3828c1ea26c",
+>>>>>>> 106e5c1 (Fix all warnings and update Hyprland config to lua)
         "type": "github"
       },
       "original": {

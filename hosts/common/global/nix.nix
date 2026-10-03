@@ -40,6 +40,8 @@ in
         "nixos-test"
       ];
       flake-registry = ""; # Disable global flake registry
+
+      nix-path = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
     gc = {
       automatic = true;
@@ -50,6 +52,5 @@ in
 
     # Add each flake input as a registry and nix_path
     registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 }

@@ -195,8 +195,15 @@ let
                 </marker>
               </defs>"""
 
-        style_string = ';'.join(f'{k}: {v}' for k, v in sorted(style.items()))
-        svg += f'<inkscape:clipboard style="{style_string}" /></svg>'
+        svg += f"""  <inkscape:clipboard style="{style_string}" />
+        </svg>
+        """
+
+        subprocess.run(
+            ['wl-copy', '--type', 'image/x-inkscape-svg'],
+            input=svg.encode('utf-8'),
+            check=True,
+        )
 
         # Crucial: without --type, wl-copy publishes this as text/plain.
         subprocess.run(

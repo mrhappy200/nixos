@@ -42,9 +42,9 @@ in
         default_page = "https://google.com";
         start_pages = [ default_page ];
       };
-      downloads.open_dispatcher = "${lib.getExe pkgs.handlr-regex} open {}";
+      downloads.open_dispatcher = "${lib.getExe pkgs.stable.handlr-regex} open {}";
       editor.command = [
-        "${lib.getExe pkgs.handlr-regex}"
+        "${lib.getExe pkgs.stable.handlr-regex}"
         "open"
         "{file}"
       ];

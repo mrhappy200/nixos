@@ -20,9 +20,8 @@ in
     ./features/desktop/common/blender.nix
     ./features/desktop/common/deluge.nix
     #./features/cli/mpd.nix
-    ./features/cli/ollama.nix
+    #    ./features/cli/ollama.nix
     ./features/cli/wrtag.nix
-    ./features/desktop/common/lanmouse.nix
     # Doesn't work (yet)
     #./features/desktop/common/wayland-wm/kando.nix
     ./features/productivity
@@ -50,7 +49,7 @@ in
     hunspell
     hunspellDicts.nl_NL
     hunspellDicts.en_GB-ise
-    moondeck-buddy
+    #moondeck-buddy
   ];
 
   home.persistence = {
@@ -59,9 +58,9 @@ in
 
   # autostart moondeck
   xdg.autostart.enable = true;
-  xdg.autostart.entries = [
-    "${pkgs.moondeck-buddy}/share/applications/MoonDeckBuddy.desktop"
-  ];
+  #xdg.autostart.entries = [
+  #  "${pkgs.moondeck-buddy}/share/applications/MoonDeckBuddy.desktop"
+  #];
 
   #  ------   -----   ------
   # | DP-3 | | DP-1| | DP-2 |

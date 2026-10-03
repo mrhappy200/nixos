@@ -22,6 +22,7 @@ in
   stylix.enable = true;
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
     profiles.mrhappy200 = {
       extensions = {
         force = true;

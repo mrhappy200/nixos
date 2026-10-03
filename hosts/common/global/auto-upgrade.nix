@@ -2,7 +2,8 @@
   inputs,
   config,
   ...
-}: {
+}:
+{
   system.hydraAutoUpgrade = {
     # Only enable if not dirty
     enable = inputs.self ? rev;

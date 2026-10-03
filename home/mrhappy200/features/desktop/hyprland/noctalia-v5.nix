@@ -13,7 +13,7 @@ let
   COLOUR = osConfig.lib.stylix.colors.${colourKey};
 in
 {
-  imports = [ inputs.noctalia.homeModules.default ];
+  #imports = [ inputs.noctalia.homeModules.default ];
 
   home.packages = [
     pkgs.hyprshot

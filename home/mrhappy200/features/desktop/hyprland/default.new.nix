@@ -81,14 +81,6 @@ in
           numlock_by_default = true;
           special_fallthrough = true;
         };
-
-        scrolling = {
-          direction = "right";
-          column_width = 0.65;
-          follow_focus = true;
-          wrap_focus = true;
-        };
-
         dwindle = {
           split_width_multiplier = 1.35;
         };
@@ -132,11 +124,10 @@ in
             special = true;
           };
           shadow = {
-            color = lib.mkForce "0xee1a1a1a";
             enabled = true;
-            #range = 30;
-            #offset = "0 2";
-            #render_power = 4;
+            range = 30;
+            offset = "0 2";
+            render_power = 4;
           };
           wobble = {
             enabled = true;
@@ -173,7 +164,7 @@ in
           enabled = true;
           speed = 3;
           bezier = "emphasizedDecel";
-          #          style = "slide";
+          style = "slide";
         }
         {
           leaf = "border";
@@ -489,7 +480,7 @@ in
 
             (mkBind "SUPER" "semicolon" passWofi)
             (mkBind "SHIFT + SUPER" "semicolon" "${passWofi} fill")
-
+            
           ]
         )
         ++ lib.optionals config.services.cliphist.enable [
@@ -517,17 +508,10 @@ in
             }
         ) config.monitors;
 
-        workspace_rule =
-          (map (m: {
-            workspace = toString m.workspace;
-            monitor = m.name;
-          }) (lib.filter (m: m.enabled && m.workspace != null) config.monitors))
-          ++ [
-            {
-              workspace = "special:default";
-              layout = "scrolling";
-            }
-          ];
+        workspace_rule = map (m: {
+          workspace = toString m.workspace;
+          monitor = m.name;
+        }) (lib.filter (m: m.enabled && m.workspace != null) config.monitors);
       }
     );
   };

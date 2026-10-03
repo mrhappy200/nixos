@@ -23,33 +23,21 @@ in
     enable = true;
     # See above
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       net = {
-        userKnownHostsFile = "${config.home.homeDirectory}/.ssh/known_hosts.d/hosts";
-        host = lib.concatStringsSep " " (
-          lib.flatten (
-            map (host: [
-              host
-              "${host}.hppy200.dev"
-              "${host}.ts.hppy200.dev"
-            ]) hostnames
-          )
-        );
-        forwardAgent = true;
-        remoteForwards = [
-          {
-            bind.address = "/%d/.gnupg-sockets/S.gpg-agent";
-            host.address = "/%d/.gnupg-sockets/S.gpg-agent.extra";
-          }
-          {
-            bind.address = "/%d/.waypipe/server.sock";
-            host.address = "/%d/.waypipe/client.sock";
-          }
+        host = lib.concatMapStringsSep " " (h: "${h} ${h}.hppy200.dev ${h}.ts.hppy200.dev") hostnames;
+        UserKnownHostsFile = "${config.home.homeDirectory}/.ssh/known_hosts.d/hosts";
+        ForwardAgent = true;
+        ForwardX11 = true;
+        ForwardX11Trusted = true;
+        SetEnv = {
+          WAYLAND_DISPLAY = "wayland-waypipe";
+        };
+        RemoteForward = [
+          "/%d/.gnupg-sockets/S.gpg-agent /%d/.gnupg-sockets/S.gpg-agent.extra"
+          "/%d/.waypipe/server.sock /%d/.waypipe/client.sock"
         ];
-        forwardX11 = true;
-        forwardX11Trusted = true;
-        setEnv.WAYLAND_DISPLAY = "wayland-waypipe";
-        extraOptions.StreamLocalBindUnlink = "yes";
+        StreamLocalBindUnlink = "yes";
       };
     };
   };

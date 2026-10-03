@@ -46,9 +46,6 @@ in
 
       mutt = mkIf hasNeomutt "neomutt";
       m = mutt;
-
-      aws-switch = mkIf hasAwsCli "export AWS_PROFILE=(aws configure list-profiles | fzf)";
-      awssw = aws-switch;
     };
     shellAliases = {
       # Clear screen and scrollback
