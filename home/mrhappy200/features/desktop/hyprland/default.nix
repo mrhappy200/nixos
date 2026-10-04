@@ -119,7 +119,7 @@ in
             noise = 0.03;
             passes = 4;
             size = 4;
-            variant = "kawase";
+            variant = "aurora";
             vibrancy = 0.08;
             vibrancy_darkness = 1;
             xray = false;
@@ -392,6 +392,10 @@ in
           ];
         };
 
+        mkGesture = fields: {
+          _args = [ fields ];
+        };
+
         renameWorkspace = pkgs.writeShellScript "rename-workspace" ''
           workspace="$(hyprctl activeworkspace -j)"
           id="$(jq -r .id <<< "$workspace")"
@@ -497,6 +501,165 @@ in
         ]
         ++ lib.optionals config.services.kdeconnect.enable [
           (mkBind "SUPER" "v" shareKdeconnect)
+        ];
+
+        gesture = [
+          # Three fingers left:
+          # normal workspace: previous workspace
+          # special:default: previous scrolling-layout column
+          (mkGesture {
+            fingers = 3;
+            direction = "left";
+            action = lua ''
+              function()
+                local special = hl.get_active_special_workspace()
+
+                if special ~= nil and special.name == "special:default" then
+                  hl.dispatch(hl.dsp.layout("move -col"))
+                else
+                  hl.exec_cmd("hyprctl dispatch workspace r-1")
+                end
+              end
+            '';
+          })
+
+          # Three fingers right:
+          # normal workspace: next workspace
+          # special:default: next scrolling-layout column
+          (mkGesture {
+            fingers = 3;
+            direction = "right";
+            action = lua ''
+              function()
+                local special = hl.get_active_special_workspace()
+
+                if special ~= nil and special.name == "special:default" then
+                  hl.dispatch(hl.dsp.layout("move +col"))
+                else
+                  hl.exec_cmd("hyprctl dispatch workspace r+1")
+                end
+              end
+            '';
+          })
+
+          # Three fingers down: show special:default, but do not hide it if open.
+          (mkGesture {
+            fingers = 3;
+            direction = "down";
+            action = lua ''
+              function()
+                local special = hl.get_active_special_workspace()
+
+                if special == nil or special.name ~= "special:default" then
+                  hl.dispatch(hl.dsp.workspace.toggle_special("default"))
+                end
+              end
+            '';
+          })
+
+          # Three fingers up: hide special:default, otherwise do nothing.
+          (mkGesture {
+            fingers = 3;
+            direction = "up";
+            action = lua ''
+              function()
+                local special = hl.get_active_special_workspace()
+
+                if special ~= nil and special.name == "special:default" then
+                  hl.dispatch(hl.dsp.workspace.toggle_special("default"))
+                end
+              end
+            '';
+          })
+
+          # Two-finger pinch out:
+          # fullscreen → maximised → default → floating.
+          (mkGesture {
+            fingers = 2;
+            direction = "pinchout";
+            action = lua ''
+              function()
+                local window = hl.get_active_window()
+
+                if window == nil then
+                  return
+                end
+
+                if window.fullscreen == 2 then
+                  -- Fullscreen → maximised.
+                  hl.dispatch(hl.dsp.window.fullscreen_state({
+                    internal = 1,
+                    client = 1,
+                    layout_aware = false,
+                  }))
+
+                elseif window.fullscreen == 1 then
+                  -- Maximised → default tiled.
+                  hl.dispatch(hl.dsp.window.fullscreen_state({
+                    internal = 0,
+                    client = 0,
+                    layout_aware = false,
+                  }))
+                  hl.dispatch(hl.dsp.window.float({ action = "disable" }))
+
+                elseif window.floating then
+                  -- Already at the zoomed-out limit.
+                  return
+
+                else
+                  -- Default tiled → floating.
+                  hl.dispatch(hl.dsp.window.float({ action = "enable" }))
+                end
+              end
+            '';
+          })
+
+          # Two-finger pinch in:
+          # floating → default → maximised → fullscreen.
+          (mkGesture {
+            fingers = 2;
+            direction = "pinchin";
+            action = lua ''
+              function()
+                local window = hl.get_active_window()
+
+                if window == nil then
+                  return
+                end
+
+                if window.fullscreen == 2 then
+                  -- Already at the zoomed-in limit.
+                  return
+
+                elseif window.fullscreen == 1 then
+                  -- Maximised → actual fullscreen.
+                  hl.dispatch(hl.dsp.window.fullscreen_state({
+                    internal = 2,
+                    client = 2,
+                    layout_aware = false,
+                  }))
+
+                elseif window.floating then
+                  -- Floating → default tiled.
+                  hl.dispatch(hl.dsp.window.fullscreen_state({
+                    internal = 0,
+                    client = 0,
+                    layout_aware = false,
+                  }))
+                  hl.dispatch(hl.dsp.window.float({ action = "disable" }))
+
+                else
+                  -- Default tiled → maximised.
+                  hl.dispatch(hl.dsp.window.float({ action = "disable" }))
+                  hl.dispatch(hl.dsp.window.fullscreen_state({
+                    internal = 1,
+                    client = 1,
+                    layout_aware = false,
+                  }))
+                end
+              end
+            '';
+          })
         ];
 
         monitor = map (
